@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
+import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.RoleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.mapper.UserMapper;
@@ -29,6 +30,17 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         QueryWrapper<User> qw = new QueryWrapper<User>();
         qw.eq("user_id",userId);
         return userMapper.selectOne(qw);
+    }
+
+    public User getUserByUserIdPwd (LoginDto loginDto){
+        QueryWrapper<User> build = new QueryWrapper<User>();
+        if (loginDto.getUserId() !=null && !"".equals(loginDto.getUserId())) {
+            build.eq("user_id",loginDto.getUserId());
+        }
+        if (loginDto.getPwd() !=null && !"".equals(loginDto.getPwd())) {
+            build.eq("password",loginDto.getPwd());
+        }
+        return userMapper.selectOne(build);
     }
 
     public int insert (User u) {

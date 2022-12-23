@@ -77,17 +77,13 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
 
 
-        public List<Menu> queryMenusByUserId(String userId) {
-            if (!StringUtils.isNotEmpty(userId)) {
-                throw new BaseException("userid 为空");
-            }
-
-            if (userId.equals("admin")) {
-                return findAll();
+        public List<Menu> findMenuByRoleCode(String roleCode) {
+            if (!StringUtils.isNotEmpty(roleCode)) {
+                throw new BaseException("roleCode 为空");
             }
 
             try {
-                List<Menu> list = menuMapper.findMenuByUserId(userId);
+                List<Menu> list = menuMapper.findMenuByRoleCode(roleCode);
 
                 return transferMenuVo(list, 0L);
             } catch (Exception e){
@@ -96,6 +92,27 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
 
         }
+
+    public List<Menu> queryMenusByUserId(String userId) {
+        if (!StringUtils.isNotEmpty(userId)) {
+            throw new BaseException("userid 为空");
+        }
+
+        if (userId.equals("admin")) {
+            return findAll();
+        }
+
+        try {
+            List<Menu> list = menuMapper.findMenuByUserId(userId);
+
+            return transferMenuVo(list, 0L);
+        } catch (Exception e){
+            return null;
+        }
+
+
+    }
+
 
 
         private List<Menu> transferMenuVo(List<Menu> allMenu, Long parentId){

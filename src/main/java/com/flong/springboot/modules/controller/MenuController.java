@@ -93,6 +93,12 @@ public class MenuController {
         return menuService.queryMenusByUserId(userId);
     }
 
+    @ApiOperation("查询角色对应菜单")
+    @GetMapping("/findMenuByRoleCode")
+    public List<Menu> queryMenusByRoleCode(@RequestHeader("token") String token,String roleCode) {
+        return menuService.findMenuByRoleCode(roleCode);
+    }
+
 
 
 

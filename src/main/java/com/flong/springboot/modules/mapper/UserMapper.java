@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface UserMapper extends BaseMapper<User> {
     List<User> find_AS_R();
+
+    List<User> findUserRoles(List<String> userIds);
 }

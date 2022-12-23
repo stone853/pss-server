@@ -65,6 +65,7 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: 'NULL'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 tenant:
   enable: false #默认关闭多租户功能，各服务根据需要开启
   ignores: #不过滤tenantId的表,这里主要添加不包含tenant_id字段及全局表，表名统一用大写，否则无法识别

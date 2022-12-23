@@ -14,6 +14,16 @@ public class UserDto {
 
     private Byte isDelete;
 
+    private String password;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setIsDelete(Byte isDelete) {
         this.isDelete = isDelete;
     }

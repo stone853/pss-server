@@ -48,16 +48,18 @@
             )
 
           </if>
+  </select>
 
-    <!--      <if test="id != null and id != ''">-->
-    <!--        and id=#{id}-->
-    <!--      </if>-->
 
-    <!--      <if test="parentId != null and parentId != ''">-->
-    <!--        and parent_id=#{parentId}-->
-    <!--      </if>-->
+  <select id="findMenuByRoleCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from t_pss_menu t1 where t1.id in (
+      select menu_id from t_pss_role_menu t where 1=1
 
-    <!--       order by level,sort asc-->
+      <if test="roleCode != null and roleCode != ''">
+        and t.role_code = #{roleCode}
+      </if>
+
+    )
   </select>
 
 
