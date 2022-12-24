@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.DictMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.Dict">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+</mapper>

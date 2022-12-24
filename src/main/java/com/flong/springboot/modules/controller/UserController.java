@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.model.ResultJsonModel;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
+import com.flong.springboot.core.exception.BaseException;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
@@ -91,10 +94,10 @@ public class UserController {
     public LoginVo login(@RequestBody LoginDto loginDto){
         User u = userService.getUserByUserIdPwd(loginDto);
         LoginVo lv = new LoginVo();
-        if (u!=null) {
-            lv.setToken(UserHelper.getToken(u.getUserId(),u.getMobile()));
+        if (u ==null) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
         }
-        return lv;
+        return lv.setToken(UserHelper.getToken(u.getUserId(),u.getMobile()));
     }
 
 }

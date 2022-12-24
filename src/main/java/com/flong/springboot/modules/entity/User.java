@@ -36,6 +36,8 @@ public class User extends Model<User> implements Serializable {
 
     private String remark;
 
+    private String deptCode;
+
     public void setRemark(String remark) {
         this.remark = remark;
     }
@@ -51,6 +53,14 @@ public class User extends Model<User> implements Serializable {
     public User setId(Long id) {
         this.id = id;
         return this;
+    }
+
+    public void setDeptCode(String deptCode) {
+        this.deptCode = deptCode;
+    }
+
+    public String getDeptCode() {
+        return deptCode;
     }
 
     public User setUserId(String userId) {

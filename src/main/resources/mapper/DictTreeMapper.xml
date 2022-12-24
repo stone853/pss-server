@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.DictTreeMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.DictTree">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="node_type" jdbcType="TINYINT" property="nodeType" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+  </resultMap>
+
+</mapper>

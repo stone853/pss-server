@@ -64,6 +64,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             build.eq("mobile",userDto.getMobile());
         }
 
+        if (userDto.getDeptCode() !=null && !"".equals(userDto.getDeptCode())) {
+            build.eq("dept_code",userDto.getDeptCode());
+        }
+
         return build;
     }
 }

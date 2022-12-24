@@ -9,6 +9,7 @@
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+        <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
     </resultMap>
 
     <select id="find_AS_R" resultMap="BaseResultMap">
@@ -17,14 +18,14 @@
 
 
     <select id="findUserRoles" resultType="java.util.Map" parameterType="java.util.List">
-        select t.user_id,t.name,t.mobile,t.is_delete,t.remark,GROUP_CONCAT(t2.role_code) as roles,GROUP_CONCAT(t3.name) as rolenames from t_pss_user t left join t_pss_user_role t2 on t.user_id = t2.user_id
+        select t.user_id,t.name,t.mobile,t.is_delete,t.remark,t.dept_code,GROUP_CONCAT(t2.role_code) as roles,GROUP_CONCAT(t3.name) as rolenames from t_pss_user t left join t_pss_user_role t2 on t.user_id = t2.user_id
         left join t_pss_role t3 on t2.role_code = t3.code
         where 1=1 and t.user_id in
         <foreach collection="list" item="userIds" index="index"
                  open="(" close=")" separator=",">
             #{userIds}
         </foreach>
-        group by t.id,t.user_id,t.name,t.mobile,t.is_delete,t.remark
+        group by t.id,t.user_id,t.name,t.mobile,t.is_delete,t.remark,t.dept_code
     </select>
 
 

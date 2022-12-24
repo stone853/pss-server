@@ -43,10 +43,14 @@ public enum CommMsgCode implements MsgCode {
     INVALID_SIGN(198000, "签名错误"),
     INVALID_TOKEN(198401, "invalid token"),
 
+    BIZ_INTERRUPT(-2, "查询不到数据"),
     /**
      * 其它错误码
      */
     OTHER_ERROR(900000, "其它错误");
+
+
+
 
     private int code;
     private String message;

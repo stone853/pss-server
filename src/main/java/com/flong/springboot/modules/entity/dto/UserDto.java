@@ -16,6 +16,16 @@ public class UserDto {
 
     private String password;
 
+    private String deptCode;
+
+    public void setDeptCode(String deptCode) {
+        this.deptCode = deptCode;
+    }
+
+    public String getDeptCode() {
+        return deptCode;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
