@@ -64,9 +64,9 @@
             tableName：表的名称
             domainObjectName：指定表对应生成实体类的名称
         -->
-        <table tableName="t_pss_dict_tree">
+        <table tableName="t_pss_supplier">
             <!-- 设置自增ID的回显功能 -->
-            <generatedKey column="id" sqlStatement="Mysql"/>
+            <generatedKey column="supplier_code" sqlStatement="Mysql"/>
         </table>
 
     </context>

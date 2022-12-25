@@ -18,6 +18,17 @@ public class UserDto {
 
     private String deptCode;
 
+    private Page page;
+
+    public UserDto setPage(Page page) {
+        this.page = page;
+        return this;
+    }
+
+    public Page getPage() {
+        return this.page;
+    }
+
     public void setDeptCode(String deptCode) {
         this.deptCode = deptCode;
     }
@@ -61,14 +72,5 @@ public class UserDto {
 
 
 
-    private Page page;
 
-    public UserDto setPage(Page page) {
-        this.page = page;
-        return this;
-    }
-
-    public Page getPage() {
-        return this.page;
-    }
 }
