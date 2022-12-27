@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.flong.springboot.modules.mapper.CustomerMapper">
-  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.Customer">
+<mapper namespace="com.flong.springboot.modules.mapper.MaterialMgtMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.MaterialMgt">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
-    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
-    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="contracts" jdbcType="VARCHAR" property="contracts" />
-    <result column="contract_tel" jdbcType="VARCHAR" property="contractTel" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="files_c" jdbcType="VARCHAR" property="filesC" />
+    <result column="material_model" jdbcType="VARCHAR" property="materialModel" />
+    <result column="measure_unit" jdbcType="VARCHAR" property="measureUnit" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="is_delete" jdbcType="CHAR" property="isDelete" />
   </resultMap>
-
 
   <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.MaterialMgt">
     select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t2.note as material_model_name,t.measure_unit,t.create_user,t.create_time,t.brand,t.is_delete from t_pss_material_mgt t
     left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'wllb'
     left join t_pss_dict t2 on t.material_model = t2.code and t2.type ='wlgg'
-    where 1=1
+     where 1=1
     <if test="materialMgt.materialCode != null and materialMgt.materialCode != ''">
       and t.material_code = #{materialMgt.materialCode}
     </if>
@@ -30,4 +29,5 @@
       and t.type = #{type}
     </if>
   </select>
+
 </mapper>

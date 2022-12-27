@@ -2,6 +2,7 @@ package com.flong.springboot.modules.controller;
 
 
 
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.Dept;
 import com.flong.springboot.modules.service.DeptService;
@@ -35,6 +36,7 @@ public class DeptController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "dept",dataTypeClass = Dept.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@RequestBody Dept t) {
+        t.setDeptCode(GeneratorKeyUtil.getDeptNextId());
         return deptService.insert(t);
     }
 

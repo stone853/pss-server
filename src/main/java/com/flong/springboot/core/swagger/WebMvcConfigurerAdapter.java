@@ -95,4 +95,27 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
         configurer.favorPathExtension(false);
     }
 
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+
+        registry.addViewController("/").setViewName("forward:/index.html");
+
+    }
+
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                //设置允许跨域请求的域名
+//                .allowedOrigins("*")
+//                //设置允许的方法
+//                .allowedMethods("*")
+//                //设置允许的头信息
+//                .allowedHeaders("*")
+//                //是否允许证书 不再默认开启
+//                .allowCredentials(Boolean.TRUE);
+//    }
+
+
 }

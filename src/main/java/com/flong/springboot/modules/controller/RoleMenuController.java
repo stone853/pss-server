@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,10 +87,12 @@ public class RoleMenuController {
     }
 
 
-    @ApiOperation("查询所有角色菜单")
-    @GetMapping("/findAll")
-    public List<RoleMenu> findAll() {
-        return roleMenuService.list();
+    @ApiOperation("根据角色编码查询所有角色菜单")
+    @GetMapping("/findAllByRoleCode")
+    public List<RoleMenu> findAllByRoleCode(@RequestHeader("token") String token, String roleCode) {
+        QueryWrapper<RoleMenu> q = new QueryWrapper<RoleMenu>();
+        q.eq("role_code",roleCode);
+        return roleMenuService.list(q);
     }
 
     @ApiOperation("删除角色菜单{id}")

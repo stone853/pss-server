@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -64,29 +62,43 @@ public class WebConfig implements WebMvcConfigurer {
     return new HttpMessageConverters(fastJsonConverter);
   }
 
+//
+//  /**
+//   * 拦截器
+//   */
+//  @Override
+//  public void addInterceptors(InterceptorRegistry registry) {
+//    //registry.addInterceptor(logInterceptor).addPathPatterns("/**");
+//    //registry.addInterceptor(apiInterceptor).addPathPatterns("/**");
+//  }
+//
+//  /**
+//   * cors 跨域支持 可以用@CrossOrigin在controller上单独设置
+//   */
+//  @Override
+//  public void addCorsMappings(CorsRegistry registry) {
+//    registry.addMapping("/**")
+//        //设置允许跨域请求的域名
+//        .allowedOrigins("*")
+//        //设置允许的方法
+//        .allowedMethods("*")
+//        //设置允许的头信息
+//        .allowedHeaders("*")
+//        //是否允许证书 不再默认开启
+//        .allowCredentials(Boolean.TRUE);
+//  }
+//
+//
+//  @Override
+//  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//    registry.addResourceHandler("/static/**").addResourceLocations("classpath/static/**").resourceChain(true);
+//  }
+//
+//  @Override
+//  public void addViewControllers(ViewControllerRegistry registry) {
+//
+//    registry.addViewController("/").setViewName("forward:/index.html");
+//
+//  }
 
-  /**
-   * 拦截器
-   */
-  @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    //registry.addInterceptor(logInterceptor).addPathPatterns("/**");
-    //registry.addInterceptor(apiInterceptor).addPathPatterns("/**");
-  }
-
-  /**
-   * cors 跨域支持 可以用@CrossOrigin在controller上单独设置
-   */
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-        //设置允许跨域请求的域名
-        .allowedOrigins("*")
-        //设置允许的方法
-        .allowedMethods("*")
-        //设置允许的头信息
-        .allowedHeaders("*")
-        //是否允许证书 不再默认开启
-        .allowCredentials(Boolean.TRUE);
-  }
 }

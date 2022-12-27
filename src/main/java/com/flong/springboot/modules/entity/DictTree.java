@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -23,7 +25,7 @@ public class DictTree {
     private String type;
 
     private String remark;
-
+    @NotNull (message =  "parentId父节点ID不能为空" )
     private Long parentId;
 
     private Byte nodeType;
@@ -83,8 +85,9 @@ public class DictTree {
         return remark;
     }
 
-    public void setRemark(String remark) {
+    public DictTree setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+        return this;
     }
 
     public Long getParentId() {
@@ -99,8 +102,9 @@ public class DictTree {
         return nodeType;
     }
 
-    public void setNodeType(Byte nodeType) {
+    public DictTree setNodeType(Byte nodeType) {
         this.nodeType = nodeType;
+        return this;
     }
 
     public Integer getSort() {

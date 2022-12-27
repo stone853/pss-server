@@ -27,6 +27,9 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
         }
 
             public int insert(Dept dept) {
+                if (dept.getParentId() == null) {
+                    dept.setParentId(0L);
+                }
                 //如果插入的当前节点为根节点，parentId指定为0
 
                 if(dept.getParentId().longValue() == 0){

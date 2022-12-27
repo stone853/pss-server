@@ -12,7 +12,7 @@ public enum CommMsgCode implements MsgCode {
     UPGRADE_DATA(101, "需更新配置或数据"),
     SUCCESS(200, "操作成功"),
     REDIRECT(302, "重定向"),
-    PARAM_ERROR(400, "请求参数错误"),
+    PARAM_ERROR(-400, "请求参数错误"),
     UNAUTHORIZED(401, "没有权限"),
     FORBIDDEN(403, "禁止访问"),
     NOT_FOUND(404, "资源不存在"),

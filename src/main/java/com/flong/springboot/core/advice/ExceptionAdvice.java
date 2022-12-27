@@ -6,6 +6,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import com.alibaba.fastjson.JSONObject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
@@ -19,10 +22,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -57,6 +63,15 @@ public class ExceptionAdvice {
         log.error("uri:{},code:{},message:{}", uri, NOT_FOUND.getCode(), e.getMessage());
 
         return createErrorResp(NOT_FOUND, null);
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    @ResponseBody
+    public ErrorResp methodArgumentNotValidException(MethodArgumentNotValidException e){
+        List<ObjectError> objectErrors =  e.getBindingResult().getAllErrors();
+        String message = objectErrors.stream().map(s -> s.getDefaultMessage()).collect(Collectors.joining(";"));
+        return createErrorResp(PARAM_ERROR,message);
+
     }
 
     @ExceptionHandler(value = Exception.class)

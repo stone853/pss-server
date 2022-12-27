@@ -6,22 +6,35 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.MD5Utils;
+import com.flong.springboot.core.exception.BaseException;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.MsgCode;
+import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
+import com.flong.springboot.modules.entity.UserRole;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.RoleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.mapper.UserMapper;
+import com.flong.springboot.modules.mapper.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
-        @Autowired
+    @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    UserRoleService userRoleService;
+
     public List<User> find_AS_R() {
         return userMapper.find_AS_R();
     }
@@ -32,7 +45,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return userMapper.selectOne(qw);
     }
 
-    public User getUserByUserIdPwd (LoginDto loginDto){
+    public User login (LoginDto loginDto){
         QueryWrapper<User> build = new QueryWrapper<User>();
         if (loginDto.getUserId() !=null && !"".equals(loginDto.getUserId())) {
             build.eq("user_id",loginDto.getUserId());
@@ -40,12 +53,47 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (loginDto.getPwd() !=null && !"".equals(loginDto.getPwd())) {
             build.eq("password",loginDto.getPwd());
         }
+
+        if (loginDto.getMobile() !=null && !"".equals(loginDto.getMobile())) {
+            build.eq("mobile",loginDto.getMobile());
+        }
         return userMapper.selectOne(build);
     }
 
     public int insert (User u) {
-            return userMapper.insert(u.setPassword(MD5Utils.encrypt(u.getPassword())));
+        QueryWrapper<User> q = new QueryWrapper<User>();
+        q.eq("mobile",u.getMobile());
+        User temp = userMapper.selectOne(q);
+        if (temp !=null) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
         }
+
+        String userId = GeneratorKeyUtil.getUserNextId();
+//        user.setUserId(userId)
+////                .setPassword(MD5Utils.encrypt("123456"))
+////                .setDeptCode(u.getDeptCode())
+////                .setName(u.getName())
+////                .setMobile(u.getMobile())
+////                .setRemark(u.getRemark());
+        u.setUserId(userId).setPassword(MD5Utils.encrypt("123456"));
+        int r = userMapper.insert(u);
+
+        String roleCodes = u.getRoleCodes();
+        List<UserRole> listUserRole = new ArrayList<UserRole>();
+        if (StringUtils.isNotEmpty(roleCodes)) {
+            String[] array = roleCodes.split(";");
+            if (array.length > 0) {
+                for (int i = 0; i < array.length;i ++) {
+                    listUserRole.add(new UserRole().setUserId(userId)
+                            .setRoleCode(array[i]));
+                }
+            }
+        }
+        //插入用户角色关系
+        userRoleService.saveBatch(listUserRole);
+
+        return r;
+    }
 
     public IPage<User> page (UserDto userDto) {
         QueryWrapper<User> build = buildWrapper(userDto);

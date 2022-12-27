@@ -1,9 +1,6 @@
 package com.flong.springboot.modules.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 
@@ -38,8 +35,21 @@ public class User extends Model<User> implements Serializable {
 
     private String deptCode;
 
-    public void setRemark(String remark) {
+    @TableField(exist = false)
+    private String roleCodes;
+
+    public User setRoleCodes(String roleCodes) {
+        this.roleCodes = roleCodes;
+        return this;
+    }
+
+    public String getRoleCodes() {
+        return roleCodes;
+    }
+
+    public User setRemark(String remark) {
         this.remark = remark;
+        return this;
     }
 
     public String getRemark() {
@@ -55,8 +65,9 @@ public class User extends Model<User> implements Serializable {
         return this;
     }
 
-    public void setDeptCode(String deptCode) {
+    public User setDeptCode(String deptCode) {
         this.deptCode = deptCode;
+        return this;
     }
 
     public String getDeptCode() {

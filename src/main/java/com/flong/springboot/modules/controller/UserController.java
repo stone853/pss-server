@@ -1,8 +1,10 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.model.ResultJsonModel;
+import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.exception.BaseException;
@@ -41,8 +43,8 @@ public class UserController {
     @ApiOperation("增加用户信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "User",dataTypeClass = User.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody User t) {
-        return userService.insert(t);
+    public int add(@RequestHeader("token") String token,@RequestBody User user) {
+        return userService.insert(user);
     }
 
     /**
@@ -53,6 +55,16 @@ public class UserController {
     public void updateById(@RequestBody User user) {
         userService.updateById(user);
     }
+
+
+
+    @ApiOperation("重置用于密码")
+    @PutMapping("/resetPwd")
+    public void resetPwd(@RequestBody User user) {
+        user.setPassword(MD5Utils.encrypt("123456"));
+        userService.updateById(user);
+    }
+
     /**
      * 删除通过多个主键Id进行删除
      * @param ids
@@ -89,10 +101,10 @@ public class UserController {
     }
 
     @ApiOperation("登陆")
-    @ApiImplicitParams(value = {@ApiImplicitParam(name = "UserDto",dataTypeClass = UserDto.class , value ="")})
+    @ApiImplicitParams(value = {@ApiImplicitParam(name = "LoginDto",dataTypeClass = LoginDto.class , value ="")})
     @PostMapping("/v1/login")
     public LoginVo login(@RequestBody LoginDto loginDto){
-        User u = userService.getUserByUserIdPwd(loginDto);
+        User u = userService.login(loginDto);
         LoginVo lv = new LoginVo();
         if (u ==null) {
             throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");

@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 public class UserDto {
 
+    private String userId;
+
+    private String remark;
     private String name;
 
     private String mobile;
@@ -17,6 +20,34 @@ public class UserDto {
     private String password;
 
     private String deptCode;
+
+    private String roleCodes;
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRoleCodes(String roleCodes) {
+        this.roleCodes = roleCodes;
+    }
+
+    public String getRoleCodes() {
+        return roleCodes;
+    }
+
+
+    public UserDto setUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
 
     private Page page;
 

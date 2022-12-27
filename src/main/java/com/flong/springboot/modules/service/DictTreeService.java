@@ -57,6 +57,9 @@ public class DictTreeService extends ServiceImpl<DictTreeMapper, DictTree> {
 
                 }
 
+                //获取maxcode
+                int maxCode = dictTreeMapper.getMaxCode(dictTree.getType());
+                dictTree.setCode(String.valueOf(maxCode+1));
                 //可以使用雪花算法，生成ID
                 return dictTreeMapper.insert(dictTree);
 

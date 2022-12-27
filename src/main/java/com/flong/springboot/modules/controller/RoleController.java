@@ -4,6 +4,8 @@ package com.flong.springboot.modules.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.util.BuildConditionWrapper;
 import com.flong.springboot.core.vo.Conditions;
@@ -40,6 +42,8 @@ public class RoleController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Role",dataTypeClass = Role.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@RequestBody Role t) {
+        t.setCode(GeneratorKeyUtil.getRoleNextId());
+        t.setCreateTime(UserHelper.getDateTime());
         return roleService.getBaseMapper().insert(t);
     }
 
@@ -74,8 +78,8 @@ public class RoleController {
      * 角色分页，参数有多个使用下标索引进行处理.如果有两个参数(如角色名和地址)：conditionList[0].fieldName=roleName、 conditionList[0].fieldName=address
      * 未转码请求分页地址: http://localhost:7011/role/page?conditionList[0].fieldName=roleName&conditionList[0].operation=LIKE&conditionList[0].value=周
      * 已转码请求分页地址: http://localhost:7011/role/page?conditionList[0].fieldName=roleName&conditionList[0].operation=LIKE&conditionList[0].value=%E5%91%A8
-     * @param page
-     * @param conditions 条件
+     * @param
+     * @param
      * @return
      */
     @PostMapping("/page")

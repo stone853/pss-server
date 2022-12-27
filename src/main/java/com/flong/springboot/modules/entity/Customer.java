@@ -10,6 +10,17 @@ import lombok.*;
 @EqualsAndHashCode(callSuper=false)
 @TableName("t_pss_customer")
 public class Customer {
+
+    private int id;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     private String custCode;
 
     private String custName;

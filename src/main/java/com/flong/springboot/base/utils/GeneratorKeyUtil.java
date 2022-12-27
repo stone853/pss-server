@@ -127,6 +127,18 @@ public class GeneratorKeyUtil {
         return "KH" + nextId();
     }
 
+    public static String getRoleNextId () {
+        return "JS" + nextId();
+    }
+
+    public static String getDeptNextId () {
+        return "BM" + nextId();
+    }
+
+    public static String getUserNextId () {
+        return "USER" + nextId();
+    }
+
     public static String getSupplierNextId () {
         return "GYS" + nextId();
     }

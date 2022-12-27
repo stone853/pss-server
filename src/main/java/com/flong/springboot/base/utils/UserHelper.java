@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.flong.springboot.core.constant.CommonConstant;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,5 +28,11 @@ public class UserHelper {
         return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + CommonConstant.EXPIRE_TIME))
                 .withAudience(String.valueOf(userId))
                 .sign(Algorithm.HMAC256(mobile));
+    }
+
+    public static String getDateTime () {
+        Date date = new Date();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return dateFormat.format(date);
     }
 }
