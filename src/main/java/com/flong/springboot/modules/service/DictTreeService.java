@@ -57,14 +57,22 @@ public class DictTreeService extends ServiceImpl<DictTreeMapper, DictTree> {
 
                 }
 
-                //获取maxcode
-                int maxCode = dictTreeMapper.getMaxCode(dictTree.getType());
-                dictTree.setCode(String.valueOf(maxCode+1));
-                //可以使用雪花算法，生成ID
-                return dictTreeMapper.insert(dictTree);
+//                //获取maxcode
+//                int maxCode = dictTreeMapper.getMaxCode(dictTree.getType());
+//                dictTree.setCode(String.valueOf(maxCode+1));
+//                //可以使用雪花算法，生成ID
+//                return dictTreeMapper.insert(dictTree);
+            return insertNodes(dictTree);
 
         }
 
+        private synchronized int insertNodes (DictTree dictTree) {
+            int maxCode = dictTreeMapper.getMaxCode(dictTree.getType());
+            dictTree.setCode(String.valueOf(maxCode+1));
+            //可以使用雪花算法，生成ID
+            return dictTreeMapper.insert(dictTree);
+
+        }
         public List<DictTree> findAll() {
 
             List<DictTree> allDictTree = dictTreeMapper.selectList(new QueryWrapper<DictTree>());

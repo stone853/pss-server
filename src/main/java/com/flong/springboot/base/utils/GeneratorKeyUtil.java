@@ -127,6 +127,14 @@ public class GeneratorKeyUtil {
         return "KH" + nextId();
     }
 
+    public static String getFileNextId () {
+        return "F" + nextId();
+    }
+
+    public static String getConractSaleNextCode () {
+        return "XSHT" + nextId();
+    }
+
     public static String getRoleNextId () {
         return "JS" + nextId();
     }
@@ -141,6 +149,10 @@ public class GeneratorKeyUtil {
 
     public static String getSupplierNextId () {
         return "GYS" + nextId();
+    }
+
+    public static String getMaterialDetailNextCode () {
+        return "WLMX" + nextId();
     }
 
     public static void main (String args[]) {

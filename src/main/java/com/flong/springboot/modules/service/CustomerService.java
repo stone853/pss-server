@@ -9,9 +9,14 @@ import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.modules.entity.Customer;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
+import com.flong.springboot.modules.entity.dto.MaterialMgtDto;
+import com.flong.springboot.modules.entity.vo.CustomerVo;
+import com.flong.springboot.modules.entity.vo.MaterialMgtVo;
 import com.flong.springboot.modules.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
@@ -49,6 +54,12 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
          */
         public int insert (Customer c) {
                 return customerMapper.insert(c.setCustCode(GeneratorKeyUtil.getCustNextId()));
+        }
+
+
+        public IPage<CustomerVo> pageList (CustomerDto customerDto) {
+
+                return customerMapper.pageList(customerDto.getPage()==null ? new Page<>():customerDto.getPage(),customerDto);
         }
 
 

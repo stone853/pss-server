@@ -1,18 +1,38 @@
 package com.flong.springboot.modules.controller;
 
 
+
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.flong.springboot.base.utils.FileUtil;
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.core.config.PssConfig;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Customer;
+import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
+import com.flong.springboot.modules.entity.vo.CustomerVo;
 import com.flong.springboot.modules.service.CustomerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +49,15 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    PssConfig pssConfig;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private HttpServletResponse response;
+
     /**
      * 添加
      */
@@ -36,6 +65,10 @@ public class CustomerController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Customer",dataTypeClass = Customer.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@RequestBody Customer t) {
+        List<FileBean> fileBeanList = t.getFileBeanList();
+        if (fileBeanList !=null && fileBeanList.size() > 0) {
+            t.setFilesC(JSONArray.toJSONString(fileBeanList));
+        }
         return customerService.insert(t);
     }
 
@@ -66,16 +99,47 @@ public class CustomerController {
         return customerService.getOneByCode(custCode);
     }
 
-    /**
-     * 客户分页，参数有多个使用下标索引进行处理.如果有两个参数(如客户名和地址)：conditionList[0].fieldName=CustomerName、 conditionList[0].fieldName=address
-     * 未转码请求分页地址: http://localhost:7011/Customer/page?conditionList[0].fieldName=CustomerName&conditionList[0].operation=LIKE&conditionList[0].value=周
-     * 已转码请求分页地址: http://localhost:7011/Customer/page?conditionList[0].fieldName=CustomerName&conditionList[0].operation=LIKE&conditionList[0].value=%E5%91%A8
-     * @return
-     */
+
     @PostMapping("/page")
-    public IPage<Customer> page(@RequestHeader("token") String token,@RequestBody CustomerDto CustomerDto) {
-        return customerService.page(CustomerDto);
+    public IPage<CustomerVo> page(@RequestHeader("token") String token, @RequestBody CustomerDto CustomerDto) {
+        return customerService.pageList(CustomerDto);
     }
+
+    @ApiOperation("上传文件")
+    @PostMapping("/v1/uploadFiles")
+    public FileBean uploadFiles(@RequestHeader("token") String token, @RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = file.getOriginalFilename();
+
+            String fileTyle=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+
+            String url = pssConfig.getCustomerFileUrl();
+
+            String id = GeneratorKeyUtil.getFileNextId();
+
+            FileUtil fu = new FileUtil();
+            fu.uploadFile(file.getBytes(),url, fileName);
+
+            return new FileBean().setId(id)
+                    .setName(fileName)
+                    .setType(fileTyle)
+                    .setUrl(url+fileName);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"上传文件失败");
+        }
+    }
+
+
+    @ApiOperation("下载文件")
+    @GetMapping("/v1/downloadFiles")
+    public String downloadFiles(@RequestHeader("token") String token, @RequestParam("downloadPath") String downloadPath) {
+        FileUtil fu = new FileUtil();
+        return fu.downloadFile(request,response,downloadPath);
+
+    }
+
 
 
 }

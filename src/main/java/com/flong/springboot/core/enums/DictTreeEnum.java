@@ -7,7 +7,7 @@ package com.flong.springboot.core.enums;
  */
 public enum DictTreeEnum {
     MATERIAL((byte) 3,"WLLX"),
-    CUSTOMER((byte)0,"KHLX"),
+    CUSTOMER((byte)1,"KHLX"),
     SUPPLIER((byte)2,"GYSLX"),
     ;
 

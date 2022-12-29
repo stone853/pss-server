@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.ContractSaleMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.ContractSale">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+    <result column="part_a" jdbcType="VARCHAR" property="partA" />
+    <result column="signing_date" jdbcType="CHAR" property="signingDate" />
+    <result column="construction_site" jdbcType="VARCHAR" property="constructionSite" />
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="amount_excluding_tax" jdbcType="DECIMAL" property="amountExcludingTax" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="update_time" jdbcType="CHAR" property="updateTime" />
+    <result column="payment_term" jdbcType="VARCHAR" property="paymentTerm" />
+    <result column="contract_status" jdbcType="VARCHAR" property="contractStatus" />
+    <result column="contract_file" jdbcType="VARCHAR" property="contractFile" />
+  </resultMap>
+
+</mapper>

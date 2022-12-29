@@ -72,3 +72,8 @@ tenant:
     - test
 
 
+pss:
+  upload:
+    customer:
+      url: /opt/customer/
+

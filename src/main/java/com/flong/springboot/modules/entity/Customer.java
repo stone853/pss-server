@@ -1,7 +1,10 @@
 package com.flong.springboot.modules.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -38,6 +41,18 @@ public class Customer {
     private Byte isDelete;
 
     private String filesC;
+
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+    public Customer setFileBeanList(List<FileBean> fileBeanList) {
+        this.fileBeanList = fileBeanList;
+        return this;
+    }
+
+    public List<FileBean> getFileBeanList() {
+        return fileBeanList;
+    }
 
     public String getCustCode() {
         return custCode;

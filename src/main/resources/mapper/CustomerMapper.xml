@@ -15,19 +15,18 @@
   </resultMap>
 
 
-  <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.MaterialMgt">
-    select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t2.note as material_model_name,t.measure_unit,t.create_user,t.create_time,t.brand,t.is_delete from t_pss_material_mgt t
-    left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'wllb'
-    left join t_pss_dict t2 on t.material_model = t2.code and t2.type ='wlgg'
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.CustomerVo" parameterType="com.flong.springboot.modules.entity.dto.CustomerDto">
+    select t.*,t1.note as typename from t_pss_customer t
+    left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.node_type=1
     where 1=1
-    <if test="materialMgt.materialCode != null and materialMgt.materialCode != ''">
-      and t.material_code = #{materialMgt.materialCode}
+    <if test="customer.custCode != null and customer.custCode != ''">
+      and t.cust_code = #{customer.custCode}
     </if>
-    <if test="materialMgt.materialName != null and materialMgt.materialName != ''">
-      and t.material_name like "%"#{materialMgt.materialName}"%"
+    <if test="customer.custName != null and customer.custName != ''">
+      and t.cust_name = #{customer.custName}
     </if>
-    <if test="materialMgt.type != null and materialMgt.type != ''">
-      and t.type = #{type}
+    <if test="customer.type != null and customer.type != ''">
+      and t.type = #{customer.type}
     </if>
   </select>
 </mapper>

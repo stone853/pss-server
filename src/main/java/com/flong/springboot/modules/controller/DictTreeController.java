@@ -37,7 +37,7 @@ public class DictTreeController {
     @ApiOperation("增加物料类型Tree")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "dictTree",dataTypeClass = DictTree.class , value ="")})
     @PostMapping("/v1/addMaterialType")
-    public int addMaterialType(@RequestHeader("token") String token,@RequestBody DictTree t) {
+    public int addMaterialType(@RequestHeader("token") String token,@Validated @RequestBody DictTree t) {
         t.setNodeType(DictTreeEnum.MATERIAL.getCode()).setRemark("物料类别").setType(DictTreeEnum.MATERIAL.gettype());
         return dictTreeService.insert(t);
     }
@@ -53,7 +53,7 @@ public class DictTreeController {
     @ApiOperation("增加供应商类型Tree")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "dictTree",dataTypeClass = DictTree.class , value ="")})
     @PostMapping("/v1/addSupplierType")
-    public int addSupplierType(@RequestHeader("token") String token,@RequestBody DictTree t) {
+    public int addSupplierType(@RequestHeader("token") String token,@Validated @RequestBody DictTree t) {
         t.setNodeType(DictTreeEnum.SUPPLIER.getCode()).setRemark("供应商类别").setType(DictTreeEnum.SUPPLIER.gettype());;
         return dictTreeService.insert(t);
     }

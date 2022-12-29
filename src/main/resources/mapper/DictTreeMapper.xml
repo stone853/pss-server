@@ -15,7 +15,7 @@
   </resultMap>
 
   <select id="getMaxCode"  resultType="int" parameterType="java.lang.String">
-    select ifnull(max(code),0) from t_pss_dict_tree where 1=1
+    select ifnull(max(code+0),0) from t_pss_dict_tree where 1=1
 
     <if test="type != null and type != ''">
       and type = #{type}
