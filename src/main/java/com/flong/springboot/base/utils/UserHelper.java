@@ -24,10 +24,10 @@ public class UserHelper {
 
 
 
-    public static String getToken(String userId,String mobile) {
+    public static String getToken(String mobile,String password) {
         return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + CommonConstant.EXPIRE_TIME))
-                .withAudience(String.valueOf(userId))
-                .sign(Algorithm.HMAC256(mobile));
+                .withAudience(String.valueOf(mobile))
+                .sign(Algorithm.HMAC256(password));
     }
 
     public static String getDateTime () {

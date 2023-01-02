@@ -12,6 +12,16 @@ public class MaterialMgtDto {
 
     private Page page;
 
+    private String materialModel;
+
+    public void setMaterialModel(String materialModel) {
+        this.materialModel = materialModel;
+    }
+
+    public String getMaterialModel() {
+        return materialModel;
+    }
+
     public MaterialMgtDto setPage(Page page) {
         this.page = page;
         return this;

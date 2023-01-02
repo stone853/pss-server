@@ -1,11 +1,19 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.flong.springboot.base.utils.FileUtil;
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.core.config.PssConfig;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
+import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.SupplierDto;
+import com.flong.springboot.modules.entity.vo.SupplierVo;
 import com.flong.springboot.modules.service.SupplierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,7 +21,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -29,6 +40,15 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    PssConfig pssConfig;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private HttpServletResponse response;
+
     /**
      * 添加
      */
@@ -36,6 +56,10 @@ public class SupplierController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Supplier",dataTypeClass = Supplier.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@RequestBody Supplier t) {
+        List<FileBean> fileBeanList = t.getFileBeanList();
+        if (fileBeanList !=null && fileBeanList.size() > 0) {
+            t.setFileC(JSONArray.toJSONString(fileBeanList));
+        }
         return supplierService.insert(t);
     }
 
@@ -45,6 +69,10 @@ public class SupplierController {
      */
     @PutMapping("/updateById")
     public void updateById(@RequestBody Supplier supplier) {
+        List<FileBean> fileBeanList = supplier.getFileBeanList();
+        if (fileBeanList !=null && fileBeanList.size() > 0) {
+            supplier.setFileC(JSONArray.toJSONString(fileBeanList));
+        }
         supplierService.updateById(supplier);
     }
     /**
@@ -73,9 +101,11 @@ public class SupplierController {
      * @return
      */
     @PostMapping("/page")
-    public IPage<Supplier> page(@RequestHeader("token") String token,@RequestBody SupplierDto supplierDto) {
-        return supplierService.page(supplierDto);
+    public IPage<SupplierVo> page(@RequestHeader("token") String token, @RequestBody SupplierDto supplierDto) {
+        return supplierService.pageList(supplierDto);
     }
+
+
 
 
 }

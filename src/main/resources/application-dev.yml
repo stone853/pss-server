@@ -75,5 +75,5 @@ tenant:
 pss:
   upload:
     customer:
-      url: /opt/customer/
+      url: /opt/files/
 

@@ -49,14 +49,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @Autowired
-    PssConfig pssConfig;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private HttpServletResponse response;
 
     /**
      * 添加
@@ -78,6 +71,10 @@ public class CustomerController {
      */
     @PutMapping("/updateById")
     public void updateById(@RequestBody Customer customer) {
+        List<FileBean> fileBeanList = customer.getFileBeanList();
+        if (fileBeanList !=null && fileBeanList.size() > 0) {
+            customer.setFilesC(JSONArray.toJSONString(fileBeanList));
+        }
         customerService.updateById(customer);
     }
     /**
@@ -104,41 +101,41 @@ public class CustomerController {
     public IPage<CustomerVo> page(@RequestHeader("token") String token, @RequestBody CustomerDto CustomerDto) {
         return customerService.pageList(CustomerDto);
     }
-
-    @ApiOperation("上传文件")
-    @PostMapping("/v1/uploadFiles")
-    public FileBean uploadFiles(@RequestHeader("token") String token, @RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = file.getOriginalFilename();
-
-            String fileTyle=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
-
-            String url = pssConfig.getCustomerFileUrl();
-
-            String id = GeneratorKeyUtil.getFileNextId();
-
-            FileUtil fu = new FileUtil();
-            fu.uploadFile(file.getBytes(),url, fileName);
-
-            return new FileBean().setId(id)
-                    .setName(fileName)
-                    .setType(fileTyle)
-                    .setUrl(url+fileName);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"上传文件失败");
-        }
-    }
-
-
-    @ApiOperation("下载文件")
-    @GetMapping("/v1/downloadFiles")
-    public String downloadFiles(@RequestHeader("token") String token, @RequestParam("downloadPath") String downloadPath) {
-        FileUtil fu = new FileUtil();
-        return fu.downloadFile(request,response,downloadPath);
-
-    }
+//
+//    @ApiOperation("上传文件")
+//    @PostMapping("/v1/uploadFiles")
+//    public FileBean uploadFiles(@RequestHeader("token") String token, @RequestParam("file") MultipartFile file) {
+//        try {
+//            String fileName = file.getOriginalFilename();
+//
+//            String fileTyle=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+//
+//            String url = pssConfig.getCustomerFileUrl();
+//
+//            String id = GeneratorKeyUtil.getFileNextId();
+//
+//            FileUtil fu = new FileUtil();
+//            fu.uploadFile(file.getBytes(),url, fileName);
+//
+//            return new FileBean().setId(id)
+//                    .setName(fileName)
+//                    .setType(fileTyle)
+//                    .setUrl(url+fileName);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"上传文件失败");
+//        }
+//    }
+//
+//
+//    @ApiOperation("下载文件")
+//    @GetMapping("/v1/downloadFiles")
+//    public String downloadFiles(@RequestHeader("token") String token, @RequestParam("downloadPath") String downloadPath) {
+//        FileUtil fu = new FileUtil();
+//        return fu.downloadFile(request,response,downloadPath);
+//
+//    }
 
 
 

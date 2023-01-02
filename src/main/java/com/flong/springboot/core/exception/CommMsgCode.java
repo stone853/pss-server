@@ -31,8 +31,8 @@ public enum CommMsgCode implements MsgCode {
      * 业务级错误码
      */
     WEB_ERROR(110000, "服务端web异常"),
-    SERVICE_ERROR(120000, "服务端service异常"),
-    DAO_ERROR(130000, "服务端dao异常"),
+    SERVICE_ERROR(-120000, "服务端service异常"),
+    DAO_ERROR(-130000, "服务端dao异常"),
     DB_ERROR(191000, "数据库访问异常"),
     IO_ERROR(192000, "IO操作异常"),
     CACHE_ERROR(193000, "cache操作异常"),
@@ -41,7 +41,7 @@ public enum CommMsgCode implements MsgCode {
     SECURITY_ERROR(196000, "安全错误"),
     NO_DATA(197000, "没有数据"),
     INVALID_SIGN(198000, "签名错误"),
-    INVALID_TOKEN(198401, "invalid token"),
+    INVALID_TOKEN(-198401, "invalid token"),
 
     BIZ_INTERRUPT(-2, "查询不到数据"),
     /**

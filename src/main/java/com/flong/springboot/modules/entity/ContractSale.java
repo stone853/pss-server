@@ -42,7 +42,19 @@ public class ContractSale {
 
     private String contractStatus;
 
-    private String contractFile;
+    private String fileC;
+
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+    public ContractSale setFileBeanList(List<FileBean> fileBeanList) {
+        this.fileBeanList = fileBeanList;
+        return this;
+    }
+
+    public List<FileBean> getFileBeanList() {
+        return fileBeanList;
+    }
 
     @TableField(exist = false)
     private List<MaterialDetail> materialDetailList;
@@ -169,11 +181,11 @@ public class ContractSale {
         this.contractStatus = contractStatus == null ? null : contractStatus.trim();
     }
 
-    public String getContractFile() {
-        return contractFile;
+    public String getFileC() {
+        return fileC;
     }
 
-    public void setContractFile(String contractFile) {
-        this.contractFile = contractFile == null ? null : contractFile.trim();
+    public void setFileC(String fileC) {
+        this.fileC = fileC == null ? null : fileC.trim();
     }
 }

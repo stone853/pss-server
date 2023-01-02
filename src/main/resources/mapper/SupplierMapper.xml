@@ -13,7 +13,23 @@
     <result column="eva_level" jdbcType="VARCHAR" property="evaLevel" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="files_s" jdbcType="VARCHAR" property="filesS" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
   </resultMap>
+
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.SupplierVo" parameterType="com.flong.springboot.modules.entity.dto.SupplierDto">
+    select t.*,t1.note as typename from t_pss_supplier t
+    left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.node_type=1
+    where 1=1
+    <if test="supplier.supplierCode != null and supplier.supplierCode != ''">
+      and t.supplier_code like "%"#{supplier.supplierCode}"%"
+    </if>
+    <if test="supplier.supplierName != null and supplier.supplierName != ''">
+      and t.supplier_name like "%"#{supplier.supplierName}"%"
+    </if>
+    <if test="supplier.type != null and supplier.type != ''">
+      and t.type = #{supplier.type}
+    </if>
+  </select>
 
 </mapper>

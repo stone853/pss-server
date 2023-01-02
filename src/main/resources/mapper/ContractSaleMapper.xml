@@ -16,7 +16,23 @@
     <result column="update_time" jdbcType="CHAR" property="updateTime" />
     <result column="payment_term" jdbcType="VARCHAR" property="paymentTerm" />
     <result column="contract_status" jdbcType="VARCHAR" property="contractStatus" />
-    <result column="contract_file" jdbcType="VARCHAR" property="contractFile" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
   </resultMap>
+
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo" parameterType="com.flong.springboot.modules.entity.dto.ContractSaleDto">
+    select t.*,t1.cust_name as custName from t_pss_contract_sale t
+    left join t_pss_customer t1 on t.part_a = t1.cust_code
+    where 1=1
+    <if test="contractSale.contractCode != null and contractSale.contractCode != ''">
+      and t.contract_code like "%"#{contractSale.contractCode}"%"
+    </if>
+    <if test="contractSale.contractName != null and contractSale.contractName != ''">
+      and t.contract_name like "%"#{contractSale.contractName}"%"
+    </if>
+    <if test="contractSale.contractStatus != null and contractSale.contractStatus != ''">
+      and t.contract_status = #{contractSale.contractStatus}
+    </if>
+  </select>
 
 </mapper>

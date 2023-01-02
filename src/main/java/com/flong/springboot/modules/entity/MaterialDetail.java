@@ -1,7 +1,11 @@
 package com.flong.springboot.modules.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -16,6 +20,7 @@ public class MaterialDetail {
 
     private String foreignCode;
 
+    @NotNull(message =  "物料编码不能为空" )
     private String materialCode;
 
     private String type;

@@ -1,12 +1,17 @@
 package com.flong.springboot.modules.service;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Customer;
+import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.dto.MaterialMgtDto;
@@ -16,6 +21,7 @@ import com.flong.springboot.modules.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,8 +64,10 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
 
 
         public IPage<CustomerVo> pageList (CustomerDto customerDto) {
-
-                return customerMapper.pageList(customerDto.getPage()==null ? new Page<>():customerDto.getPage(),customerDto);
+                IPage<CustomerVo> pageList = customerMapper.pageList(customerDto.getPage()==null ? new Page<>():customerDto.getPage(),customerDto);
+                List<CustomerVo> customerList = pageList.getRecords();
+                customerList.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFilesC())));
+                return  pageList;
         }
 
 

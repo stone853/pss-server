@@ -20,10 +20,10 @@
     left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.node_type=1
     where 1=1
     <if test="customer.custCode != null and customer.custCode != ''">
-      and t.cust_code = #{customer.custCode}
+      and t.cust_code like "%"#{customer.custCode}"%"
     </if>
     <if test="customer.custName != null and customer.custName != ''">
-      and t.cust_name = #{customer.custName}
+      and t.cust_name like "%"#{customer.custName}"%"
     </if>
     <if test="customer.type != null and customer.type != ''">
       and t.type = #{customer.type}

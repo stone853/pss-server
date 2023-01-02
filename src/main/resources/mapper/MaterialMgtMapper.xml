@@ -15,18 +15,20 @@
   </resultMap>
 
   <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.MaterialMgt">
-    select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t2.note as material_model_name,t.measure_unit,t.create_user,t.create_time,t.brand,t.is_delete from t_pss_material_mgt t
+    select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t.measure_unit,t.create_user,t.create_time,t.brand,t.is_delete from t_pss_material_mgt t
     left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'wllb'
-    left join t_pss_dict t2 on t.material_model = t2.code and t2.type ='wlgg'
      where 1=1
     <if test="materialMgt.materialCode != null and materialMgt.materialCode != ''">
-      and t.material_code = #{materialMgt.materialCode}
+      and t.material_code like "%"#{materialMgt.materialCode}"%"
     </if>
     <if test="materialMgt.materialName != null and materialMgt.materialName != ''">
       and t.material_name like "%"#{materialMgt.materialName}"%"
     </if>
     <if test="materialMgt.type != null and materialMgt.type != ''">
-      and t.type = #{type}
+      and t.type = #{materialMgt.type}
+    </if>
+    <if test="materialMgt.materialModel != null and materialMgt.materialModel != ''">
+      and t.material_model = #{materialMgt.materialModel}
     </if>
   </select>
 
