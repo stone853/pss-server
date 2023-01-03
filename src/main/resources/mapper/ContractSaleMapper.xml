@@ -30,6 +30,9 @@
     <if test="contractSale.contractName != null and contractSale.contractName != ''">
       and t.contract_name like "%"#{contractSale.contractName}"%"
     </if>
+    <if test="contractSale.signingBeginDate != null and contractSale.signingBeginDate != '' and contractSale.signingEndDate != null and contractSale.signingEndDate != ''">
+      and t.signing_date between #{contractSale.signingBeginDate} and #{contractSale.signingEndDate}
+    </if>
     <if test="contractSale.contractStatus != null and contractSale.contractStatus != ''">
       and t.contract_status = #{contractSale.contractStatus}
     </if>

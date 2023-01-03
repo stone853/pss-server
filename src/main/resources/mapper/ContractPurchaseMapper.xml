@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.ContractPurchaseMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.ContractPurchase">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+    <result column="part_b" jdbcType="VARCHAR" property="partB" />
+    <result column="signing_date" jdbcType="CHAR" property="signingDate" />
+    <result column="construction_site" jdbcType="VARCHAR" property="constructionSite" />
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="amount_excluding_tax" jdbcType="DECIMAL" property="amountExcludingTax" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="update_time" jdbcType="CHAR" property="updateTime" />
+    <result column="payment_term" jdbcType="VARCHAR" property="paymentTerm" />
+    <result column="contract_status" jdbcType="VARCHAR" property="contractStatus" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="contract_code_s" jdbcType="VARCHAR" property="contractCodeS" />
+  </resultMap>
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.ContractPurchaseVo" parameterType="com.flong.springboot.modules.entity.dto.ContractPurchaseDto">
+    select t.*,t1.supplier_name as supplierName from t_pss_contract_purchase t
+    left join t_pss_supplier t1 on t.part_b = t1.supplier_code
+    where 1=1
+    <if test="contractPurchase.contractCode != null and contractPurchase.contractCode != ''">
+      and t.contract_code like "%"#{contractPurchase.contractCode}"%"
+    </if>
+    <if test="contractPurchase.contractName != null and contractPurchase.contractName != ''">
+      and t.contract_name like "%"#{contractPurchase.contractName}"%"
+    </if>
+    <if test="contractPurchase.signingBeginDate != null and contractPurchase.signingBeginDate != '' and contractPurchase.signingEndDate != null and contractPurchase.signingEndDate != ''">
+      and t.signing_date between #{contractPurchase.signingBeginDate} and #{contractPurchase.signingEndDate}
+    </if>
+    <if test="contractPurchase.contractStatus != null and contractPurchase.contractStatus != ''">
+      and t.contract_status = #{contractPurchase.contractStatus}
+    </if>
+  </select>
+</mapper>

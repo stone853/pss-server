@@ -54,6 +54,18 @@ public class Supplier {
         return this;
     }
 
+    @TableField(exist = false)
+    private List<MaterialDetail> materialDetailList;
+
+    public Supplier setMaterialDetailList(List<MaterialDetail> materialDetailList) {
+        this.materialDetailList = materialDetailList;
+        return this;
+    }
+
+    public List<MaterialDetail> getMaterialDetailList() {
+        return materialDetailList;
+    }
+
     public List<FileBean> getFileBeanList() {
         return fileBeanList;
     }

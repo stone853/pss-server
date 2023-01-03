@@ -38,7 +38,7 @@ public class AuthInterceptor implements HandlerInterceptor{
         }
 
         // 执行认证
-        if (token.equals("123")) {
+        if (token == null || token.equals("123")) {
             token = UserHelper.getToken("18062109527","e10adc3949ba59abbe56e057f20f883e");
             //throw new BaseException(CommMsgCode.INVALID_TOKEN,"无token，请重新登录");
         }
@@ -56,6 +56,7 @@ public class AuthInterceptor implements HandlerInterceptor{
             if (u == null) {
                 throw new BaseException(CommMsgCode.INVALID_TOKEN,"token验证失败，无用户");
             }
+            request.getSession().setAttribute("userName",u.getName());
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(u.getPassword())).build();
             jwtVerifier.verify(token);
         } catch (JWTDecodeException j) {

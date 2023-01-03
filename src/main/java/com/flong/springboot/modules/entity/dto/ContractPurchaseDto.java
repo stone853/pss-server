@@ -1,19 +1,16 @@
 package com.flong.springboot.modules.entity.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.flong.springboot.modules.entity.MaterialDetail;
-
-import java.util.List;
 
 
-public class ContractSaleDto {
+public class ContractPurchaseDto {
     private Integer id;
 
     private String contractCode;
 
     private String contractName;
 
-    private String partA;
+    private String partB;
 
 
 
@@ -37,6 +34,12 @@ public class ContractSaleDto {
 
     private String fileC;
 
+
+
+    private Page page;
+
+
+
     private String signingBeginDate;
 
     private String signingEndDate;
@@ -57,9 +60,7 @@ public class ContractSaleDto {
         return signingEndDate;
     }
 
-    private Page page;
-
-    public ContractSaleDto setPage(Page page) {
+    public ContractPurchaseDto setPage(Page page) {
         this.page = page;
         return this;
     }
@@ -92,12 +93,12 @@ public class ContractSaleDto {
         this.contractName = contractName == null ? null : contractName.trim();
     }
 
-    public String getPartA() {
-        return partA;
+    public void setPartB(String partB) {
+        this.partB = partB;
     }
 
-    public void setPartA(String partA) {
-        this.partA = partA == null ? null : partA.trim();
+    public String getPartB() {
+        return partB;
     }
 
 

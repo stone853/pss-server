@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.dto.SupplierDto;
@@ -22,6 +25,9 @@ import java.util.List;
 public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
         @Autowired
         SupplierMapper supplierMapper;
+
+        @Autowired
+        MaterialDetailService materialDetailService;
 
         public IPage<SupplierVo> pageList (SupplierDto supplierDto) {
                 IPage<SupplierVo> pageList = supplierMapper.pageList(supplierDto.getPage()==null ? new Page<>():supplierDto.getPage(),supplierDto);
@@ -54,7 +60,40 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
          * @param c
          */
         public int insert (Supplier c) {
-                return supplierMapper.insert(c.setSupplierCode(GeneratorKeyUtil.getSupplierNextId()));
+                int r = 0;
+                String foreignCode = GeneratorKeyUtil.getSupplierNextId();
+                try {
+                        c.setSupplierCode(foreignCode);
+                        r = supplierMapper.insert(c);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加供应商失败");
+                }
+
+                materialDetailService.batchInsert(foreignCode,c.getMaterialDetailList(),"3");
+                return r;
+        }
+
+
+        /**
+         *修改
+         * @param c
+         */
+        public void update (Supplier c) {
+                int keyId = c.getId();
+                String foreignCode = c.getSupplierCode();
+                if (keyId ==0) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
+                }
+                //先修改合同
+                try {
+                        supplierMapper.updateById(c);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改供应商信息失败");
+                }
+
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
         }
 
 

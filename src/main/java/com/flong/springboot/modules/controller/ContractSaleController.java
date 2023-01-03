@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,6 +35,9 @@ public class ContractSaleController {
     @Autowired
     private ContractSaleService contractSaleService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     /**
      * 添加
      */
@@ -45,6 +49,7 @@ public class ContractSaleController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
         }
+        t.setCreateUser(request.getSession().getAttribute("userName").toString());
         return contractSaleService.insert(t);
     }
 
@@ -53,7 +58,7 @@ public class ContractSaleController {
      * @param contractSale
      */
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestBody ContractSale contractSale) {
+    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody ContractSale contractSale) {
         List<FileBean> fileBeanList = contractSale.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             contractSale.setFileC(JSONArray.toJSONString(fileBeanList));
@@ -65,7 +70,7 @@ public class ContractSaleController {
      * @param ids
      */
     @DeleteMapping("/deleteByIds")
-    public void deleteByIds(@RequestBody List<String> ids) {
+    public void deleteByIds(@RequestHeader("token") String token,@RequestBody List<String> ids) {
         contractSaleService.removeByIds(ids);
     }
 

@@ -9,50 +9,42 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
-import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.util.StringUtils;
-import com.flong.springboot.modules.entity.ContractSale;
-import com.flong.springboot.modules.entity.MaterialDetail;
-import com.flong.springboot.modules.entity.dto.ContractSaleDto;
-import com.flong.springboot.modules.entity.dto.CustomerDto;
-import com.flong.springboot.modules.entity.vo.ContractSaleVo;
-import com.flong.springboot.modules.entity.vo.CustomerVo;
-import com.flong.springboot.modules.mapper.ContractSaleMapper;
-import com.flong.springboot.modules.mapper.MaterialDetailMapper;
+import com.flong.springboot.modules.entity.ContractPurchase;
+import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
+import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
+import com.flong.springboot.modules.mapper.ContractPurchaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class ContractSaleService extends ServiceImpl<ContractSaleMapper, ContractSale> {
+public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper, ContractPurchase> {
         @Autowired
-        ContractSaleMapper contractSaleMapper;
+        ContractPurchaseMapper contractPurchaseMapper;
 
         @Autowired
         MaterialDetailService materialDetailService;
 
 
 
-        public IPage<ContractSale> page (ContractSaleDto contractSale) {
-                QueryWrapper<ContractSale> build = buildWrapper(contractSale);
-                return contractSaleMapper.selectPage(contractSale.getPage()==null ? new Page<>() : contractSale.getPage(),build);
+        public IPage<ContractPurchase> page (ContractPurchaseDto contractPurchase) {
+                QueryWrapper<ContractPurchase> build = buildWrapper(contractPurchase);
+                return contractPurchaseMapper.selectPage(contractPurchase.getPage()==null ? new Page<>() : contractPurchase.getPage(),build);
         }
 
-        public ContractSale getOneByCode (String code) {
-                QueryWrapper<ContractSale> build = new QueryWrapper<ContractSale>();
+        public ContractPurchase getOneByCode (String code) {
+                QueryWrapper<ContractPurchase> build = new QueryWrapper<ContractPurchase>();
                 build.eq("contract_code",code);
-                return contractSaleMapper.selectOne(build);
+                return contractPurchaseMapper.selectOne(build);
         }
 
-        private QueryWrapper<ContractSale> buildWrapper(ContractSaleDto contractSaleDto) {
-                QueryWrapper<ContractSale> build = new QueryWrapper<>();
-                if (contractSaleDto.getContractCode() !=null && !"".equals(contractSaleDto.getContractCode())) {
-                        build.eq("contract_code",contractSaleDto.getContractCode());
+        private QueryWrapper<ContractPurchase> buildWrapper(ContractPurchaseDto contractPurchaseDto) {
+                QueryWrapper<ContractPurchase> build = new QueryWrapper<>();
+                if (contractPurchaseDto.getContractCode() !=null && !"".equals(contractPurchaseDto.getContractCode())) {
+                        build.eq("contract_code",contractPurchaseDto.getContractCode());
                 }
 
                 return build;
@@ -63,8 +55,8 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          * @param c
          */
         @Transactional
-        public int insert (ContractSale c) {
-                String contractCode = GeneratorKeyUtil.getConractSaleNextCode();
+        public int insert (ContractPurchase c) {
+                String contractCode = GeneratorKeyUtil.getConractPurchaseNextCode();
                 //返回
                 int r = 0;
                 try {
@@ -72,14 +64,14 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         c.setCreateTime(UserHelper.getDateTime());
                         c.setUpdateTime(UserHelper.getDateTime());
 
-                        r = contractSaleMapper.insert(c);;
+                        r = contractPurchaseMapper.insert(c);;
                 } catch (Exception e) {
                         e.printStackTrace();
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加销售合同失败");
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加采购合同失败");
                 }
 
 
-                materialDetailService.batchInsert(contractCode,c.getMaterialDetailList(),"1");
+                materialDetailService.batchInsert(contractCode,c.getMaterialDetailList(),"2");
 //                try {
 //                        List<MaterialDetail> list = c.getMaterialDetailList();
 //                        list.stream().forEach(p ->
@@ -101,7 +93,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          *修改
          * @param c
          */
-        public void update (ContractSale c) {
+        public void update (ContractPurchase c) {
                 int keyId = c.getId();
                 String contractCode = c.getContractCode();
                 if (keyId ==0) {
@@ -109,7 +101,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 }
                 //先修改合同
                 try {
-                        contractSaleMapper.updateById(c);
+                        contractPurchaseMapper.updateById(c);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
@@ -118,9 +110,9 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList());
         }
 
-        public IPage<ContractSaleVo> pageList (ContractSaleDto contractSaleDto) {
-                IPage<ContractSaleVo> pageList = contractSaleMapper.pageList(contractSaleDto.getPage()==null ? new Page<>():contractSaleDto.getPage(),contractSaleDto);
-                List<ContractSaleVo> customerList = pageList.getRecords();
+        public IPage<ContractPurchaseVo> pageList (ContractPurchaseDto contractPurchaseDto) {
+                IPage<ContractPurchaseVo> pageList = contractPurchaseMapper.pageList(contractPurchaseDto.getPage()==null ? new Page<>():contractPurchaseDto.getPage(),contractPurchaseDto);
+                List<ContractPurchaseVo> customerList = pageList.getRecords();
                 customerList.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFileC())));
                 return  pageList;
         }

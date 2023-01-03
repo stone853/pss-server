@@ -15,7 +15,9 @@ import java.util.Date;
  */
 public class UserHelper {
 
-    public static String getUserId (String token) {
+
+
+    public static String getUserPhone (String token) {
         if (null !=token && !"".equals(token)) {
             return JWT.decode(token).getAudience().get(0);
         }

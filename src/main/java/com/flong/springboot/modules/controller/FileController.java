@@ -2,6 +2,7 @@ package com.flong.springboot.modules.controller;
 
 import com.flong.springboot.base.utils.FileUtil;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.config.PssConfig;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
@@ -48,7 +49,7 @@ public class FileController {
 
             String id = GeneratorKeyUtil.getFileNextId();
 
-            String url = pssConfig.getCustomerFileUrl()+id+"/";
+            String url = pssConfig.getCustomerFileUrl()+ UserHelper.getDate()+"/" +id+"/";
 
             FileUtil fu = new FileUtil();
             fu.uploadFile(file.getBytes(),url, fileName);
@@ -71,6 +72,13 @@ public class FileController {
         FileUtil fu = new FileUtil();
         return fu.downloadFile(request,response,downloadPath);
 
+    }
+
+    @ApiOperation("预览文件")
+    @GetMapping("/v1/showFile")
+    public String showFile(@RequestHeader("token") String token, @RequestParam("filePath") String filePath) {
+        FileUtil fu = new FileUtil();
+        return fu.showFile(response,filePath);
     }
 
 

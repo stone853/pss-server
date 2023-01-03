@@ -73,7 +73,7 @@ public class SupplierController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             supplier.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        supplierService.updateById(supplier);
+        supplierService.update(supplier);
     }
     /**
      * 删除通过多个主键Id进行删除

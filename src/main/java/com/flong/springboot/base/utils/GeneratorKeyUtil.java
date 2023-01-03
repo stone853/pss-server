@@ -135,6 +135,15 @@ public class GeneratorKeyUtil {
         return "XSHT" + nextId();
     }
 
+    public static String getSchemeNextCode () {
+        return "FA" + nextId();
+    }
+
+
+    public static String getConractPurchaseNextCode () {
+        return "CGHT" + nextId();
+    }
+
     public static String getRoleNextId () {
         return "JS" + nextId();
     }

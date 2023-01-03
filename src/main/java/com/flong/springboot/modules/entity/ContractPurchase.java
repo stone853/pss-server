@@ -1,21 +1,27 @@
-package com.flong.springboot.modules.entity.dto;
+package com.flong.springboot.modules.entity;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.flong.springboot.modules.entity.MaterialDetail;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
 import java.util.List;
 
-
-public class ContractSaleDto {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
+@TableName("t_pss_contract_purchase")
+public class ContractPurchase {
     private Integer id;
 
     private String contractCode;
 
     private String contractName;
 
-    private String partA;
+    private String partB;
 
-
+    private String signingDate;
 
     private String constructionSite;
 
@@ -37,36 +43,37 @@ public class ContractSaleDto {
 
     private String fileC;
 
-    private String signingBeginDate;
+    private String custCode;
 
-    private String signingEndDate;
+    private String supplierCode;
 
-    public void setSigningBeginDate(String signingBeginDate) {
-        this.signingBeginDate = signingBeginDate;
-    }
+    private String contractCodeS;
 
-    public String getSigningBeginDate() {
-        return signingBeginDate;
-    }
 
-    public void setSigningEndDate(String signingEndDate) {
-        this.signingEndDate = signingEndDate;
-    }
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
 
-    public String getSigningEndDate() {
-        return signingEndDate;
-    }
-
-    private Page page;
-
-    public ContractSaleDto setPage(Page page) {
-        this.page = page;
+    public ContractPurchase setFileBeanList(List<FileBean> fileBeanList) {
+        this.fileBeanList = fileBeanList;
         return this;
     }
 
-    public Page getPage() {
-        return this.page;
+    public List<FileBean> getFileBeanList() {
+        return fileBeanList;
     }
+
+    @TableField(exist = false)
+    private List<MaterialDetail> materialDetailList;
+
+    public ContractPurchase setMaterialDetailList(List<MaterialDetail> materialDetailList) {
+        this.materialDetailList = materialDetailList;
+        return this;
+    }
+
+    public List<MaterialDetail> getMaterialDetailList() {
+        return materialDetailList;
+    }
+
 
     public Integer getId() {
         return id;
@@ -92,15 +99,21 @@ public class ContractSaleDto {
         this.contractName = contractName == null ? null : contractName.trim();
     }
 
-    public String getPartA() {
-        return partA;
+    public String getPartB() {
+        return partB;
     }
 
-    public void setPartA(String partA) {
-        this.partA = partA == null ? null : partA.trim();
+    public void setPartB(String partB) {
+        this.partB = partB == null ? null : partB.trim();
     }
 
+    public String getSigningDate() {
+        return signingDate;
+    }
 
+    public void setSigningDate(String signingDate) {
+        this.signingDate = signingDate == null ? null : signingDate.trim();
+    }
 
     public String getConstructionSite() {
         return constructionSite;
@@ -180,5 +193,29 @@ public class ContractSaleDto {
 
     public void setFileC(String fileC) {
         this.fileC = fileC == null ? null : fileC.trim();
+    }
+
+    public String getCustCode() {
+        return custCode;
+    }
+
+    public void setCustCode(String custCode) {
+        this.custCode = custCode == null ? null : custCode.trim();
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode == null ? null : supplierCode.trim();
+    }
+
+    public String getContractCodeS() {
+        return contractCodeS;
+    }
+
+    public void setContractCodeS(String contractCodeS) {
+        this.contractCodeS = contractCodeS == null ? null : contractCodeS.trim();
     }
 }

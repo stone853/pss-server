@@ -4,6 +4,7 @@ package com.flong.springboot.base.utils;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -67,13 +68,39 @@ public class FileUtil {
                     bis.close();
                 }
             } catch (IOException e) {
-                throw new ServiceException(e.getMessage());
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,e.getMessage());
             }
         }
         return "文件下载失败";
     }
 
 
+    /**
+     * 预览
+     * @param path
+     * @param response
+     */
+    public String showFile(HttpServletResponse response,String path){
+        if(path!=null&&!path.equals("")){
+
+            try {
+                FileInputStream fis = new FileInputStream(path);
+                ServletOutputStream os = response.getOutputStream();
+
+                byte [] b = new byte[1024*8];
+                while(fis.read(b)!=-1){
+                    os.write(b);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"文件预览失败");
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"文件预览失败");
+            }
+        }
+        return "预览失败";
+    }
 
 
 

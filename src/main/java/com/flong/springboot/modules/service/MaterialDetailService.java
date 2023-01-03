@@ -9,6 +9,7 @@ import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Dict;
+import com.flong.springboot.modules.entity.EvaIndex;
 import com.flong.springboot.modules.entity.MaterialDetail;
 import com.flong.springboot.modules.mapper.DictMapper;
 import com.flong.springboot.modules.mapper.MaterialDetailMapper;
@@ -30,9 +31,17 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * 根据foreignCode 批量新增
          * @param list
          * @param foreignCode
+         * @param 1 销售合同  2 采购合同 3 供应商
          * @return
          */
-        public boolean batchInsert (String foreignCode,List<MaterialDetail> list) {
+        public boolean batchInsert (String foreignCode,List<MaterialDetail> list,String type) {
+                if (list == null || list.size() == 0) {
+                        return true;
+                }
+                if (StringUtils.isEmpty(foreignCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"foreignCode编码不能为空");
+                }
+
                 try {
                         list.stream().forEach((p) -> {
                                 if (null == p.getMaterialCode()) {
@@ -40,6 +49,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                 }
                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode())
                                         .setForeignCode(foreignCode);
+                                p.setType(type);
                                 }
 
                         );
@@ -62,6 +72,10 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * @return
          */
         public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list) {
+                if (list == null || list.size() == 0) {
+                        return true;
+                }
+
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
@@ -104,13 +118,19 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加或修改物料明细失败");
                 }
 
-
-
-
-
                 return true;
         }
 
+
+        public List<MaterialDetail> list (String foreignCode) {
+                if (StringUtils.isEmpty(foreignCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请传入外键编码");
+                }
+
+                QueryWrapper<MaterialDetail> qw = new QueryWrapper();
+                qw.eq("foreign_code",foreignCode);
+                return materialDetailMapper.selectList(qw);
+        }
 
 
 
