@@ -2,41 +2,38 @@ package com.flong.springboot.modules.service;
 
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
-import com.flong.springboot.modules.entity.Dict;
-import com.flong.springboot.modules.entity.EvaIndex;
-import com.flong.springboot.modules.entity.MaterialDetail;
-import com.flong.springboot.modules.entity.dto.MaterialDetailDto;
-import com.flong.springboot.modules.entity.vo.MaterialDetailVo;
-import com.flong.springboot.modules.mapper.DictMapper;
-import com.flong.springboot.modules.mapper.MaterialDetailMapper;
+import com.flong.springboot.modules.entity.FileBean;
+import com.flong.springboot.modules.entity.MaterialDetailLog;
+import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
+import com.flong.springboot.modules.mapper.MaterialDetailLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, MaterialDetail> {
+public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMapper, MaterialDetailLog> {
 
         @Autowired
-        MaterialDetailMapper materialDetailMapper;
+        MaterialDetailLogMapper materialDetailLogMapper;
 
 
         /**
          * 根据foreignCode 批量新增
          * @param list
          * @param foreignCode
-         * @param 1 销售合同  2 采购合同 3 供应商
+         * @param  type 1 入库 2 出库 3 盘点
          * @return
          */
-        public boolean batchInsert (String foreignCode,List<MaterialDetail> list,String type) {
+        public boolean batchInsert (String foreignCode,List<MaterialDetailLog> list,String type) {
                 if (list == null || list.size() == 0) {
                         return true;
                 }
@@ -49,9 +46,15 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                 if (null == p.getMaterialCode()) {
                                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
                                 }
+
+                                List<FileBean> fileBeanList = p.getFileBeanList();
+                                if (fileBeanList !=null && fileBeanList.size() > 0) {
+                                        p.setFileC(JSONArray.toJSONString(fileBeanList));
+                                }
+
                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode())
                                         .setForeignCode(foreignCode);
-                                p.setType(type);
+                                p.setSourceType(type);
                                 }
 
                         );
@@ -73,27 +76,28 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * @param list
          * @return
          */
-        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list) {
+        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetailLog> list) {
                 if (list == null || list.size() == 0) {
                         return true;
                 }
+
 
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
 
-                List<Integer> detailIdsB = list.stream().map(MaterialDetail::getId).collect(Collectors.toList());
+                List<Integer> detailIdsB = list.stream().map(MaterialDetailLog::getId).collect(Collectors.toList());
                 detailIdsB.removeIf(p -> p== null);
 
                 //不在里面的先删除
                 try {
-                        QueryWrapper<MaterialDetail> dw = new QueryWrapper<MaterialDetail>();
+                        QueryWrapper<MaterialDetailLog> dw = new QueryWrapper();
                         if (detailIdsB !=null && detailIdsB.size() >0) {
                                 dw.notIn("id",detailIdsB);
                         }
                         dw.eq("foreign_code",foreignCode);
-                        materialDetailMapper.delete(dw);
+                        materialDetailLogMapper.delete(dw);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"删除物料明细失败");
@@ -124,9 +128,9 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
         }
 
 
-        public List<MaterialDetailVo> list (String foreignCode) {
+        public List<MaterialDetailLogVo> list (String foreignCode) {
 
-                return materialDetailMapper.findAll(foreignCode);
+                return materialDetailLogMapper.findAll(foreignCode);
         }
 
 

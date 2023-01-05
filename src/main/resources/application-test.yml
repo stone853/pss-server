@@ -34,6 +34,12 @@ spring:
   devtools:
     restart:
       enabled: false
+  servlet:
+    multipart:
+      # 设置 上传文件的大小
+      max-file-size: 10MB
+      # 设置 整个请求的大小
+      max-request-size: 15MB
 
 # mybaits-plus配置
 mybatis-plus:

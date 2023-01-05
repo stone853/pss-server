@@ -1,10 +1,9 @@
 package com.flong.springboot.modules.entity.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.flong.springboot.modules.entity.BaseBean;
-import com.flong.springboot.modules.entity.Role;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleDto  {
 
     private Long id;

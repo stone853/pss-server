@@ -58,8 +58,10 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
          *新增
          * @param c
          */
-        public int insert (Customer c) {
-                return customerMapper.insert(c.setCustCode(GeneratorKeyUtil.getCustNextId()));
+        public Customer insert (Customer c) {
+                String custCode = GeneratorKeyUtil.getCustNextId();
+                customerMapper.insert(c.setCustCode(custCode));
+                return c;
         }
 
 

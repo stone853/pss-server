@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.ContractPurchase;
+import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
+import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
+import com.flong.springboot.modules.entity.vo.ContractSaleVo;
 import com.flong.springboot.modules.service.ContractPurchaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -54,15 +57,15 @@ public class ContractPurchaseController {
 
     /**
      * 修改
-     * @param ContractPurchase
+     * @param contractPurchase
      */
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody ContractPurchase ContractPurchase) {
-        List<FileBean> fileBeanList = ContractPurchase.getFileBeanList();
+    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody ContractPurchase contractPurchase) {
+        List<FileBean> fileBeanList = contractPurchase.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
-            ContractPurchase.setFileC(JSONArray.toJSONString(fileBeanList));
+            contractPurchase.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        contractPurchaseService.update(ContractPurchase);
+        contractPurchaseService.update(contractPurchase);
     }
     /**
      * 删除通过多个主键Id进行删除
@@ -73,16 +76,16 @@ public class ContractPurchaseController {
         contractPurchaseService.removeByIds(ids);
     }
 
-//    /**
-//     * 通过指定Id进行查询
-//     *
-//     * @param custCode
-//     */
-//    @GetMapping("/getOne/{custCode}")
-//    public ContractPurchase getOne(@RequestHeader("token") String token,@PathVariable("custCode") String custCode) {
-//        return ContractPurchaseService.getOneByCode(custCode);
-//    }
-//
+    /**
+     * 查询合同详情
+     *
+     * @param id
+     */
+    @GetMapping("/getOne")
+    public ContractPurchaseVo getOne(@RequestHeader("token") String token, @RequestParam("id") int id) {
+        return contractPurchaseService.getOneById(id);
+    }
+
 //    /**
 //     * 采购合同分页，参数有多个使用下标索引进行处理.如果有两个参数(如采购合同名和地址)：conditionList[0].fieldName=ContractPurchaseName、 conditionList[0].fieldName=address
 //     * 未转码请求分页地址: http://localhost:7011/ContractPurchase/page?conditionList[0].fieldName=ContractPurchaseName&conditionList[0].operation=LIKE&conditionList[0].value=周
@@ -90,9 +93,10 @@ public class ContractPurchaseController {
 //     * @return
 //     */
     @PostMapping("/page")
-    public IPage<ContractPurchaseVo> page(@RequestHeader("token") String token, @RequestBody ContractPurchaseDto ContractPurchaseDto) {
-        return contractPurchaseService.pageList(ContractPurchaseDto);
+    public IPage<ContractPurchaseVo> page(@RequestHeader("token") String token, @RequestBody ContractPurchaseDto contractPurchaseDto) {
+        return contractPurchaseService.pageList(contractPurchaseDto);
     }
+
 
 
 }

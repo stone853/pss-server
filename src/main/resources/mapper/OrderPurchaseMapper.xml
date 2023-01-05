@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.OrderPurchaseMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.OrderPurchase">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="contract_code_p" jdbcType="VARCHAR" property="contractCodeP" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="send_type" jdbcType="VARCHAR" property="sendType" />
+    <result column="ship_addr" jdbcType="VARCHAR" property="shipAddr" />
+    <result column="applicant" jdbcType="VARCHAR" property="applicant" />
+    <result column="applicant_tel" jdbcType="VARCHAR" property="applicantTel" />
+    <result column="application_date" jdbcType="CHAR" property="applicationDate" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+</mapper>

@@ -2,8 +2,10 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -11,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @TableName("t_pss_contract_purchase")
 public class ContractPurchase {
     private Integer id;
@@ -25,11 +28,7 @@ public class ContractPurchase {
 
     private String constructionSite;
 
-    private Long contractAmount;
 
-    private Long taxRate;
-
-    private Long amountExcludingTax;
 
     private String createUser;
 
@@ -49,6 +48,35 @@ public class ContractPurchase {
 
     private String contractCodeS;
 
+    private BigDecimal contractAmount;
+
+    private BigDecimal taxRate;
+
+    private BigDecimal amountExcludingTax;
+
+    public void setAmountExcludingTax(BigDecimal amountExcludingTax) {
+        this.amountExcludingTax = amountExcludingTax;
+    }
+
+    public BigDecimal getAmountExcludingTax() {
+        return amountExcludingTax;
+    }
+
+    public void setTaxRate(BigDecimal taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public void setContractAmount(BigDecimal contractAmount) {
+        this.contractAmount = contractAmount;
+    }
+
+    public BigDecimal getContractAmount() {
+        return contractAmount;
+    }
+
+    public BigDecimal getTaxRate() {
+        return taxRate;
+    }
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;
@@ -123,29 +151,7 @@ public class ContractPurchase {
         this.constructionSite = constructionSite == null ? null : constructionSite.trim();
     }
 
-    public Long getContractAmount() {
-        return contractAmount;
-    }
 
-    public void setContractAmount(Long contractAmount) {
-        this.contractAmount = contractAmount;
-    }
-
-    public Long getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(Long taxRate) {
-        this.taxRate = taxRate;
-    }
-
-    public Long getAmountExcludingTax() {
-        return amountExcludingTax;
-    }
-
-    public void setAmountExcludingTax(Long amountExcludingTax) {
-        this.amountExcludingTax = amountExcludingTax;
-    }
 
     public String getCreateUser() {
         return createUser;

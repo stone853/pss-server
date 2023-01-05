@@ -1,13 +1,17 @@
 package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @TableName("t_pss_eva_index")
 public class EvaIndex {
     private Integer id;
@@ -16,7 +20,7 @@ public class EvaIndex {
 
     private String indexName;
 
-    private Long indexWeight;
+    private BigDecimal indexWeight;
 
     public Integer getId() {
         return id;
@@ -42,11 +46,12 @@ public class EvaIndex {
         this.indexName = indexName == null ? null : indexName.trim();
     }
 
-    public Long getIndexWeight() {
+
+    public BigDecimal getIndexWeight() {
         return indexWeight;
     }
 
-    public void setIndexWeight(Long indexWeight) {
+    public void setIndexWeight(BigDecimal indexWeight) {
         this.indexWeight = indexWeight;
     }
 }

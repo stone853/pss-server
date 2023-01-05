@@ -2,15 +2,18 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode(callSuper=false)
 @TableName("t_pss_contract_sale")
 public class ContractSale {
@@ -26,11 +29,11 @@ public class ContractSale {
 
     private String constructionSite;
 
-    private Long contractAmount;
+    private BigDecimal contractAmount;
 
-    private Long taxRate;
+    private BigDecimal taxRate;
 
-    private Long amountExcludingTax;
+    private BigDecimal amountExcludingTax;
 
     private String createUser;
 
@@ -117,27 +120,27 @@ public class ContractSale {
         this.constructionSite = constructionSite == null ? null : constructionSite.trim();
     }
 
-    public Long getContractAmount() {
+    public BigDecimal getContractAmount() {
         return contractAmount;
     }
 
-    public void setContractAmount(Long contractAmount) {
+    public void setContractAmount(BigDecimal contractAmount) {
         this.contractAmount = contractAmount;
     }
 
-    public Long getTaxRate() {
+    public BigDecimal getTaxRate() {
         return taxRate;
     }
 
-    public void setTaxRate(Long taxRate) {
+    public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
     }
 
-    public Long getAmountExcludingTax() {
+    public BigDecimal getAmountExcludingTax() {
         return amountExcludingTax;
     }
 
-    public void setAmountExcludingTax(Long amountExcludingTax) {
+    public void setAmountExcludingTax(BigDecimal amountExcludingTax) {
         this.amountExcludingTax = amountExcludingTax;
     }
 

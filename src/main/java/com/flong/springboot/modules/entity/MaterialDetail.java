@@ -2,16 +2,19 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @TableName("t_pss_material_detail")
 public class MaterialDetail {
     private Integer id;
@@ -27,7 +30,7 @@ public class MaterialDetail {
 
     private String quantity;
 
-    private Long priceTax;
+    private BigDecimal priceTax;
 
     public Integer getId() {
         return id;
@@ -78,11 +81,11 @@ public class MaterialDetail {
         this.quantity = quantity == null ? null : quantity.trim();
     }
 
-    public Long getPriceTax() {
+    public BigDecimal getPriceTax() {
         return priceTax;
     }
 
-    public void setPriceTax(Long priceTax) {
+    public void setPriceTax(BigDecimal priceTax) {
         this.priceTax = priceTax;
     }
 }

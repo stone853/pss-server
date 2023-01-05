@@ -74,15 +74,15 @@ public class ContractSaleController {
         contractSaleService.removeByIds(ids);
     }
 
-//    /**
-//     * 通过指定Id进行查询
-//     *
-//     * @param custCode
-//     */
-//    @GetMapping("/getOne/{custCode}")
-//    public contractsale getOne(@RequestHeader("token") String token,@PathVariable("custCode") String custCode) {
-//        return contractSaleService.getOneByCode(custCode);
-//    }
+    /**
+     * 查询合同详情
+     *
+     * @param id
+     */
+    @GetMapping("/getOne")
+    public ContractSaleVo getOne(@RequestHeader("token") String token,@RequestParam("id") int id) {
+        return contractSaleService.getOneById(id);
+    }
 //
 //    /**
 //     * 销售合同分页，参数有多个使用下标索引进行处理.如果有两个参数(如销售合同名和地址)：conditionList[0].fieldName=contractsaleName、 conditionList[0].fieldName=address

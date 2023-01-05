@@ -1,7 +1,9 @@
 package com.flong.springboot.modules.entity.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerDto {
     private String custCode;
 

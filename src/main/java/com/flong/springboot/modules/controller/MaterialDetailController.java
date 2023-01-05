@@ -4,6 +4,8 @@ package com.flong.springboot.modules.controller;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.EvaIndex;
 import com.flong.springboot.modules.entity.MaterialDetail;
+import com.flong.springboot.modules.entity.dto.MaterialDetailDto;
+import com.flong.springboot.modules.entity.vo.MaterialDetailVo;
 import com.flong.springboot.modules.service.EvaIndexService;
 import com.flong.springboot.modules.service.MaterialDetailService;
 import io.swagger.annotations.Api;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * @Author:jinshi
  * @Date:2022-12-25
- * @Description:方案控制层
+ * @Description:物料明细控制层
  */
 @Api(tags = "物料明细信息")
 @RestController
@@ -31,9 +33,11 @@ public class MaterialDetailController {
 
 
     @GetMapping("/list")
-    public List<MaterialDetail> list (@RequestHeader("token") String token,@RequestParam String foreignCode) {
+    public List<MaterialDetailVo> list (@RequestHeader("token") String token,@RequestParam String foreignCode) {
         return materialDetailService.list(foreignCode);
     }
+
+
 
 
 }

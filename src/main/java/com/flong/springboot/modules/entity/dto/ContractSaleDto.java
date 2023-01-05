@@ -1,11 +1,12 @@
 package com.flong.springboot.modules.entity.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.MaterialDetail;
 
 import java.util.List;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ContractSaleDto {
     private Integer id;
 

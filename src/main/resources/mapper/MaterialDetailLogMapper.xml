@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.MaterialDetailLogMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.MaterialDetailLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="detail_id" jdbcType="VARCHAR" property="detailId" />
+    <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
+    <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+    <result column="quantity" jdbcType="VARCHAR" property="quantity" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+    <result column="amount_price" jdbcType="DECIMAL" property="amountPrice" />
+    <result column="estimated_delivery_time" jdbcType="CHAR" property="estimatedDeliveryTime" />
+    <result column="acpt_quantity" jdbcType="INTEGER" property="acptQuantity" />
+    <result column="record_time" jdbcType="CHAR" property="recordTime" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+  </resultMap>
+
+  <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailVo">
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_detail_log t
+    left join t_pss_material_mgt t1 on t.material_code = t1.material_code
+    where 1=1
+    <if test="foreignCode != null and foreignCode != ''">
+      and t.foreign_code = #{foreignCode}
+    </if>
+  </select>
+</mapper>

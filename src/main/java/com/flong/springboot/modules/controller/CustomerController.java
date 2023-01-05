@@ -57,7 +57,7 @@ public class CustomerController {
     @ApiOperation("增加客户信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Customer",dataTypeClass = Customer.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody Customer t) {
+    public Customer add(@RequestHeader("token") String token,@RequestBody Customer t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFilesC(JSONArray.toJSONString(fileBeanList));

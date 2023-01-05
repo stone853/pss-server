@@ -144,6 +144,10 @@ public class GeneratorKeyUtil {
         return "CGHT" + nextId();
     }
 
+    public static String getOrderPurchaseNextCode () {
+        return "CGDD" + nextId();
+    }
+
     public static String getRoleNextId () {
         return "JS" + nextId();
     }

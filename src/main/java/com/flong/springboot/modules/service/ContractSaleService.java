@@ -12,6 +12,7 @@ import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
+import com.flong.springboot.modules.entity.ContractPurchase;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.MaterialDetail;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
@@ -115,6 +116,11 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
                 }
 
+                if(StringUtils.isEmpty(contractCode)) {
+                        ContractSale cs = contractSaleMapper.selectById(c.getId());
+                        contractCode = cs.getContractCode();
+                }
+
                 materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList());
         }
 
@@ -126,4 +132,12 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
         }
 
 
+        /**
+         * 根据ID查，详情
+         * @param id
+         * @return
+         */
+        public ContractSaleVo getOneById (int id) {
+                return contractSaleMapper.getOneById(id);
+        }
 }

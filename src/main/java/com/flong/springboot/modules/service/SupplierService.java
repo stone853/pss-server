@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
@@ -91,6 +92,11 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改供应商信息失败");
+                }
+
+                if(StringUtils.isEmpty(foreignCode)) {
+                        Supplier s = supplierMapper.selectById(c.getId());
+                        foreignCode = s.getSupplierCode();
                 }
 
                 materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());

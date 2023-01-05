@@ -23,8 +23,9 @@
   </resultMap>
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.ContractPurchaseVo" parameterType="com.flong.springboot.modules.entity.dto.ContractPurchaseDto">
-    select t.*,t1.supplier_name as supplierName from t_pss_contract_purchase t
+    select t.*,t1.supplier_name as supplierName,t2.note as contractStatusNote from t_pss_contract_purchase t
     left join t_pss_supplier t1 on t.part_b = t1.supplier_code
+    left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
     where 1=1
     <if test="contractPurchase.contractCode != null and contractPurchase.contractCode != ''">
       and t.contract_code like "%"#{contractPurchase.contractCode}"%"
@@ -37,6 +38,16 @@
     </if>
     <if test="contractPurchase.contractStatus != null and contractPurchase.contractStatus != ''">
       and t.contract_status = #{contractPurchase.contractStatus}
+    </if>
+  </select>
+
+  <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ContractPurchaseVo">
+    select t.*,t1.supplier_name as supplierName,t2.note as contractStatusNote from t_pss_contract_purchase t
+    left join t_pss_supplier t1 on t.part_b = t1.supplier_code
+    left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
+    where 1=1
+    <if test="id != null and id != ''">
+      and t.id = #{id}
     </if>
   </select>
 </mapper>
