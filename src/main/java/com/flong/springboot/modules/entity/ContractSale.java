@@ -45,6 +45,7 @@ public class ContractSale {
 
     private String contractStatus;
 
+    @TableField(exist = false)
     private String fileC;
 
     @TableField(exist = false)

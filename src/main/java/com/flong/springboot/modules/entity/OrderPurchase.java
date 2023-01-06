@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-
 import java.util.List;
 
 @Data
@@ -36,6 +35,30 @@ public class OrderPurchase {
     private String remark;
 
     private String status;
+
+    @TableField(exist = false)
+    private String fileC;
+
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+    public OrderPurchase setFileBeanList(List<FileBean> fileBeanList) {
+        this.fileBeanList = fileBeanList;
+        return this;
+    }
+
+    public List<FileBean> getFileBeanList() {
+        return fileBeanList;
+    }
+
+    public OrderPurchase setFileC(String fileC) {
+        this.fileC = fileC;
+        return this;
+    }
+
+    public String getFileC() {
+        return fileC;
+    }
 
     @TableField(exist = false)
     private List<MaterialDetailLog> materialDetailLogList;

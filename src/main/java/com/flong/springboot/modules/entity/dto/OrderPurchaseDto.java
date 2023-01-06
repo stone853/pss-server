@@ -9,6 +9,16 @@ public class OrderPurchaseDto {
     private String orderCode;
     private Page page;
 
+    private String status;
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public OrderPurchaseDto setPage(Page page) {
         this.page = page;
         return this;

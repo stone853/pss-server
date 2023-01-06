@@ -40,6 +40,7 @@ public class ContractPurchase {
 
     private String contractStatus;
 
+    @TableField(exist = false)
     private String fileC;
 
     private String custCode;

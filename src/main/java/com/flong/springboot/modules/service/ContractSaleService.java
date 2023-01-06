@@ -15,6 +15,7 @@ import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractPurchase;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.MaterialDetail;
+import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
@@ -104,10 +105,15 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          */
         public void update (ContractSale c) {
                 int keyId = c.getId();
-                String contractCode = c.getContractCode();
                 if (keyId ==0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
+
+                if (StringUtils.isEmpty(c.getContractCode())) {
+                        ContractSale s = contractSaleMapper.selectById(keyId);
+                        c.setContractCode(s.getContractCode());//加上，否则修改报错
+                }
+                String foreignCode = c.getContractCode();
                 //先修改合同
                 try {
                         contractSaleMapper.updateById(c);
@@ -116,12 +122,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
                 }
 
-                if(StringUtils.isEmpty(contractCode)) {
-                        ContractSale cs = contractSaleMapper.selectById(c.getId());
-                        contractCode = cs.getContractCode();
-                }
-
-                materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList());
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
         }
 
         public IPage<ContractSaleVo> pageList (ContractSaleDto contractSaleDto) {

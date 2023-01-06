@@ -43,7 +43,7 @@ public class LoginController {
         if (u ==null) {
             throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
         }
-        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword()));
+        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword())).setUserName(u.getName());
     }
 
 }

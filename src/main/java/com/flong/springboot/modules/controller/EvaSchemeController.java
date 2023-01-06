@@ -52,6 +52,16 @@ public class EvaSchemeController {
     public void updateOrInsert(@RequestHeader("token") String token,@RequestBody EvaScheme evaScheme) {
         evaSchemeService.update(evaScheme);
     }
+
+    /**
+     * 开启方案
+     * @param evaScheme
+     */
+    @PutMapping("/openScheme")
+    public void openScheme(@RequestHeader("token") String token,@RequestBody EvaScheme evaScheme) {
+        evaSchemeService.openScheme(evaScheme);
+    }
+
     /**
      * 删除通过多个主键Id进行删除
      * @param ids

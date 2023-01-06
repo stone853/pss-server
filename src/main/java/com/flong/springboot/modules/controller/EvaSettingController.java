@@ -62,7 +62,7 @@ public class EvaSettingController {
      * 通过指定Id进行查询
      *
      */
-    @GetMapping("/getOne/{evaSetting}")
+    @GetMapping("/getOne")
     public EvaSetting getOne(@RequestHeader("token") String token) {
         QueryWrapper<EvaSetting> q = new QueryWrapper();
         q.last("limit 1");

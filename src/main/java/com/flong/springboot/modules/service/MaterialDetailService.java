@@ -33,7 +33,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * 根据foreignCode 批量新增
          * @param list
          * @param foreignCode
-         * @param 1 销售合同  2 采购合同 3 供应商
+         * @param type 1 销售合同  2 采购合同 3 供应商
          * @return
          */
         public boolean batchInsert (String foreignCode,List<MaterialDetail> list,String type) {
@@ -106,8 +106,10 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                                 throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
                                         }
                                         //如果detail为空，表示新增的，需要获取detailId
-                                        if (StringUtils.isEmpty(p.getId())) {
+                                        if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
+                                        }
+                                        if (StringUtils.isEmpty(p.getForeignCode())) {
                                                 p.setForeignCode(foreignCode);
                                         }
                                         p.setForeignCode(foreignCode);

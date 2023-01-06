@@ -3,6 +3,7 @@ package com.flong.springboot.modules.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,6 +11,7 @@ import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.EvaScheme;
 import com.flong.springboot.modules.entity.dto.EvaSchemeDto;
 import com.flong.springboot.modules.entity.vo.EvaSchemeVo;
@@ -71,6 +73,31 @@ public class EvaSchemeService extends ServiceImpl<EvaSchemeMapper, EvaScheme> {
 
                 evaIndexService.batchInsert(foreignCode,c.getEvaIndexList());
                 return r;
+        }
+
+        public boolean openScheme (EvaScheme evaScheme) {
+                String enableFlag = evaScheme.getEnableFlag();
+                Integer id = evaScheme.getId();
+                if (id == null || id == 0) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id不能为空");
+                }
+                if (StringUtils.isEmpty(enableFlag)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"enable_flag为空");
+                }
+                if ("1".equals(enableFlag)) {
+                        QueryWrapper<EvaScheme> q = new QueryWrapper();
+                        q.eq("enable_flag","1");
+                        q.ne("id",id);
+                        EvaScheme e = evaSchemeMapper.selectOne(q);
+                        if (e !=null && e.getEnableFlag().equals("1")) {
+                                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"只能开启一个方案");
+                        }
+
+                }
+
+                evaSchemeMapper.updateById(evaScheme);
+
+                return true;
         }
 
 

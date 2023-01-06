@@ -14,6 +14,7 @@ import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.MaterialDetailLog;
 import com.flong.springboot.modules.entity.OrderPurchase;
 import com.flong.springboot.modules.entity.dto.OrderPurchaseDto;
+import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.OrderPurchaseVo;
 import com.flong.springboot.modules.mapper.OrderPurchaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,10 +102,11 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
                 materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList());
         }
 
-        public IPage<OrderPurchaseVo> pageList (OrderPurchaseDto OrderPurchaseDto) {
-                return orderPurchaseMapper.pageList(OrderPurchaseDto.getPage()==null ? new Page<>():OrderPurchaseDto.getPage(),OrderPurchaseDto);
-
-
+        public IPage<OrderPurchaseVo> pageList (OrderPurchaseDto orderPurchaseDto) {
+                IPage<OrderPurchaseVo> pageList = orderPurchaseMapper.pageList(orderPurchaseDto.getPage()==null ? new Page<>():orderPurchaseDto.getPage(),orderPurchaseDto);
+                List<OrderPurchaseVo> orderList = pageList.getRecords();
+                orderList.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFileC())));
+                return pageList;
         }
 
 

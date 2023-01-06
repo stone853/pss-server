@@ -98,10 +98,15 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
          */
         public void update (ContractPurchase c) {
                 int keyId = c.getId();
-                String contractCode = c.getContractCode();
                 if (keyId ==0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
+
+                if (StringUtils.isEmpty(c.getContractCode())) {
+                        ContractPurchase s = contractPurchaseMapper.selectById(keyId);
+                        c.setContractCode(s.getContractCode());//加上，否则修改报错
+                }
+                String foreignCode = c.getContractCode();
                 //先修改合同
                 try {
                         contractPurchaseMapper.updateById(c);
@@ -110,11 +115,7 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
                 }
 
-                if(StringUtils.isEmpty(contractCode)) {
-                        ContractPurchase cp = contractPurchaseMapper.selectById(c.getId());
-                        contractCode = cp.getContractCode();
-                }
-                materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList());
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
         }
 
         public IPage<ContractPurchaseVo> pageList (ContractPurchaseDto contractPurchaseDto) {

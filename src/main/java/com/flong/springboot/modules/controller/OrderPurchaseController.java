@@ -4,6 +4,7 @@ package com.flong.springboot.modules.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
+import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.OrderPurchase;
 import com.flong.springboot.modules.entity.dto.OrderPurchaseDto;
 import com.flong.springboot.modules.entity.vo.OrderPurchaseVo;
@@ -42,7 +43,10 @@ public class OrderPurchaseController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "OrderPurchase",dataTypeClass = OrderPurchase.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@Validated @RequestBody OrderPurchase t) {
-
+        List<FileBean> fileBeanList = t.getFileBeanList();
+        if (fileBeanList !=null && fileBeanList.size() > 0) {
+            t.setFileC(JSONArray.toJSONString(fileBeanList));
+        }
         t.setApplicant(request.getSession().getAttribute("userName").toString());
         return orderPurchaseService.insert(t);
     }

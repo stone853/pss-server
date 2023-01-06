@@ -82,11 +82,16 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
          */
         public void update (Supplier c) {
                 int keyId = c.getId();
-                String foreignCode = c.getSupplierCode();
                 if (keyId ==0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
-                //先修改合同
+
+                if (StringUtils.isEmpty(c.getSupplierCode())) {
+                        Supplier s = supplierMapper.selectById(keyId);
+                        c.setSupplierCode(s.getSupplierCode());//加上，否则修改报错
+                }
+                String foreignCode = c.getSupplierCode();
+                //先修改
                 try {
                         supplierMapper.updateById(c);
                 } catch (Exception e) {
@@ -94,10 +99,6 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改供应商信息失败");
                 }
 
-                if(StringUtils.isEmpty(foreignCode)) {
-                        Supplier s = supplierMapper.selectById(c.getId());
-                        foreignCode = s.getSupplierCode();
-                }
 
                 materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
         }
