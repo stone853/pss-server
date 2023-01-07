@@ -17,6 +17,7 @@ import com.flong.springboot.modules.entity.dto.SupplierDto;
 import com.flong.springboot.modules.entity.vo.CustomerVo;
 import com.flong.springboot.modules.entity.vo.SupplierVo;
 import com.flong.springboot.modules.mapper.SupplierMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

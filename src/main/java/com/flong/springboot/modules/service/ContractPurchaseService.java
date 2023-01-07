@@ -67,7 +67,14 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                         c.setCreateTime(UserHelper.getDateTime());
                         c.setUpdateTime(UserHelper.getDateTime());
 
-                        r = contractPurchaseMapper.insert(c);;
+                        Integer keyId = c.getId();
+
+                        if (keyId !=null && keyId !=0) {
+                                r = contractPurchaseMapper.updateById(c); //修改状态
+                        } else {
+                                r = contractPurchaseMapper.insert(c);;
+                        }
+
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加采购合同失败");

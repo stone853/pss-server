@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.PssProcessTaskMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.PssProcessTask">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
+    <result column="process_name" jdbcType="VARCHAR" property="processName" />
+    <result column="step" jdbcType="INTEGER" property="step" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+  </resultMap>
+
+</mapper>

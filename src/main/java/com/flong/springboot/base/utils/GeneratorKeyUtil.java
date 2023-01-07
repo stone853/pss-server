@@ -135,6 +135,10 @@ public class GeneratorKeyUtil {
         return "XSHT" + nextId();
     }
 
+    public static String getProcessNextCode () {
+        return "PROCESS" + nextId();
+    }
+
     public static String getSchemeNextCode () {
         return "FA" + nextId();
     }

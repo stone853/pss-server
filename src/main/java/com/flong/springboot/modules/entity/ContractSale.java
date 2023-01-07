@@ -45,8 +45,17 @@ public class ContractSale {
 
     private String contractStatus;
 
-    @TableField(exist = false)
     private String fileC;
+
+    private String processId;
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;

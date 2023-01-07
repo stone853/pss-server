@@ -74,7 +74,18 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         c.setCreateTime(UserHelper.getDateTime());
                         c.setUpdateTime(UserHelper.getDateTime());
 
-                        r = contractSaleMapper.insert(c);;
+                        Integer keyId = c.getId();
+
+                        if (c.getContractStatus().equals("2")) { //提交就创建流程
+                                c.setProcessId(GeneratorKeyUtil.getProcessNextCode());
+                        }
+
+                        if (keyId !=null && keyId !=0) {
+                                r = contractSaleMapper.updateById(c); //修改状态
+                        } else {
+                                r = contractSaleMapper.insert(c);;  //新增
+                        }
+
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加销售合同失败");

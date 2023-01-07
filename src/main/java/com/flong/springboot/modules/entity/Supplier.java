@@ -45,7 +45,6 @@ public class Supplier {
 
     private Byte isDelete;
 
-    @TableField(exist = false)
     private String fileC;
 
 

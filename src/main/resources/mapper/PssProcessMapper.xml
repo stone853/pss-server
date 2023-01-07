@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.PssProcessMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.PssProcess">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="type_ame" jdbcType="VARCHAR" property="typeAme" />
+    <result column="step" jdbcType="INTEGER" property="step" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="next_step" jdbcType="INTEGER" property="nextStep" />
+    <result column="pre_step" jdbcType="INTEGER" property="preStep" />
+    <result column="class_for_name" jdbcType="VARCHAR" property="classForName" />
+    <result column="decision" jdbcType="VARCHAR" property="decision" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <result column="opt_button" jdbcType="VARCHAR" property="optButton" />
+  </resultMap>
+
+</mapper>

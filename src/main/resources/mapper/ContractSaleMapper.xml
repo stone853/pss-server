@@ -17,6 +17,7 @@
     <result column="payment_term" jdbcType="VARCHAR" property="paymentTerm" />
     <result column="contract_status" jdbcType="VARCHAR" property="contractStatus" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
   </resultMap>
 
 

@@ -11,6 +11,25 @@ public class ContractPurchaseVo extends ContractPurchase {
 
     private String contractStatusNote;
 
+    private String custName;
+
+    private String contractNameS;
+
+    public void setContractNameS(String contractNameS) {
+        this.contractNameS = contractNameS;
+    }
+
+    public String getContractNameS() {
+        return contractNameS;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
 
     public void setContractStatusNote(String contractStatusNote) {
         this.contractStatusNote = contractStatusNote;
