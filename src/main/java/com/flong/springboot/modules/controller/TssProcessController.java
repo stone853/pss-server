@@ -34,7 +34,7 @@ public class TssProcessController {
      */
     @PutMapping("/subProcessContractSale")
     public void subProcessContractSale(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
-        pssProcessService.subForApprove(CommonConstant.CONTRACT_SALE_PROCESS_TYPE,pssProcessDto);
+        pssProcessService.contractSaleProcess(CommonConstant.CONTRACT_SALE_PROCESS_TYPE,pssProcessDto);
     }
 
 

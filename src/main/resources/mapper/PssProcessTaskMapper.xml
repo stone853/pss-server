@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="process_id" jdbcType="VARCHAR" property="processId" />
     <result column="process_name" jdbcType="VARCHAR" property="processName" />
-    <result column="step" jdbcType="INTEGER" property="step" />
+    <result column="step" jdbcType="VARCHAR" property="step" />
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
   </resultMap>
 

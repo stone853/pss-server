@@ -11,7 +11,7 @@ public class PssProcessDto {
     private String processId;
 
     @NotNull(message =  "currentStep不能为空" )
-    private Integer currentStep;
+    private String currentStep;
     @NotNull(message =  "result不能为空" )
     private Integer result;
 
@@ -35,11 +35,11 @@ public class PssProcessDto {
         return processName;
     }
 
-    public void setCurrentStep(Integer currentStep) {
+    public void setCurrentStep(String currentStep) {
         this.currentStep = currentStep;
     }
 
-    public Integer getCurrentStep() {
+    public String getCurrentStep() {
         return currentStep;
     }
 

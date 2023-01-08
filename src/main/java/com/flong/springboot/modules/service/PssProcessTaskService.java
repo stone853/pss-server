@@ -1,5 +1,6 @@
 package com.flong.springboot.modules.service;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.modules.entity.PssProcessTask;
 import com.flong.springboot.modules.mapper.PssProcessMapper;
@@ -13,4 +14,11 @@ public class PssProcessTaskService extends ServiceImpl<PssProcessTaskMapper, Pss
         @Autowired
         PssProcessTaskMapper PssProcessTask;
 
+
+        public void updateTaskStepByProcessId (String processId,String step) {
+                UpdateWrapper<PssProcessTask> qp = new UpdateWrapper();
+                qp.eq("process_id",processId);
+                qp.set("step",step);
+                this.update(qp);
+        }
 }

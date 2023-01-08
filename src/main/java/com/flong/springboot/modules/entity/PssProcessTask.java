@@ -1,5 +1,16 @@
 package com.flong.springboot.modules.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@TableName("t_pss_process_task")
 public class PssProcessTask {
     private Integer id;
 
@@ -7,7 +18,7 @@ public class PssProcessTask {
 
     private String processName;
 
-    private Integer step;
+    private String step;
 
     private String stepName;
 
@@ -35,12 +46,12 @@ public class PssProcessTask {
         this.processName = processName == null ? null : processName.trim();
     }
 
-    public Integer getStep() {
+    public String getStep() {
         return step;
     }
 
-    public void setStep(Integer step) {
-        this.step = step;
+    public void setStep(String step) {
+        this.step = step == null ? null : step.trim();
     }
 
     public String getStepName() {
@@ -50,4 +61,6 @@ public class PssProcessTask {
     public void setStepName(String stepName) {
         this.stepName = stepName == null ? null : stepName.trim();
     }
+
+
 }

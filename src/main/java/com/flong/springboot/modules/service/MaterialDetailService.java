@@ -73,7 +73,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * @param list
          * @return
          */
-        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list) {
+        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list,String type) {
                 if (list == null || list.size() == 0) {
                         return true;
                 }
@@ -113,6 +113,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                                 p.setForeignCode(foreignCode);
                                         }
                                         p.setForeignCode(foreignCode);
+                                        p.setType(type);
                                 }
 
                         );

@@ -18,13 +18,17 @@ public class PssProcess {
 
     private String typeAme;
 
-    private Integer step;
+    private String step;
 
     private String stepName;
 
-    private Integer nextStep;
+    private String nextStep;
 
-    private Integer preStep;
+    private String preStep;
+
+    private String processStatusApproved;
+
+    private String processStatusRefused;
 
     private String classForName;
 
@@ -58,12 +62,12 @@ public class PssProcess {
         this.typeAme = typeAme == null ? null : typeAme.trim();
     }
 
-    public Integer getStep() {
+    public String getStep() {
         return step;
     }
 
-    public void setStep(Integer step) {
-        this.step = step;
+    public void setStep(String step) {
+        this.step = step == null ? null : step.trim();
     }
 
     public String getStepName() {
@@ -74,20 +78,36 @@ public class PssProcess {
         this.stepName = stepName == null ? null : stepName.trim();
     }
 
-    public Integer getNextStep() {
+    public String getNextStep() {
         return nextStep;
     }
 
-    public void setNextStep(Integer nextStep) {
-        this.nextStep = nextStep;
+    public void setNextStep(String nextStep) {
+        this.nextStep = nextStep == null ? null : nextStep.trim();
     }
 
-    public Integer getPreStep() {
+    public String getPreStep() {
         return preStep;
     }
 
-    public void setPreStep(Integer preStep) {
-        this.preStep = preStep;
+    public void setPreStep(String preStep) {
+        this.preStep = preStep == null ? null : preStep.trim();
+    }
+
+    public String getProcessStatusApproved() {
+        return processStatusApproved;
+    }
+
+    public void setProcessStatusApproved(String processStatusApproved) {
+        this.processStatusApproved = processStatusApproved == null ? null : processStatusApproved.trim();
+    }
+
+    public String getProcessStatusRefused() {
+        return processStatusRefused;
+    }
+
+    public void setProcessStatusRefused(String processStatusRefused) {
+        this.processStatusRefused = processStatusRefused == null ? null : processStatusRefused.trim();
     }
 
     public String getClassForName() {

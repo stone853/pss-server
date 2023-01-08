@@ -8,14 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
+import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
-import com.flong.springboot.modules.entity.ContractPurchase;
-import com.flong.springboot.modules.entity.ContractSale;
-import com.flong.springboot.modules.entity.MaterialDetail;
-import com.flong.springboot.modules.entity.Supplier;
+import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
@@ -38,7 +36,11 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
         @Autowired
         MaterialDetailService materialDetailService;
 
+        @Autowired
+        PssProcessService pssProcessService;
 
+        @Autowired
+        PssProcessTaskService pssProcessTaskService;
 
         public IPage<ContractSale> page (ContractSaleDto contractSale) {
                 QueryWrapper<ContractSale> build = buildWrapper(contractSale);
@@ -66,24 +68,36 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          */
         @Transactional
         public int insert (ContractSale c) {
-                String contractCode = GeneratorKeyUtil.getConractSaleNextCode();
+
+                String subStatus = CommonConstant.CONTRACT_SALE_SUB_STATUS;
+                String contractStatus = c.getContractStatus();
+                String processId = "";
+                String contractCode = "";
                 //返回
                 int r = 0;
                 try {
-                        c.setContractCode(contractCode);
+
                         c.setCreateTime(UserHelper.getDateTime());
                         c.setUpdateTime(UserHelper.getDateTime());
 
                         Integer keyId = c.getId();
-
-                        if (c.getContractStatus().equals("2")) { //提交就创建流程
-                                c.setProcessId(GeneratorKeyUtil.getProcessNextCode());
+                        if (keyId !=null && keyId !=0) {
+                                ContractSale contractSaleProcess = this.getOneById(keyId);
+                                processId = contractSaleProcess.getProcessId();
+                        }
+                        processId = pssProcessService.handleProcessByStatus(keyId,processId,c.getContractName(),contractStatus,subStatus);
+                        if (StringUtils.isNotEmpty(contractStatus) && contractStatus.equals(subStatus) && StringUtils.isEmpty(c.getProcessId())) {
+                                c.setProcessId(processId);
                         }
 
-                        if (keyId !=null && keyId !=0) {
-                                r = contractSaleMapper.updateById(c); //修改状态
+
+                        if (keyId !=null && keyId !=0) {//处理合同信息
+                                contractCode = c.getContractCode();
+                                r = contractSaleMapper.updateById(c); //修改合同
                         } else {
-                                r = contractSaleMapper.insert(c);;  //新增
+                                contractCode = GeneratorKeyUtil.getConractSaleNextCode();
+                                c.setContractCode(contractCode);
+                                r = contractSaleMapper.insert(c);;  //新增合同
                         }
 
                 } catch (Exception e) {
@@ -92,7 +106,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 }
 
 
-                materialDetailService.batchInsert(contractCode,c.getMaterialDetailList(),"1");
+                materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList(),"1");
 //                try {
 //                        List<MaterialDetail> list = c.getMaterialDetailList();
 //                        list.stream().forEach(p ->
@@ -133,7 +147,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
                 }
 
-                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"1");
         }
 
         public IPage<ContractSaleVo> pageList (ContractSaleDto contractSaleDto) {

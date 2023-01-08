@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ContractSale {
 
     private String contractCode;
 
+    @NotNull(message =  "合同名称不能为空" )
     private String contractName;
 
     private String partA;

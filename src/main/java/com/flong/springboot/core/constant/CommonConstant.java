@@ -9,4 +9,6 @@ public class CommonConstant {
     public static final long EXPIRE_TIME = 24 * 60 * 60 * 1000;
 
     public static final String CONTRACT_SALE_PROCESS_TYPE  = "xsht";
+
+    public static final String CONTRACT_SALE_SUB_STATUS  = "2";
 }

@@ -5,10 +5,12 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="type_ame" jdbcType="VARCHAR" property="typeAme" />
-    <result column="step" jdbcType="INTEGER" property="step" />
+    <result column="step" jdbcType="VARCHAR" property="step" />
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
-    <result column="next_step" jdbcType="INTEGER" property="nextStep" />
-    <result column="pre_step" jdbcType="INTEGER" property="preStep" />
+    <result column="next_step" jdbcType="VARCHAR" property="nextStep" />
+    <result column="pre_step" jdbcType="VARCHAR" property="preStep" />
+    <result column="process_status_approved" jdbcType="VARCHAR" property="processStatusApproved" />
+    <result column="process_status_refused" jdbcType="VARCHAR" property="processStatusRefused" />
     <result column="class_for_name" jdbcType="VARCHAR" property="classForName" />
     <result column="decision" jdbcType="VARCHAR" property="decision" />
     <result column="role_code" jdbcType="VARCHAR" property="roleCode" />

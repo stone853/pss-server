@@ -57,20 +57,31 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
          */
         @Transactional
         public int insert (OrderPurchase c) {
-                String OrderCode = GeneratorKeyUtil.getOrderPurchaseNextCode();
+                String orderCode = "";
                 //返回
                 int r = 0;
                 try {
-                        c.setOrderCode(OrderCode);
+                        c.setOrderCode(orderCode);
                         c.setApplicationDate(UserHelper.getDate());
 
-                        r = orderPurchaseMapper.insert(c);;
+                        Integer keyId = c.getId();
+
+                        if (keyId !=null && keyId !=0) {
+                                orderCode = c.getOrderCode();
+                                r = orderPurchaseMapper.updateById(c); //修改状态
+                        } else {
+                                orderCode = GeneratorKeyUtil.getOrderPurchaseNextCode();
+                                c.setOrderCode(orderCode);
+                                r = orderPurchaseMapper.insert(c);;
+                        }
+
+
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加订单失败");
                 }
 
-                materialDetailLogService.batchInsert(OrderCode,c.getMaterialDetailLogList(),"2");
+                materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList());
                 return r;
         }
 

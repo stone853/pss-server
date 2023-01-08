@@ -101,7 +101,7 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                 }
 
 
-                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"3");
         }
 
 

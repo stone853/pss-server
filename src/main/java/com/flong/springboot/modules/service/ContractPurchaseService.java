@@ -59,19 +59,21 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
          */
         @Transactional
         public int insert (ContractPurchase c) {
-                String contractCode = GeneratorKeyUtil.getConractPurchaseNextCode();
+                String contractCode = "";
                 //返回
                 int r = 0;
                 try {
-                        c.setContractCode(contractCode);
                         c.setCreateTime(UserHelper.getDateTime());
                         c.setUpdateTime(UserHelper.getDateTime());
 
                         Integer keyId = c.getId();
 
                         if (keyId !=null && keyId !=0) {
+                                contractCode = c.getContractCode();
                                 r = contractPurchaseMapper.updateById(c); //修改状态
                         } else {
+                                contractCode = GeneratorKeyUtil.getConractPurchaseNextCode();
+                                c.setContractCode(contractCode);
                                 r = contractPurchaseMapper.insert(c);;
                         }
 
@@ -81,7 +83,7 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                 }
 
 
-                materialDetailService.batchInsert(contractCode,c.getMaterialDetailList(),"2");
+                materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList(),"2");
 //                try {
 //                        List<MaterialDetail> list = c.getMaterialDetailList();
 //                        list.stream().forEach(p ->
@@ -122,7 +124,7 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
                 }
 
-                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList());
+                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"2");
         }
 
         public IPage<ContractPurchaseVo> pageList (ContractPurchaseDto contractPurchaseDto) {
