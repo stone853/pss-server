@@ -13,4 +13,6 @@ public interface ContractPurchaseMapper extends BaseMapper<ContractPurchase> {
     public IPage<ContractPurchaseVo> pageList(Page<ContractPurchase> page, @Param("contractPurchase") ContractPurchaseDto contractPurchase);
 
     ContractPurchaseVo getOneById(@Param("id") int id);
+
+    ContractPurchaseVo getOneByCode(@Param("contractCode") String contractCode);
 }

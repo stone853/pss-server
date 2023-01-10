@@ -49,7 +49,7 @@ public class ContractSaleController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        t.setCreateUser(request.getSession().getAttribute("userName").toString());
+        t.setCreateUser(request.getSession().getAttribute("userId").toString());
         return contractSaleService.insert(t);
     }
 

@@ -19,6 +19,7 @@ import com.flong.springboot.modules.entity.UserRole;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.RoleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.UserMapper;
 import com.flong.springboot.modules.mapper.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,41 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public IPage<User> page (UserDto userDto) {
         QueryWrapper<User> build = buildWrapper(userDto);
         return userMapper.selectPage(userDto.getPage()==null ? new Page<>() : userDto.getPage(),build);
+    }
+
+
+    public IPage<UserVo> findUserRoles (UserDto userDto) {
+        return userMapper.findUserRoles(userDto.getPage()==null ? new Page<>():userDto.getPage(),userDto);
+    }
+
+    public UserVo findOneUserRoles (UserDto userDto) {
+        return userMapper.findOneUserRoles(userDto);
+    }
+
+
+    public String[] getUserRoles (UserDto userDto) {
+        UserVo u = userMapper.findOneUserRoles(userDto);
+        if (u == null ) {
+            return null;
+        } else {
+            String roleCodes = u.getRoleCodes();
+            if (StringUtils.isEmpty(roleCodes)) {
+                return null;
+            }
+            return roleCodes.split(";");
+        }
+
+    }
+
+
+    public String getUserDeptCode (UserDto userDto) {
+        UserVo u = userMapper.findOneUserRoles(userDto);
+        if (u == null ) {
+            return null;
+        } else {
+           return u.getDeptCode();
+        }
+
     }
 
     private QueryWrapper<User> buildWrapper(UserDto userDto) {

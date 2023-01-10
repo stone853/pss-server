@@ -14,6 +14,7 @@ import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.LoginVo;
+import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -91,25 +92,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/page")
-    public IPage<User> page(@RequestHeader("token") String token,@RequestBody UserDto userDto) {
-        IPage<User> page = userService.page(userDto);
-        if (page !=null && page.getRecords().size() >0 ) {
-            List<String> userIds = page.getRecords().stream().map(User::getUserId).collect(Collectors.toList());
-            return page.setRecords(userService.getBaseMapper().findUserRoles(userIds));
-        }
-        return page;
-    }
-
-    @ApiOperation("登陆")
-    @ApiImplicitParams(value = {@ApiImplicitParam(name = "LoginDto",dataTypeClass = LoginDto.class , value ="")})
-    @PostMapping("/v1/login")
-    public LoginVo login(@RequestBody LoginDto loginDto){
-        User u = userService.login(loginDto);
-        LoginVo lv = new LoginVo();
-        if (u ==null) {
-            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
-        }
-        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword()));
+    public IPage<UserVo> page(@RequestHeader("token") String token, @RequestBody UserDto userDto) {
+        return userService.findUserRoles(userDto);
     }
 
 }

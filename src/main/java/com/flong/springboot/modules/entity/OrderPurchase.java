@@ -36,7 +36,18 @@ public class OrderPurchase {
 
     private String status;
 
-    @TableField(exist = false)
+    private String payType;
+
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+
     private String fileC;
 
     @TableField(exist = false)

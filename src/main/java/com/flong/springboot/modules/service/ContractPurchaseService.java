@@ -33,15 +33,13 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
 
 
 
-        public IPage<ContractPurchase> page (ContractPurchaseDto contractPurchase) {
-                QueryWrapper<ContractPurchase> build = buildWrapper(contractPurchase);
-                return contractPurchaseMapper.selectPage(contractPurchase.getPage()==null ? new Page<>() : contractPurchase.getPage(),build);
-        }
+//        public IPage<ContractPurchase> page (ContractPurchaseDto contractPurchase) {
+//                QueryWrapper<ContractPurchase> build = buildWrapper(contractPurchase);
+//                return contractPurchaseMapper.selectPage(contractPurchase.getPage()==null ? new Page<>() : contractPurchase.getPage(),build);
+//        }
 
-        public ContractPurchase getOneByCode (String code) {
-                QueryWrapper<ContractPurchase> build = new QueryWrapper<ContractPurchase>();
-                build.eq("contract_code",code);
-                return contractPurchaseMapper.selectOne(build);
+        public ContractPurchaseVo getOneByCode (String code) {
+                return contractPurchaseMapper.getOneByCode(code);
         }
 
         private QueryWrapper<ContractPurchase> buildWrapper(ContractPurchaseDto contractPurchaseDto) {

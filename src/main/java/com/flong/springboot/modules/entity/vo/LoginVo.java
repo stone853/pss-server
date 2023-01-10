@@ -5,6 +5,27 @@ public class LoginVo {
 
     private String userName;
 
+    private String userId;
+
+    private String roleCode;
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
+    }
+
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public LoginVo setUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
     public LoginVo setUserName(String userName) {
         this.userName = userName;
         return this;

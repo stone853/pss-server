@@ -10,5 +10,8 @@ public class CommonConstant {
 
     public static final String CONTRACT_SALE_PROCESS_TYPE  = "xsht";
 
+    //采购合同提交状态
     public static final String CONTRACT_SALE_SUB_STATUS  = "2";
+
+
 }

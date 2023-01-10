@@ -6,14 +6,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.flong.springboot.base.model.MaterialLogTypeEnum;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
+import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.OrderPurchase;
 import com.flong.springboot.modules.entity.dto.OrderPurchaseDto;
+import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.OrderPurchaseVo;
+import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.OrderPurchaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,8 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
         @Autowired
         MaterialDetailLogService materialDetailLogService;
 
+        @Autowired
+        UserService userService;
 
 
         public IPage<OrderPurchase> page (OrderPurchaseDto OrderPurchaseDto) {
@@ -61,13 +67,16 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
                 //返回
                 int r = 0;
                 try {
-                        c.setOrderCode(orderCode);
                         c.setApplicationDate(UserHelper.getDate());
 
                         Integer keyId = c.getId();
 
+                        //设置供应商
+                        c.setSupplierCode(userService.getUserDeptCode(new UserDto().setUserId(c.getApplicant())));
+
                         if (keyId !=null && keyId !=0) {
-                                orderCode = c.getOrderCode();
+                                OrderPurchase orderPurchase = this.getOneById(keyId);
+                                orderCode = orderPurchase.getOrderCode();
                                 r = orderPurchaseMapper.updateById(c); //修改状态
                         } else {
                                 orderCode = GeneratorKeyUtil.getOrderPurchaseNextCode();
@@ -81,7 +90,7 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加订单失败");
                 }
 
-                materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList());
+                materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList(), MaterialLogTypeEnum.IN.getCode());
                 return r;
         }
 
@@ -108,7 +117,7 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
                         OrderPurchase o = orderPurchaseMapper.selectById(c.getId());
                         orderCode = o.getOrderCode();
                 }
-                materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList());
+                materialDetailLogService.updateOrInsertOrDelete(orderCode,c.getMaterialDetailLogList(),MaterialLogTypeEnum.IN.getCode());
         }
 
         public IPage<OrderPurchaseVo> pageList (OrderPurchaseDto orderPurchaseDto) {

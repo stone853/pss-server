@@ -76,11 +76,10 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
          * @param list
          * @return
          */
-        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetailLog> list) {
+        public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetailLog> list,String type) {
                 if (list == null || list.size() == 0) {
                         return true;
                 }
-
 
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
@@ -116,6 +115,11 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                                         if (StringUtils.isEmpty(p.getForeignCode())) {
                                                 p.setForeignCode(foreignCode);
                                         }
+                                        p.setSourceType(type);
+
+                                        //设置fileBean
+                                        FileBean f = new FileBean();
+                                        p.setFileC(f.fileBeanListToString(p.getFileBeanList()));
                                 }
 
                         );

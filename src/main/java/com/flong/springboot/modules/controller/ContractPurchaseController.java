@@ -51,7 +51,7 @@ public class ContractPurchaseController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        t.setCreateUser(request.getSession().getAttribute("userName").toString());
+        t.setCreateUser(request.getSession().getAttribute("userId").toString());
         return contractPurchaseService.insert(t);
     }
 
@@ -84,6 +84,16 @@ public class ContractPurchaseController {
     @GetMapping("/getOne")
     public ContractPurchaseVo getOne(@RequestHeader("token") String token, @RequestParam("id") int id) {
         return contractPurchaseService.getOneById(id);
+    }
+
+    /**
+     * 查询合同详情
+     *
+     * @param contractCode
+     */
+    @GetMapping("/getOneByContractCode")
+    public ContractPurchaseVo getOneByCode(@RequestHeader("token") String token, @RequestParam("contractCode") String contractCode) {
+        return contractPurchaseService.getOneByCode(contractCode);
     }
 
 //    /**

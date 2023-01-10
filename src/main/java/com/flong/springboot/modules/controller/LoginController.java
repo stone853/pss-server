@@ -11,16 +11,24 @@ import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.LoginVo;
+import com.flong.springboot.modules.entity.vo.UserVo;
+import com.flong.springboot.modules.service.UserRoleService;
 import com.flong.springboot.modules.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.flong.springboot.core.exception.CommMsgCode.NOT_SUPPORTED;
 
 /**
  * @Author:liangjl
@@ -29,10 +37,13 @@ import java.util.stream.Collectors;
  */
 @Api(tags = "登录信息")
 @RestController
+@Slf4j
 public class LoginController {
 
     @Autowired
     private UserService userService;
+
+
 
     @ApiOperation("登陆")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "LoginDto",dataTypeClass = LoginDto.class , value ="")})
@@ -43,7 +54,24 @@ public class LoginController {
         if (u ==null) {
             throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
         }
-        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword())).setUserName(u.getName());
+
+
+
+        UserVo vo = new UserVo();
+        try {
+            vo = userService.findOneUserRoles(new UserDto().setUserId(u.getUserId()));
+
+            if (vo !=null) {
+                lv.setRoleCode(vo.getRoleCodes());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("vo:{},code:{},message:{}", vo, CommMsgCode.DAO_ERROR.getCode(), e.getMessage());
+        }
+
+
+        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword()))
+                .setUserName(u.getName()).setUserId(u.getUserId());
     }
 
 }

@@ -42,10 +42,10 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
         @Autowired
         PssProcessTaskService pssProcessTaskService;
 
-        public IPage<ContractSale> page (ContractSaleDto contractSale) {
-                QueryWrapper<ContractSale> build = buildWrapper(contractSale);
-                return contractSaleMapper.selectPage(contractSale.getPage()==null ? new Page<>() : contractSale.getPage(),build);
-        }
+//        public IPage<ContractSale> page (ContractSaleDto contractSale) {
+//                QueryWrapper<ContractSale> build = buildWrapper(contractSale);
+//                return contractSaleMapper.selectPage(contractSale.getPage()==null ? new Page<>() : contractSale.getPage(),build);
+//        }
 
         public ContractSale getOneByCode (String code) {
                 QueryWrapper<ContractSale> build = new QueryWrapper<ContractSale>();
@@ -81,7 +81,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         c.setUpdateTime(UserHelper.getDateTime());
 
                         Integer keyId = c.getId();
-                        if (keyId !=null && keyId !=0) {
+                        if (keyId !=null && keyId !=0) { //处理流程
                                 ContractSale contractSaleProcess = this.getOneById(keyId);
                                 processId = contractSaleProcess.getProcessId();
                         }
@@ -92,7 +92,8 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
 
 
                         if (keyId !=null && keyId !=0) {//处理合同信息
-                                contractCode = c.getContractCode();
+                                ContractSale contractSale = this.getOneById(keyId);
+                                contractCode = contractSale.getContractCode();
                                 r = contractSaleMapper.updateById(c); //修改合同
                         } else {
                                 contractCode = GeneratorKeyUtil.getConractSaleNextCode();

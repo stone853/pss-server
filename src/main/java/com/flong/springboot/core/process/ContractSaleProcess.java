@@ -9,12 +9,14 @@ import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.PssProcess;
 import com.flong.springboot.modules.entity.PssProcessTask;
 import com.flong.springboot.modules.service.ContractSaleService;
+import com.flong.springboot.modules.service.PssProcessService;
 import com.flong.springboot.modules.service.PssProcessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -25,6 +27,9 @@ public class ContractSaleProcess {
 
     @Autowired
     ContractSaleService contractSaleService;
+
+    @Autowired
+    PssProcessService pssProcessService;
 
     @Transactional
     public void executeProcess (String currentStep,Integer result, String opinion,String processId,String processName,PssProcess pssProcess) {

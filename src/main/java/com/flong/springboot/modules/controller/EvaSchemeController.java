@@ -40,7 +40,7 @@ public class EvaSchemeController {
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@Validated @RequestBody EvaScheme t) {
 
-        t.setUpdUser(request.getSession().getAttribute("userName").toString());
+        t.setUpdUser(request.getSession().getAttribute("userId").toString());
         return evaSchemeService.insert(t);
     }
 

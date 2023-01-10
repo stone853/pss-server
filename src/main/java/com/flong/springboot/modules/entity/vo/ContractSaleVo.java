@@ -13,6 +13,36 @@ public class ContractSaleVo extends ContractSale {
 
     private String contractStatusNote;
 
+    private String checkUserButton;
+
+    private String createUserButton;
+
+    private String checkRoleCode;
+
+    public void setCheckRoleCode(String checkRoleCode) {
+        this.checkRoleCode = checkRoleCode;
+    }
+
+    public String getCheckRoleCode() {
+        return checkRoleCode;
+    }
+
+    public void setCheckUserButton(String checkUserButton) {
+        this.checkUserButton = checkUserButton;
+    }
+
+    public String getCheckUserButton() {
+        return checkUserButton;
+    }
+
+    public void setCreateUserButton(String createUserButton) {
+        this.createUserButton = createUserButton;
+    }
+
+    public String getCreateUserButton() {
+        return createUserButton;
+    }
+
     public void setCustName(String custName) {
         this.custName = custName;
     }

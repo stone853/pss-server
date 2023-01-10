@@ -43,11 +43,10 @@ public class OrderPurchaseController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "OrderPurchase",dataTypeClass = OrderPurchase.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@Validated @RequestBody OrderPurchase t) {
-        List<FileBean> fileBeanList = t.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            t.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
-        t.setApplicant(request.getSession().getAttribute("userName").toString());
+        FileBean f = new FileBean();
+        t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
+
+        t.setApplicant(request.getSession().getAttribute("userId").toString());
         return orderPurchaseService.insert(t);
     }
 
@@ -57,7 +56,7 @@ public class OrderPurchaseController {
      */
     @PutMapping("/updateById")
     public void updateOrInsert(@RequestHeader("token") String token,@RequestBody OrderPurchase orderPurchase) {
-        orderPurchase.setApplicant(request.getSession().getAttribute("userName").toString());
+        orderPurchase.setApplicant(request.getSession().getAttribute("userId").toString());
         orderPurchaseService.update(orderPurchase);
     }
     /**

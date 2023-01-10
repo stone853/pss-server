@@ -10,7 +10,18 @@ public class OrderPurchaseVo extends OrderPurchase {
         private String sendTypeNote;
         private String contractName;
 
-        private JSONArray jsonArray;
+
+        private String payTypeNote;
+
+    public void setPayTypeNote(String payTypeNote) {
+        this.payTypeNote = payTypeNote;
+    }
+
+    public String getPayTypeNote() {
+        return payTypeNote;
+    }
+
+    private JSONArray jsonArray;
 
 
     public void setJsonArray(JSONArray jsonArray) {

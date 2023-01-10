@@ -1,7 +1,10 @@
 package com.flong.springboot.modules.entity;
 
+import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
@@ -47,5 +50,12 @@ public class FileBean {
         return url;
     }
 
+
+    public String fileBeanListToString (List<FileBean> list) {
+        if (list !=null && list.size() > 0) {
+            return JSONArray.toJSONString(list);
+        }
+        return "";
+    }
 
 }
