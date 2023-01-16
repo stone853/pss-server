@@ -1,5 +1,6 @@
 package com.flong.springboot.modules.entity;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -26,9 +27,9 @@ public class MaterialDetailLog {
 
     private String sourceType;
 
-    private String quantity;
+    private Integer quantity;
 
-    private BigDecimal unitPrice;
+    private BigDecimal priceTax;
 
     private BigDecimal amountPrice;
 
@@ -40,6 +41,17 @@ public class MaterialDetailLog {
 
     private String fileC;
 
+    @TableField(exist = false)
+    private JSONArray jsonArray;
+
+    public void setJsonArray(JSONArray jsonArray) {
+        this.jsonArray = jsonArray;
+    }
+
+
+    public JSONArray getJsonArray() {
+        return jsonArray;
+    }
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;
@@ -95,20 +107,20 @@ public class MaterialDetailLog {
         this.sourceType = sourceType == null ? null : sourceType.trim();
     }
 
-    public String getQuantity() {
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity == null ? null : quantity.trim();
+    public void setPriceTax(BigDecimal priceTax) {
+        this.priceTax = priceTax;
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
+    public BigDecimal getPriceTax() {
+        return priceTax;
     }
 
     public BigDecimal getAmountPrice() {

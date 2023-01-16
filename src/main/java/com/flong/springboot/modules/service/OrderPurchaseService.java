@@ -13,6 +13,7 @@ import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
+import com.flong.springboot.modules.entity.MaterialDetailLog;
 import com.flong.springboot.modules.entity.OrderPurchase;
 import com.flong.springboot.modules.entity.dto.OrderPurchaseDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
@@ -123,7 +124,17 @@ public class OrderPurchaseService extends ServiceImpl<OrderPurchaseMapper, Order
         public IPage<OrderPurchaseVo> pageList (OrderPurchaseDto orderPurchaseDto) {
                 IPage<OrderPurchaseVo> pageList = orderPurchaseMapper.pageList(orderPurchaseDto.getPage()==null ? new Page<>():orderPurchaseDto.getPage(),orderPurchaseDto);
                 List<OrderPurchaseVo> orderList = pageList.getRecords();
-                orderList.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFileC())));
+                if (orderList !=null && orderList.size() >0) {
+                        orderList.stream().forEach((p) ->{
+                                p.setJsonArray(JSONArray.parseArray( p.getFileC()));
+                                List<MaterialDetailLog> mdlList = p.getMaterialDetailLogList();
+                                if (mdlList !=null && mdlList.size() >0) {
+                                        mdlList.stream().forEach(x -> x.setJsonArray(JSONArray.parseArray( x.getFileC())));
+                                }
+
+                        });
+                }
+
                 return pageList;
         }
 

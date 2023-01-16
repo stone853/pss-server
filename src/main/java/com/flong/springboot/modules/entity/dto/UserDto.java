@@ -10,26 +10,20 @@ public class UserDto {
 
     private String userId;
 
-    private String remark;
+
     private String name;
 
     private String mobile;
 
     private Byte isDelete;
 
-    private String password;
+
 
     private String deptCode;
 
     private String roleCodes;
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 
-    public String getRemark() {
-        return remark;
-    }
 
     public void setRoleCodes(String roleCodes) {
         this.roleCodes = roleCodes;
@@ -68,13 +62,7 @@ public class UserDto {
         return deptCode;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setIsDelete(Byte isDelete) {
         this.isDelete = isDelete;

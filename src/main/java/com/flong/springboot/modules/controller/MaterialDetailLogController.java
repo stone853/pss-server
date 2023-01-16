@@ -1,8 +1,10 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
+import com.flong.springboot.modules.entity.vo.OrderPurchaseVo;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,12 @@ public class MaterialDetailLogController {
 
     @GetMapping("/v1/list")
     public List<MaterialDetailLogVo> list (@RequestHeader("token") String token, @RequestParam String foreignCode) {
-        return materialDetailLogService.list(foreignCode);
+        List<MaterialDetailLogVo> list = materialDetailLogService.list(foreignCode);
+        if (list !=null && list.size() >0) {
+            list.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFileC())));
+        }
+        return list;
     }
-
-
 
 
 }

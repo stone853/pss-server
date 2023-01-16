@@ -42,7 +42,7 @@ public class OrderPurchaseController {
     @ApiOperation("增加订单信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "OrderPurchase",dataTypeClass = OrderPurchase.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@Validated @RequestBody OrderPurchase t) {
+    public int add(@RequestHeader("token") String token,@RequestBody OrderPurchase t) {
         FileBean f = new FileBean();
         t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
 

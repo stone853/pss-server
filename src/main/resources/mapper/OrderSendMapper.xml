@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.OrderSendMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.OrderSend">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_send_code" jdbcType="VARCHAR" property="orderSendCode" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="driver_code" jdbcType="VARCHAR" property="driverCode" />
+    <result column="estimated_delivery_time" jdbcType="CHAR" property="estimatedDeliveryTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+  </resultMap>
+
+
+  <select id="getOrderMaterial" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo" parameterType="com.flong.springboot.modules.entity.dto.OrderSendMaterialDto">
+    SELECT
+    A.orderCode,
+    A.material_code AS materialCode,
+    A.orderQuantity,
+    (
+    A.orderQuantity - ifnull(B.sendQuantity,0)
+    ) AS remainQuantity,
+    C.material_name AS materialName,
+    C.material_model AS materialModel,
+    C.measure_unit AS measureUnit,
+    C.brand,
+    D.estimated_delivery_time as estimatedDeliveryTime
+    FROM
+    (
+    SELECT
+    t.foreign_code AS orderCode,
+    t.material_code,
+    sum(t.quantity) AS orderQuantity
+    FROM
+    t_pss_material_detail_log t
+    GROUP BY
+    t.foreign_code,
+    t.material_code
+    ) A
+    LEFT JOIN (
+    SELECT
+    t1.order_code AS orderCode,
+    t1.material_code,
+    ifnull(sum(t1.send_quantity),0) AS sendQuantity
+    FROM
+    t_pss_material_detail_send t1
+    WHERE
+    1=1
+    and exists (select 1 from t_pss_order_send t where t.order_send_code = t1.foreign_code)
+
+    <if test="orderSendMaterialDto.orderSendCode != null and orderSendMaterialDto.orderSendCode != ''">
+      and t1.order_send_code = #{orderSendMaterialDto.orderSendCode}
+    </if>
+
+    GROUP BY
+    t1.order_code,
+    t1.material_code
+    ) B ON A.orderCode = B.orderCode
+    AND A.material_code = B.material_code
+    LEFT JOIN t_pss_material_mgt C ON A.material_code = C.material_code
+    LEFT JOIN t_pss_material_detail_log D ON A.orderCode = D.foreign_code and A.material_code = D.material_code
+    WHERE
+    1 = 1
+    <if test="orderSendMaterialDto.orderCode != null and orderSendMaterialDto.orderCode != ''">
+      and A.orderCode = #{orderSendMaterialDto.orderCode}
+    </if>
+    <if test="orderSendMaterialDto.materialCode != null and orderSendMaterialDto.materialCode.size() > 0">
+      and A.material_code in
+      <foreach collection="orderSendMaterialDto.materialCode" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+
+  <select id="getSendMaterial" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo" parameterType="com.flong.springboot.modules.entity.dto.OrderSendMaterialDto">
+    SELECT
+    A.orderCode,
+    A.material_code AS materialCode,
+    A.orderQuantity,
+    (
+    A.orderQuantity - ifnull(B.sendQuantity,0)
+    ) AS remainQuantity,
+    C.material_name AS materialName,
+    C.material_model AS materialModel,
+    C.measure_unit AS measureUnit,
+    C.brand,
+    D.estimated_delivery_time as estimatedDeliveryTime
+    FROM
+    (
+    SELECT
+    t.foreign_code AS orderCode,
+    t.material_code,
+    sum(t.quantity) AS orderQuantity
+    FROM
+    t_pss_material_detail_log t
+    GROUP BY
+    t.foreign_code,
+    t.material_code
+    ) A
+    INNER JOIN (
+    SELECT
+    t1.order_code AS orderCode,
+    t1.material_code,
+    ifnull(sum(t1.send_quantity),0) AS sendQuantity
+    FROM
+    t_pss_material_detail_send t1
+    WHERE
+    1=1
+    and exists (select 1 from t_pss_order_send t where t.order_send_code = t1.foreign_code)
+
+    <if test="orderSendMaterialDto.orderSendCode != null and orderSendMaterialDto.orderSendCode != ''">
+      and t1.order_send_code = #{orderSendMaterialDto.orderSendCode}
+    </if>
+
+    GROUP BY
+    t1.order_code,
+    t1.material_code
+    ) B ON A.orderCode = B.orderCode
+    AND A.material_code = B.material_code
+    LEFT JOIN t_pss_material_mgt C ON A.material_code = C.material_code
+    LEFT JOIN t_pss_material_detail_log D ON A.orderCode = D.foreign_code and A.material_code = D.material_code
+    WHERE
+    1 = 1
+    <if test="orderSendMaterialDto.orderCode != null and orderSendMaterialDto.orderCode != ''">
+      and A.orderCode = #{orderSendMaterialDto.orderCode}
+    </if>
+    <if test="orderSendMaterialDto.materialCode != null and orderSendMaterialDto.materialCode.size() > 0">
+      and A.material_code in
+      <foreach collection="orderSendMaterialDto.materialCode" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+
+  <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderSendVo">
+    select t.*
+    from t_pss_order_send t
+
+    where 1=1
+    <if test="id != null and id != ''">
+      and t.id = #{id}
+    </if>
+  </select>
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.OrderSendVo" parameterType="com.flong.springboot.modules.entity.dto.OrderSendDto">
+    select t.*,t2.note as sendStatusName,
+    t3.driver_name as driverName,t3.car_no as carNo,t3.tel_no as telNo
+    from t_pss_order_send t
+    left join t_pss_order_purchase t1 on t.order_code = t1.order_code
+    left join t_pss_dict t2 on t.send_status = t2.code and t2.type = 'shzt'
+    left join t_pss_driver t3 on t.driver_code = t3.driver_code
+    where 1=1
+    <if test="orderSendDto.sendStatus != null and orderSendDto.sendStatus != ''">
+      and t.send_status = #{orderSendDto.sendStatus}
+    </if>
+    <if test="orderSendDto.orderCode != null and orderSendDto.orderCode != ''">
+      and t.order_code = #{orderSendDto.orderCode}
+    </if>
+
+  </select>
+
+</mapper>

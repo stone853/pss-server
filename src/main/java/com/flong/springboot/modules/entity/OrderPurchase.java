@@ -62,14 +62,7 @@ public class OrderPurchase {
         return fileBeanList;
     }
 
-    public OrderPurchase setFileC(String fileC) {
-        this.fileC = fileC;
-        return this;
-    }
 
-    public String getFileC() {
-        return fileC;
-    }
 
     @TableField(exist = false)
     private List<MaterialDetailLog> materialDetailLogList;
@@ -82,6 +75,17 @@ public class OrderPurchase {
     public List<MaterialDetailLog> getMaterialDetailLogList() {
         return materialDetailLogList;
     }
+
+    public OrderPurchase setFileC(String fileC) {
+        this.fileC = fileC;
+        return this;
+    }
+
+    public String getFileC() {
+        return fileC;
+    }
+
+
 
     public void setStatus(String status) {
         this.status = status;

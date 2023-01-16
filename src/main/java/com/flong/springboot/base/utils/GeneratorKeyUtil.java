@@ -172,6 +172,15 @@ public class GeneratorKeyUtil {
         return "WLMX" + nextId();
     }
 
+    public static String getDriverNextCode () {
+        return "SJ" + nextId();
+    }
+
+
+    public static String getOrderSendNextCode () {
+        return "FHD" + nextId();
+    }
+
     public static void main (String args[]) {
         System.out.println(GeneratorKeyUtil.getCustNextId());
     }

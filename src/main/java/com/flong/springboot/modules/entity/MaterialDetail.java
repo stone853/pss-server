@@ -28,7 +28,7 @@ public class MaterialDetail {
 
     private String type;
 
-    private String quantity;
+    private Integer quantity;
 
     private BigDecimal priceTax;
 
@@ -73,12 +73,12 @@ public class MaterialDetail {
         this.type = type == null ? null : type.trim();
     }
 
-    public String getQuantity() {
-        return quantity;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity == null ? null : quantity.trim();
+    public Integer getQuantity() {
+        return quantity;
     }
 
     public BigDecimal getPriceTax() {

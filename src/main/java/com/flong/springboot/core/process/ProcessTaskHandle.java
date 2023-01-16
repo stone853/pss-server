@@ -1,13 +1,11 @@
 package com.flong.springboot.core.process;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.PssProcess;
-import com.flong.springboot.modules.entity.PssProcessTask;
+import com.flong.springboot.modules.entity.dto.PssProcessDto;
 import com.flong.springboot.modules.service.ContractSaleService;
 import com.flong.springboot.modules.service.PssProcessService;
 import com.flong.springboot.modules.service.PssProcessTaskService;
@@ -16,11 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
 
 @Service
-public class ContractSaleProcess {
+public class ProcessTaskHandle {
 
     @Autowired
     PssProcessTaskService pssProcessTaskService;
@@ -31,17 +27,26 @@ public class ContractSaleProcess {
     @Autowired
     PssProcessService pssProcessService;
 
-    @Transactional
-    public void executeProcess (String currentStep,Integer result, String opinion,String processId,String processName,PssProcess pssProcess) {
-            QueryWrapper<ContractSale> qc = new QueryWrapper();
-            qc.eq("process_id",processId);
-            ContractSale contractSale = contractSaleService.getOne(qc);
 
-            if (contractSale == null) {
-                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"对应的合同");
+    public String executeProcess (String processType, PssProcessDto pssProcessDto) {
+            String returnStatus = "";
+            String taskStep = "";
+
+            String currentStep = pssProcessDto.getCurrentStep();
+            Integer result = pssProcessDto.getResult();
+            String opinion = pssProcessDto.getOpinion();
+            String processId = pssProcessDto.getProcessId();
+            String processName =pssProcessDto.getProcessName();
+
+            QueryWrapper<PssProcess> qw = new QueryWrapper();
+            qw.eq("type", processType);
+            qw.eq("step",currentStep);
+            PssProcess pssProcess = pssProcessService.getOne(qw);
+
+            if (pssProcess == null) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"没有找到当前流程节点");
             }
 
-            String taskStep = "";
             //流程审批通过
             if (result == 1) { //审批通过
                 String nextStep = pssProcess.getNextStep();
@@ -49,7 +54,7 @@ public class ContractSaleProcess {
                     throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"下一步未设置");
                 }
 
-                contractSale.setContractStatus(pssProcess.getProcessStatusApproved());
+                returnStatus = pssProcess.getProcessStatusApproved();
 
                 taskStep = nextStep;
             } else {  //驳回
@@ -58,14 +63,14 @@ public class ContractSaleProcess {
                     throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"上一步未设置");
                 }
 
-                contractSale.setContractStatus(pssProcess.getProcessStatusRefused());
+                returnStatus = pssProcess.getProcessStatusRefused();
 
                 taskStep = preStep;
             }
             //修改任务状态
             pssProcessTaskService.updateTaskStepByProcessId(processId,taskStep);
-            //修改销售合同状态
-            contractSaleService.update(contractSale);
+
+            return returnStatus;
     }
 
 
@@ -73,7 +78,7 @@ public class ContractSaleProcess {
 
     public static void main (String args[]) {
         try {
-            Class p = Class.forName("com.flong.springboot.core.process.ContractSaleProcess");
+            Class p = Class.forName("com.flong.springboot.core.process.ProcessTaskHandle");
 
             Class [] argTypes = new Class[3];
             argTypes[0]= Integer.class;
@@ -83,6 +88,21 @@ public class ContractSaleProcess {
             Method method = p.getMethod("executeProess",argTypes);
             Object b = p.newInstance();
             method.invoke( b,1,2,"3");
+
+
+            //                        Class clazz = Class.forName(classForName);
+//                        Object o = clazz.newInstance();
+//
+//                        Class [] argTypes = new Class[6];
+//                        argTypes[0]= String.class;
+//                        argTypes[1] = Integer.class;
+//                        argTypes[2] = String.class;
+//                        argTypes[3] = String.class;
+//                        argTypes[4] = String.class;
+//                        argTypes[5] = PssProcess.class;
+//
+//                        Method method = clazz.getMethod("executeProcess",argTypes);
+//                        method.invoke( o,currentStep,result,opinion,processId,processName,pssProcess);
         } catch (Exception e) {
             e.printStackTrace();
         }

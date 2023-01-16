@@ -112,9 +112,9 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
                                         }
-                                        if (StringUtils.isEmpty(p.getForeignCode())) {
-                                                p.setForeignCode(foreignCode);
-                                        }
+
+                                        p.setForeignCode(foreignCode);
+
                                         p.setSourceType(type);
 
                                         //设置fileBean

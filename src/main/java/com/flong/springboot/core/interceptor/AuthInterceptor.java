@@ -56,13 +56,13 @@ public class AuthInterceptor implements HandlerInterceptor{
             qw.eq("mobile", JWT.decode(token).getAudience().get(0));
             User u = userService.getOne(qw);
             if (u == null) {
-                throw new BaseException(CommMsgCode.INVALID_TOKEN,"token验证失败，无用户");
+                throw new BaseException(CommMsgCode.UNAUTHORIZED,"token验证失败，无用户");
             }
             request.getSession().setAttribute("userId",u.getUserId());
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(u.getPassword())).build();
             jwtVerifier.verify(token);
-        } catch (JWTDecodeException j) {
-            throw new BaseException(CommMsgCode.INVALID_TOKEN,"token验证失败");
+        }  catch (Exception j) {
+            throw new BaseException(CommMsgCode.UNAUTHORIZED,"token验证失败");
         }
 
         return true;

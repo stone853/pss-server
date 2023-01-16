@@ -1,7 +1,9 @@
 package com.flong.springboot.core.swagger;
 
+import com.flong.springboot.core.config.PssConfig;
 import com.flong.springboot.core.interceptor.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -11,6 +13,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.*;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -26,6 +29,9 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
     @Autowired
     private AuthInterceptor authInterceptor;
 
+    @Autowired
+    PssConfig pssConfig;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 添加拦截接口请求处理，
@@ -39,6 +45,20 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        registry.addResourceHandler(pssConfig.getCustomerFileUrl()+"**").addResourceLocations("file://"+pssConfig.getCustomerFileUrl() );
+
+//        ApplicationHome h = new ApplicationHome(getClass());
+//        File jarF = h.getSource();
+//        String dirPath = jarF.getParentFile().toString()+"/upload/";
+//
+//        String os = System.getProperty("os.name");
+//
+//        if (os.toLowerCase().startsWith("win")) { //如果是Windows系统
+//            registry.addResourceHandler("/upload/**").addResourceLocations("file:"+dirPath);
+//        } else {
+//            registry.addResourceHandler("/upload/**").addResourceLocations("file:"+dirPath);
+//        }
     }
 
     /**

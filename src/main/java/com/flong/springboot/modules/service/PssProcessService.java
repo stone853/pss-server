@@ -4,10 +4,9 @@ package com.flong.springboot.modules.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
-import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.process.ContractSaleProcess;
+import com.flong.springboot.core.process.ProcessTaskHandle;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.PssProcess;
@@ -16,8 +15,7 @@ import com.flong.springboot.modules.entity.dto.PssProcessDto;
 import com.flong.springboot.modules.mapper.PssProcessMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Method;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess> {
@@ -27,52 +25,26 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
         PssProcessTaskService pssProcessTaskService;
 
         @Autowired
-        ContractSaleProcess contractSaleProcess;
+        ProcessTaskHandle processTaskHandle;
 
+        @Autowired
+        ContractSaleService contractSaleService;
+
+        @Transactional
         public void contractSaleProcess (String processType,PssProcessDto pssProcessDto) {
-                String currentStep = pssProcessDto.getCurrentStep();
-                Integer result = pssProcessDto.getResult();
-                String opinion = pssProcessDto.getOpinion();
+                //处理流程任务，并返回流程任务对应的合同状态
+                String returnStatus = processTaskHandle.executeProcess(processType,pssProcessDto);
+
+                //修改销售合同对应状态
                 String processId = pssProcessDto.getProcessId();
-                String processName =pssProcessDto.getProcessName();
-
-                QueryWrapper<PssProcess> qw = new QueryWrapper();
-                qw.eq("type", processType);
-                qw.eq("step",currentStep);
-                PssProcess pssProcess = this.getOne(qw);
-
-                if (pssProcess == null) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"没有找到当前流程节点");
+                QueryWrapper<ContractSale> qc = new QueryWrapper();
+                qc.eq("process_id",processId);
+                ContractSale contractSale = contractSaleService.getOne(qc);
+                if (contractSale == null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"对应的合同");
                 }
-
-                contractSaleProcess.executeProcess(currentStep,result,opinion,processId,processName,pssProcess);
-
-//                String classForName = pssProcess.getClassForName();
-//
-//                if (StringUtils.isEmpty(classForName)) {
-//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"该流程节点没有配置处理步骤");
-//                }
-
-                try {
-//                        Class clazz = Class.forName(classForName);
-//                        Object o = clazz.newInstance();
-//
-//                        Class [] argTypes = new Class[6];
-//                        argTypes[0]= String.class;
-//                        argTypes[1] = Integer.class;
-//                        argTypes[2] = String.class;
-//                        argTypes[3] = String.class;
-//                        argTypes[4] = String.class;
-//                        argTypes[5] = PssProcess.class;
-//
-//                        Method method = clazz.getMethod("executeProcess",argTypes);
-//                        method.invoke( o,currentStep,result,opinion,processId,processName,pssProcess);
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"调用销售合同流程失败");
-                }
-
-
+                contractSale.setContractStatus(returnStatus);
+                contractSaleService.update(contractSale);
         }
 
         public void startProcess (String processId,String processName,String step,String stepName) {

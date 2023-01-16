@@ -77,28 +77,45 @@ public class FileUtil {
 
     /**
      * 预览
-     * @param path
+     * @param filePath
      * @param response
      */
-    public String showFile(HttpServletResponse response,String path){
-        if(path!=null&&!path.equals("")){
+    public String showImg(HttpServletRequest request,HttpServletResponse response,String filePath){
 
-            try {
-                FileInputStream fis = new FileInputStream(path);
-                ServletOutputStream os = response.getOutputStream();
+        try {
 
-                byte [] b = new byte[1024*8];
-                while(fis.read(b)!=-1){
-                    os.write(b);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"文件预览失败");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"文件预览失败");
+            //type. p预览，d下载
+            String type = request.getParameter("type");
+            response.reset();
+            response.setCharacterEncoding("UTF-8");
+
+            File file = new File(filePath);
+            String fileName = file.getName();
+            FileInputStream fis = new FileInputStream(file);
+
+            if ("d".equalsIgnoreCase(type)) {
+                //下载
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + System.currentTimeMillis() + fileName.substring(fileName.lastIndexOf(".")));
+
+            } else {
+                //预览时不需设置Content-Disposition
+//            response.setContentType("application/octet-stream");
+//            response.setContentType("text/html;charset=UTF-8");
+//            response.setHeader("Content-Disposition","inline;filename=" + System.currentTimeMillis() + fileName.substring(fileName.lastIndexOf(".")));
             }
+            OutputStream os = response.getOutputStream();
+            byte[] bytes = new byte[1024];
+            int length = 0;
+            while ((length = fis.read(bytes)) != -1) {
+                os.write(bytes, 0, length);
+            }
+            os.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return "预览失败";
     }
 

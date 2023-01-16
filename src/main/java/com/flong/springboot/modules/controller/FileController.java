@@ -75,10 +75,10 @@ public class FileController {
     }
 
     @ApiOperation("预览文件")
-    @GetMapping("/v1/showFile")
-    public String showFile(@RequestHeader("token") String token, @RequestParam("filePath") String filePath) {
+    @GetMapping("/v1/showImg")
+    public String showFile( @RequestParam("filePath") String filePath) {
         FileUtil fu = new FileUtil();
-        return fu.showFile(response,filePath);
+        return fu.showImg(request,response,filePath);
     }
 
 

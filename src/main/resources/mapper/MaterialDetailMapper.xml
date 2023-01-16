@@ -7,7 +7,7 @@
     <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
     <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="quantity" jdbcType="VARCHAR" property="quantity" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
     <result column="price_tax" jdbcType="DECIMAL" property="priceTax" />
   </resultMap>
 

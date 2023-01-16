@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.DriverMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.PssDriver">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="driver_code" jdbcType="VARCHAR" property="driverCode" />
+    <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
+    <result column="car_no" jdbcType="VARCHAR" property="carNo" />
+    <result column="tel_no" jdbcType="VARCHAR" property="telNo" />
+    <result column="carry_capacity" jdbcType="VARCHAR" property="carryCapacity" />
+    <result column="car_info" jdbcType="VARCHAR" property="carInfo" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+  </resultMap>
+
+</mapper>
