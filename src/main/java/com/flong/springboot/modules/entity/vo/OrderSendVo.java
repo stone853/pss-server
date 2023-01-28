@@ -25,6 +25,8 @@ public class OrderSendVo {
 
     private JSONArray jsonArray;
 
+    private JSONArray acptJsonArray;
+
     private String sendStatusName;
 
 
@@ -42,7 +44,35 @@ public class OrderSendVo {
 
     private String shipAddr;
 
+    private String acptFileC;
+
+    private double priceTax;
+
+    public void setPriceTax(double priceTax) {
+        this.priceTax = priceTax;
+    }
+
+    public double getPriceTax() {
+        return priceTax;
+    }
+
+    public void setAcptFileC(String acptFileC) {
+        this.acptFileC = acptFileC;
+    }
+
+    public String getAcptFileC() {
+        return acptFileC;
+    }
+
     private List<MaterialDetailSendVo> materialSendVo;
+
+    public void setAcptJsonArray(JSONArray acptJsonArray) {
+        this.acptJsonArray = acptJsonArray;
+    }
+
+    public JSONArray getAcptJsonArray() {
+        return acptJsonArray;
+    }
 
     public void setAcptTime(String acptTime) {
         this.acptTime = acptTime;

@@ -12,6 +12,8 @@
     <result column="send_time" jdbcType="CHAR" property="sendTime" />
     <result column="acpt_time" jdbcType="CHAR" property="acptTime" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="acpt_file_c" jdbcType="VARCHAR" property="acptFileC" />
+
   </resultMap>
 
 

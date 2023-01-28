@@ -10,6 +10,7 @@ import com.flong.springboot.modules.entity.dto.OrderSendDto;
 import com.flong.springboot.modules.entity.dto.OrderSendMaterialDto;
 import com.flong.springboot.modules.entity.dto.UpdSendStatus;
 import com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo;
+import com.flong.springboot.modules.entity.vo.OrderSendLogVo;
 import com.flong.springboot.modules.entity.vo.OrderSendVo;
 import com.flong.springboot.modules.service.OrderSendService;
 import io.swagger.annotations.Api;
@@ -34,9 +35,6 @@ public class OrderSendController {
 
     @Autowired
     private OrderSendService orderSendService;
-
-    @Autowired
-    private HttpServletRequest request;
 
     /**
      * 添加
@@ -64,13 +62,16 @@ public class OrderSendController {
 
     /**
      * 修改
-     * @param updSendStatus
+     * @param t
      */
     @ApiOperation("订单验收或驳回 sendStatus 3 验收 2 驳回")
-    @PutMapping("/updSendStatus")
-    public void updSendStatus(@RequestHeader("token") String token,@RequestBody UpdSendStatus updSendStatus) {
-        updSendStatus.setUserId(UserHelper.getUserId(token));
-        orderSendService.updSendStatus(updSendStatus);
+    @PutMapping("/acptOrderSend")
+    public void acptOrderSend(@RequestHeader("token") String token,@RequestBody OrderSend t) {
+        FileBean f = new FileBean();
+        t.setAcptFileC(f.fileBeanListToString(t.getFileBeanList()));
+
+        t.setUserId(UserHelper.getUserId(token));
+        orderSendService.acptOrderSend(t);
     }
     /**
      * 删除通过多个主键Id进行删除
@@ -134,5 +135,16 @@ public class OrderSendController {
         return orderSendService.isCheckSendAll(orderCode);
     }
 
+
+    /**
+     * 查询发货单状态变更日志
+     *
+     * @param orderSendCode
+     */
+    @ApiOperation("查询发货单状态变更日志")
+    @GetMapping("/getSendLogList")
+    public List<OrderSendLogVo> getSendLogList(@RequestHeader("token") String token, @RequestParam("orderSendCode") String orderSendCode) {
+        return orderSendService.getSendLogList(orderSendCode);
+    }
 
 }

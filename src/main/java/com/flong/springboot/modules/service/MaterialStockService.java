@@ -9,6 +9,7 @@ import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.MaterialStock;
 import com.flong.springboot.modules.entity.dto.MaterialStockDto;
+import com.flong.springboot.modules.entity.vo.MaterialStockDetailVo;
 import com.flong.springboot.modules.entity.vo.MaterialStockVo;
 import com.flong.springboot.modules.mapper.MaterialStockMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,10 @@ public class MaterialStockService extends ServiceImpl<MaterialStockMapper, Mater
 
         public List<MaterialStockVo> findAll (MaterialStockDto materialStockDto) {
                 return materialStockMapper.findAll(materialStockDto);
+        }
+
+        public List<MaterialStockDetailVo> findStockDetail (MaterialStockDto materialStockDto) {
+                return materialStockMapper.findStockDetail(materialStockDto);
         }
 
         public void subOutOrder (String materialCode,int outQuantity) {

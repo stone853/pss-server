@@ -8,4 +8,15 @@
     <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
     <result column="order_send_code" jdbcType="VARCHAR" property="orderSendCode" />
   </resultMap>
+
+  <select id="getByOrderSendCode" resultType="com.flong.springboot.modules.entity.vo.OrderSendLogVo">
+    select t.*,t1.name optName,t2.note sendStatusName from t_pss_order_send_log t
+    left join t_pss_user t1 on t.opt_user = t1.user_id
+    left join t_pss_dict t2 on t.send_status = t2.code and t2.type ='shzt'
+    where 1=1
+    <if test="orderSendCode != null and orderSendCode != ''">
+      and t.order_send_code = #{orderSendCode}
+    </if>
+    order by t.id
+  </select>
 </mapper>

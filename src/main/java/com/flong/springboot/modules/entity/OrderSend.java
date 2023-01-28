@@ -29,6 +29,9 @@ public class OrderSend {
     @JsonIgnore
     private String fileC;
 
+    @JsonIgnore
+    private String acptFileC;
+
     private String sendStatus;
 
     private String acptTime;
@@ -36,7 +39,18 @@ public class OrderSend {
     private String sendTime;
 
     @TableField(exist = false)
+    private String userId;
+
+    @TableField(exist = false)
     private List<FileBean> fileBeanList;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
 
     public void setAcptTime(String acptTime) {
         this.acptTime = acptTime;

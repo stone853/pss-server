@@ -13,5 +13,4 @@ public class OrderSendLogService extends ServiceImpl<OrderSendLogMapper, OrderSe
         OrderSendLogMapper orderSendLogMapper;
 
 
-
 }

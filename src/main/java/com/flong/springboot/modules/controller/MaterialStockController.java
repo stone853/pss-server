@@ -4,6 +4,7 @@ package com.flong.springboot.modules.controller;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.util.ThreadTest;
 import com.flong.springboot.modules.entity.dto.MaterialStockDto;
+import com.flong.springboot.modules.entity.vo.MaterialStockDetailVo;
 import com.flong.springboot.modules.entity.vo.MaterialStockVo;
 import com.flong.springboot.modules.service.MaterialStockService;
 import io.swagger.annotations.Api;
@@ -35,6 +36,12 @@ public class MaterialStockController {
     @PostMapping("/v1/findAll")
     public List<MaterialStockVo> findAll (@RequestHeader("token") String token, @RequestBody MaterialStockDto materialStockDto) {
         return materialStockService.findAll(materialStockDto);
+    }
+
+    @ApiOperation("查询库存详情-入库-出库（不分页）")
+    @PostMapping("/v1/findStockDetail")
+    public List<MaterialStockDetailVo> findStockDetail (@RequestHeader("token") String token, @RequestBody MaterialStockDto materialStockDto) {
+        return materialStockService.findStockDetail(materialStockDto);
     }
 
 

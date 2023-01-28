@@ -2,12 +2,15 @@ package com.flong.springboot.modules.service;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.MaterialDetailSend;
+import com.flong.springboot.modules.entity.MaterialStock;
 import com.flong.springboot.modules.entity.dto.OrderSendMaterialDto;
 import com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo;
 import com.flong.springboot.modules.entity.vo.MaterialDetailSendVo;
@@ -93,6 +96,66 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                 return true;
         }
 
+        /**
+         * insert or update ,没有则delete
+         * @param foreignCode
+         * @param list
+         * @return
+         */
+        public boolean acptQuantity (String foreignCode,List<MaterialDetailSend> list,String type) {
+                //查询库中目前有的物料明细
+                if (StringUtils.isEmpty(foreignCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
+                }
+                if (list == null || list.size() == 0) {
+                        return true;
+                }
+                //修改物料明细，insert or update
+                try {
+                        list.stream().forEach((p) ->{
+
+                                        String materialCode = p.getMaterialCode();
+                                        if (StringUtils.isEmpty(materialCode)) {
+                                                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"验收materialCode不能为空");
+                                        }
+                                        String acptRemark = p.getAcptRemark();
+                                        int acptQuantity = p.getAcptQuantity();
+                                        updAcptQuantity(foreignCode,materialCode,acptQuantity,acptRemark);
+                                }
+
+                        );
+                }catch (ServiceException e) {
+                        throw e;
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"验收物料数量有误");
+                }
+
+                return true;
+        }
+
+        public void updAcptQuantity (String foreignCode,String materialCode,int acptQuantity,String acptRemark) {
+                if (StringUtils.isEmpty(materialCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改物料code为空");
+                }
+
+                QueryWrapper<MaterialDetailSend> q = new QueryWrapper<>();
+                q.eq("material_code",materialCode);
+                q.eq("foreign_code",foreignCode);
+                q.last("limit 1");
+                MaterialDetailSend m = this.getOne(q);
+
+                if (acptQuantity !=0) {
+                        UpdateWrapper<MaterialDetailSend> uSql = new UpdateWrapper<>();
+                        uSql.set("acpt_quantity",acptQuantity);
+                        uSql.set("acpt_remark",acptRemark);
+                        uSql.eq("material_code", materialCode);
+                        uSql.eq("foreign_code", foreignCode);
+                        materialDetailSendMapper.update(null,uSql);
+                }
+
+        }
+
 
         private boolean isSendable (String orderCode,List<MaterialDetailSend> list) {
                 List<MaterialDetailSendOrderVo> orderList =orderSendMapper.getOrderMaterial(new OrderSendMaterialDto().setOrderCode(orderCode));
@@ -124,6 +187,10 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
 //        }
 
 
+
+        public List<MaterialDetailSendVo> getByOrderSendCode (String foreignCode) {
+                return materialDetailSendMapper.getByOrderSendCode(foreignCode);
+        }
 
 
 }

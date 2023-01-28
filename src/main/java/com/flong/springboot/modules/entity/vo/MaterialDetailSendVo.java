@@ -11,6 +11,16 @@ public class MaterialDetailSendVo extends MaterialDetailSend {
     private String measureUnit;
     private String brand;
 
+    private double priceTax;
+
+    public void setPriceTax(double priceTax) {
+        this.priceTax = priceTax;
+    }
+
+    public double getPriceTax() {
+        return priceTax;
+    }
+
     public void setMaterialModel(String materialModel) {
         this.materialModel = materialModel;
     }

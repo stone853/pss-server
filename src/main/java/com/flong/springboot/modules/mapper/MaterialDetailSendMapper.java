@@ -11,5 +11,7 @@ import java.util.List;
 public interface MaterialDetailSendMapper extends BaseMapper<MaterialDetailSend> {
     List<MaterialDetailSendVo> findAll(@Param("foreignCode") String foreignCode);
 
+    List<MaterialDetailSendVo> getByOrderSendCode(@Param("foreignCode") String foreignCode);
+
 
 }

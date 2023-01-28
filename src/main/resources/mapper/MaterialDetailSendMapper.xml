@@ -24,4 +24,21 @@
     </if>
     order by t.id
   </select>
+
+  <select id="getByOrderSendCode" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailSendVo">
+    select t.id,t.detail_id,t.order_code,t.foreign_code,t.material_code,
+    t.send_quantity,t.send_quantity acptQuantity,t.acpt_remark,t1.price_tax priceTax,
+    t2.material_name materialName,
+    t2.material_model materialModel,
+    t2.measure_unit measureUnit,
+    t2.brand from t_pss_material_detail_send t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code and t.material_code = t1.material_code
+    left join t_pss_material_mgt t2 on t.material_code = t2.material_code
+    where 1=1
+    <if test="foreignCode != null and foreignCode != ''">
+      and t.foreign_code = #{foreignCode}
+    </if>
+    order by t.id
+  </select>
+
 </mapper>

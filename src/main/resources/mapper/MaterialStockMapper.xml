@@ -10,6 +10,42 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
 
+  <sql id="selectQuantityToIn">
+    select t1.material_code,sum(t1.quantity) quantityToIn from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` > '1' and t.`status` not in ( '4','7')
+    and t.order_type = '1'
+    and t1.material_code is not null
+    group by t1.material_code
+  </sql>
+
+  <sql id="selectQuantityIn">
+    select t1.material_code,sum(t1.quantity) quantityIn from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` = '7'
+    and t.order_type = '1'
+    and t1.material_code is not null
+    group by t1.material_code
+  </sql>
+
+  <sql id="selectQuantityToOut">
+    select t1.material_code,sum(t1.quantity) quantityToOut from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` > '1' and t.`status` not in ( '4','7')
+    and t.order_type = '2'
+    and t1.material_code is not null
+    group by t1.material_code
+  </sql>
+
+  <sql id="selectQuantityOut">
+    select t1.material_code,sum(t1.quantity) quantityOut from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` = '7'
+    and t.order_type = '2'
+    and t1.material_code is not null
+    group by t1.material_code
+  </sql>
+
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
           parameterType="com.flong.springboot.modules.entity.dto.MaterialStockDto">
     select t.*,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_stock t
@@ -24,7 +60,7 @@
     order by t.id
   </select>
 
-  <select id="findStockDetail" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
+  <select id="findStockDetail" resultType="com.flong.springboot.modules.entity.vo.MaterialStockDetailVo"
           parameterType="com.flong.springboot.modules.entity.dto.MaterialStockDto">
     select t.*,t1.material_model materialModel,t1.measure_unit measureUnit,t1.brand,
     IFNULL(A.quantityToIn,0) quantityToIn,IFNULL(A1.quantityIn,0) quantityIn,
@@ -33,40 +69,19 @@
     from t_pss_material_stock t
     LEFT JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
     LEFT JOIN (
-    select t1.material_code,sum(t1.quantity) quantityToIn from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
-    where t.`status` > '1' and t.`status` not in ( '4','7')
-    and t.order_type = '1'
-    and t1.material_code is not null
-    group by t1.material_code
+    <include refid="selectQuantityToIn"></include>
     ) A on t.material_code = A.material_code
 
     LEFT JOIN (
-    select t1.material_code,sum(t1.quantity) quantityIn from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
-    where t.`status` = '7'
-    and t.order_type = '1'
-    and t1.material_code is not null
-    group by t1.material_code
+    <include refid="selectQuantityIn"></include>
     ) A1 on t.material_code = A1.material_code
 
     LEFT JOIN (
-
-    select t1.material_code,sum(t1.quantity) quantityToOut from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
-    where t.`status` > '1' and t.`status` not in ( '4','7')
-    and t.order_type = '2'
-    and t1.material_code is not null
-    group by t1.material_code
+    <include refid="selectQuantityToOut"></include>
     ) B on t.material_code = B.material_code
 
     LEFT JOIN(
-    select t1.material_code,sum(t1.quantity) quantityOut from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
-    where t.`status` = '7'
-    and t.order_type = '2'
-    and t1.material_code is not null
-    group by t1.material_code
+    <include refid="selectQuantityOut"></include>
     ) B1 on t.material_code = B1.material_code
   </select>
 

@@ -22,8 +22,10 @@ import com.flong.springboot.modules.entity.dto.OrderSendMaterialDto;
 import com.flong.springboot.modules.entity.dto.PssProcessDto;
 import com.flong.springboot.modules.entity.dto.UpdSendStatus;
 import com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo;
+import com.flong.springboot.modules.entity.vo.OrderSendLogVo;
 import com.flong.springboot.modules.entity.vo.OrderSendVo;
 import com.flong.springboot.modules.mapper.MaterialDetailSendMapper;
+import com.flong.springboot.modules.mapper.OrderSendLogMapper;
 import com.flong.springboot.modules.mapper.OrderSendMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mockito.internal.matchers.Or;
@@ -55,6 +57,10 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
 
         @Autowired
         OrderSendLogService orderSendLogService;
+
+        @Autowired
+        OrderSendLogMapper orderSendLogMapper;
+
 
         public IPage<OrderSend> page (OrderSendDto orderSendDto) {
                 QueryWrapper<OrderSend> build = buildWrapper(orderSendDto);
@@ -151,24 +157,37 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
 
         /**
          * 修改发货单状态  3 验收  2 驳回
-         * @param updSendStatus
+         * @param c
          */
-        public void updSendStatus (UpdSendStatus updSendStatus) {
-                String sendStatus = updSendStatus.getSendStatus();
-                String orderSendCode =updSendStatus.getOrderSendCode();
+        @Transactional
+        public void acptOrderSend (OrderSend c) {
+                Integer keyId = c.getId();
+                if (keyId == null) {
+                        throw new ServiceException(CommMsgCode.NO_DATA, "发送单keyId不能为空");
+                }
 
-                UpdateWrapper<OrderSend> q = new UpdateWrapper<>();
-                q.set("send_status",sendStatus);
-                q.eq("order_send_code",orderSendCode);
-                this.update(q);
+                String orderSendCode = "";
+                try {
+                        OrderSendVo orderSend = this.getOneById(keyId);
+                        orderSendCode = orderSend.getOrderSendCode();
+                        orderSendMapper.updateById(c); //修改状态
 
-                //记录日志
-                OrderSendLog orderSendLog = new OrderSendLog();
-                orderSendLog.setSendStatus(sendStatus);
-                orderSendLog.setOrderSendCode(orderSendCode);
-                orderSendLog.setOptUser(updSendStatus.getUserId());
-                orderSendLog.setOptTime(UserHelper.getDateTime());
-                orderSendLogService.save(orderSendLog);
+                        materialDetailSendService.acptQuantity(orderSendCode, c.getMaterialDetailSendList(), "");
+
+                        String sendStatus = c.getSendStatus();
+                        //记录日志
+                        OrderSendLog orderSendLog = new OrderSendLog();
+                        orderSendLog.setSendStatus(sendStatus);
+                        orderSendLog.setOrderSendCode(orderSendCode);
+                        orderSendLog.setOptUser(c.getUserId());
+                        orderSendLog.setOptTime(UserHelper.getDateTime());
+                        orderSendLogService.save(orderSendLog);
+                } catch (ServiceException e) {
+                        throw e;
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT, "验收发货单失败");
+                }
         }
 
 
@@ -205,7 +224,7 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                 if (orderList !=null && orderList.size() >0) {
                         orderList.stream().forEach((p) ->{
                                 p.setJsonArray(JSONArray.parseArray( p.getFileC()));
-
+                                p.setAcptJsonArray(JSONArray.parseArray( p.getAcptFileC()));
                                 //处理物料
                                 p.setMaterialSendVo(
                                         materialDetailSendMapper.findAll(
@@ -254,6 +273,10 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
 
         public List<MaterialDetailSendOrderVo> getSendMaterial(OrderSendMaterialDto orderSendMaterialDto) {
                 return orderSendMapper.getSendMaterial(orderSendMaterialDto);
+        }
+
+        public List<OrderSendLogVo> getSendLogList (String orderSendCode) {
+                return orderSendLogMapper.getByOrderSendCode(orderSendCode);
         }
 
 }
