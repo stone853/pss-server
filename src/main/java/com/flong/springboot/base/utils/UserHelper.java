@@ -17,7 +17,7 @@ public class UserHelper {
 
 
 
-    public static String getUserPhone (String token) {
+    public static String getUserId (String token) {
         if (null !=token && !"".equals(token)) {
             return JWT.decode(token).getAudience().get(0);
         }
@@ -26,9 +26,9 @@ public class UserHelper {
 
 
 
-    public static String getToken(String mobile,String password) {
+    public static String getToken(String userId,String password) {
         return JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + CommonConstant.EXPIRE_TIME))
-                .withAudience(String.valueOf(mobile))
+                .withAudience(String.valueOf(userId))
                 .sign(Algorithm.HMAC256(password));
     }
 

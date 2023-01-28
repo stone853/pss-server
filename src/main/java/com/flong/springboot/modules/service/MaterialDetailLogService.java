@@ -60,8 +60,7 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                         );
                         this.saveBatch(list);
                 } catch (ServiceException s) {
-                        s.printStackTrace();
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
+                        throw s;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加物料明细失败");
@@ -77,19 +76,21 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
          * @return
          */
         public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetailLog> list,String type) {
-                if (list == null || list.size() == 0) {
-                        return true;
-                }
-
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
 
-                List<Integer> detailIdsB = list.stream().map(MaterialDetailLog::getId).collect(Collectors.toList());
-                detailIdsB.removeIf(p -> p== null);
+                if (list == null || list.size() == 0) {
+                        QueryWrapper<MaterialDetailLog> dw = new QueryWrapper();
+                        dw.eq("foreign_code",foreignCode);
+                        materialDetailLogMapper.delete(dw);
+                        return true;
+                }
 
                 //不在里面的先删除
+                List<Integer> detailIdsB = list.stream().map(MaterialDetailLog::getId).collect(Collectors.toList());
+                detailIdsB.removeIf(p -> p== null);
                 try {
                         QueryWrapper<MaterialDetailLog> dw = new QueryWrapper();
                         if (detailIdsB !=null && detailIdsB.size() >0) {
@@ -114,7 +115,6 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                                         }
 
                                         p.setForeignCode(foreignCode);
-
                                         p.setSourceType(type);
 
                                         //设置fileBean
@@ -124,6 +124,8 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
 
                         );
                         this.saveOrUpdateBatch(list);
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加或修改物料明细失败");

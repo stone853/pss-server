@@ -20,16 +20,22 @@
     <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="contract_code_s" jdbcType="VARCHAR" property="contractCodeS" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
   </resultMap>
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.ContractPurchaseVo" parameterType="com.flong.springboot.modules.entity.dto.ContractPurchaseDto">
     select t.*,t1.supplier_name as supplierName,t2.note as contractStatusNote,
-    t3.cust_name as custName,t4.contract_name as contractNameS
+    t3.cust_name as custName,t4.contract_name as contractNameS,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
     from t_pss_contract_purchase t
     left join t_pss_supplier t1 on t.part_b = t1.supplier_code
     left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
     LEFT JOIN t_pss_customer t3 on t.cust_code = t3.cust_code
     LEFT JOIN t_pss_contract_sale t4 on t.contract_code_s = t4.contract_code
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'cght'
+    left join t_pss_status_button t93 on t93.`status` = t.contract_status and t93.type ='htzt'
     where 1=1
     <if test="contractPurchase.contractCode != null and contractPurchase.contractCode != ''">
       and t.contract_code like "%"#{contractPurchase.contractCode}"%"
@@ -43,6 +49,7 @@
     <if test="contractPurchase.contractStatus != null and contractPurchase.contractStatus != ''">
       and t.contract_status = #{contractPurchase.contractStatus}
     </if>
+    order by t.id
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ContractPurchaseVo">

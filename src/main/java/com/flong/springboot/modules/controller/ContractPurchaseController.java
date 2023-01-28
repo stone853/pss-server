@@ -46,12 +46,12 @@ public class ContractPurchaseController {
     @ApiOperation("增加采购合同信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "ContractPurchase",dataTypeClass = ContractPurchase.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@Validated @RequestBody ContractPurchase t) {
+    public ContractPurchase add(@RequestHeader("token") String token,@Validated @RequestBody ContractPurchase t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        t.setCreateUser(request.getSession().getAttribute("userId").toString());
+        t.setCreateUser(UserHelper.getUserId(token));
         return contractPurchaseService.insert(t);
     }
 
@@ -65,7 +65,7 @@ public class ContractPurchaseController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             contractPurchase.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        contractPurchaseService.update(contractPurchase);
+        contractPurchaseService.insert(contractPurchase);
     }
     /**
      * 删除通过多个主键Id进行删除
@@ -104,6 +104,7 @@ public class ContractPurchaseController {
 //     */
     @PostMapping("/page")
     public IPage<ContractPurchaseVo> page(@RequestHeader("token") String token, @RequestBody ContractPurchaseDto contractPurchaseDto) {
+        contractPurchaseDto.setUserId(UserHelper.getUserId(token));
         return contractPurchaseService.pageList(contractPurchaseDto);
     }
 

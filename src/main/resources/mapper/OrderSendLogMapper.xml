@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.OrderSendLogMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.OrderSendLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="opt_user" jdbcType="VARCHAR" property="optUser" />
+    <result column="opt_time" jdbcType="VARCHAR" property="optTime" />
+    <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
+    <result column="order_send_code" jdbcType="VARCHAR" property="orderSendCode" />
+  </resultMap>
+</mapper>

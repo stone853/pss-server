@@ -2,6 +2,7 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class Supplier {
         return id;
     }
 
+
     private String supplierCode;
 
     private String supplierName;
@@ -44,7 +46,7 @@ public class Supplier {
     private String remark;
 
     private Byte isDelete;
-
+    @JsonIgnore
     private String fileC;
 
 

@@ -7,6 +7,9 @@
     <result column="process_name" jdbcType="VARCHAR" property="processName" />
     <result column="step" jdbcType="VARCHAR" property="step" />
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="check_role" jdbcType="VARCHAR" property="checkRole" />
+    <result column="process_type" jdbcType="VARCHAR" property="processType" />
+
   </resultMap>
 
 </mapper>

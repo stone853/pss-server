@@ -1,6 +1,7 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.EvaScheme;
 import com.flong.springboot.modules.entity.dto.EvaSchemeDto;
@@ -40,7 +41,7 @@ public class EvaSchemeController {
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@Validated @RequestBody EvaScheme t) {
 
-        t.setUpdUser(request.getSession().getAttribute("userId").toString());
+        t.setUpdUser(UserHelper.getUserId(token));
         return evaSchemeService.insert(t);
     }
 

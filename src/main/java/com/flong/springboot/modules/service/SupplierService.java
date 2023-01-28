@@ -11,6 +11,7 @@ import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
+import com.flong.springboot.modules.entity.Customer;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.dto.SupplierDto;
@@ -61,19 +62,21 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
          *新增
          * @param c
          */
-        public int insert (Supplier c) {
-                int r = 0;
+        public Supplier insert (Supplier c) {
+                if (hasExist(c.getSupplierName())) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"供应商名称"+c.getSupplierName()+"已存在");
+                }
+
                 String foreignCode = GeneratorKeyUtil.getSupplierNextId();
                 try {
                         c.setSupplierCode(foreignCode);
-                        r = supplierMapper.insert(c);
+                        supplierMapper.insert(c);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加供应商失败");
                 }
-
                 materialDetailService.batchInsert(foreignCode,c.getMaterialDetailList(),"3");
-                return r;
+                return c;
         }
 
 
@@ -104,5 +107,15 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                 materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"3");
         }
 
+
+        public boolean hasExist (String supplierName) {
+                QueryWrapper<Supplier> q = new QueryWrapper<>();
+                q.eq("supplier_name",supplierName);
+                List<Supplier> list = this.list(q);
+                if (list !=null && list.size() > 0) {
+                        return true;
+                }
+                return false;
+        }
 
 }

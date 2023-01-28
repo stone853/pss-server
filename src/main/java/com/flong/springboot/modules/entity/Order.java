@@ -2,6 +2,7 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@TableName("t_pss_order_purchase")
-public class OrderPurchase {
+@TableName("t_pss_order")
+public class Order {
     private Integer id;
 
     private String orderCode;
@@ -32,12 +33,52 @@ public class OrderPurchase {
 
     private String applicationDate;
 
+    private String finishTime;
+
     private String remark;
 
     private String status;
 
     private String payType;
 
+    private String orderType;
+
+    private String orderClass;
+
+    @JsonIgnore
+    private String fileC;
+
+    private String processId;
+
+    @TableField(exist = false)
+    private List<MaterialDetailLog> materialDetailLogList;
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setOrderClass(String orderClass) {
+        this.orderClass = orderClass;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public String getOrderClass() {
+        return orderClass;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
 
     public void setPayType(String payType) {
         this.payType = payType;
@@ -48,12 +89,8 @@ public class OrderPurchase {
     }
 
 
-    private String fileC;
 
-    @TableField(exist = false)
-    private List<FileBean> fileBeanList;
-
-    public OrderPurchase setFileBeanList(List<FileBean> fileBeanList) {
+    public Order setFileBeanList(List<FileBean> fileBeanList) {
         this.fileBeanList = fileBeanList;
         return this;
     }
@@ -63,11 +100,15 @@ public class OrderPurchase {
     }
 
 
+    public void setFinishTime(String finishTime) {
+        this.finishTime = finishTime;
+    }
 
-    @TableField(exist = false)
-    private List<MaterialDetailLog> materialDetailLogList;
+    public String getFinishTime() {
+        return finishTime;
+    }
 
-    public OrderPurchase setMaterialDetailLogList(List<MaterialDetailLog> materialDetailLogList) {
+    public Order setMaterialDetailLogList(List<MaterialDetailLog> materialDetailLogList) {
         this.materialDetailLogList = materialDetailLogList;
         return this;
     }
@@ -76,7 +117,7 @@ public class OrderPurchase {
         return materialDetailLogList;
     }
 
-    public OrderPurchase setFileC(String fileC) {
+    public Order setFileC(String fileC) {
         this.fileC = fileC;
         return this;
     }

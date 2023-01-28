@@ -1,9 +1,10 @@
 package com.flong.springboot.modules.entity.vo;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.MaterialDetailLog;
 
-
+@JsonIgnoreProperties(value = {"fileC","fileBeanList"})
 public class MaterialDetailLogVo extends MaterialDetailLog {
     private String materialName;
     private String materialModel;

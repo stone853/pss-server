@@ -6,6 +6,7 @@
     <result column="detail_id" jdbcType="VARCHAR" property="detailId" />
     <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
     <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
     <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
     <result column="price_tax" jdbcType="DECIMAL" property="priceTax" />
@@ -13,6 +14,7 @@
     <result column="estimated_delivery_time" jdbcType="CHAR" property="estimatedDeliveryTime" />
     <result column="acpt_quantity" jdbcType="INTEGER" property="acptQuantity" />
     <result column="record_time" jdbcType="CHAR" property="recordTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
   </resultMap>
 
@@ -23,5 +25,6 @@
     <if test="foreignCode != null and foreignCode != ''">
       and t.foreign_code = #{foreignCode}
     </if>
+    order by t.id
   </select>
 </mapper>

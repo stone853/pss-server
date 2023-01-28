@@ -19,6 +19,7 @@
       SELECT
       id,name,menu_code,parent_id,node_type,icon_url,sort,link_url,path,is_delete
       FROM t_pss_menu where 1=1
+      order by id
 
 <!--      <if test="name != null and name != ''">-->
 <!--        and name=#{name}-->

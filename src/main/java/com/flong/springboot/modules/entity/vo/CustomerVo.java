@@ -1,10 +1,11 @@
 package com.flong.springboot.modules.entity.vo;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.Customer;
 import com.flong.springboot.modules.entity.MaterialMgt;
 
-
+@JsonIgnoreProperties(value = {"fileC","fileBeanList"})
 public class CustomerVo extends Customer {
     private String typename;
 

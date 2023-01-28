@@ -44,7 +44,7 @@ public class UserController {
     @ApiOperation("增加用户信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "User",dataTypeClass = User.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody User user) {
+    public User add(@RequestHeader("token") String token,@RequestBody User user) {
         return userService.insert(user);
     }
 

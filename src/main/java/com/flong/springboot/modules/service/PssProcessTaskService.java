@@ -15,10 +15,12 @@ public class PssProcessTaskService extends ServiceImpl<PssProcessTaskMapper, Pss
         PssProcessTaskMapper PssProcessTask;
 
 
-        public void updateTaskStepByProcessId (String processId,String step) {
+        public void updateTaskStepByProcessId (String processId,String step,String stepName,String checkRole) {
                 UpdateWrapper<PssProcessTask> qp = new UpdateWrapper();
                 qp.eq("process_id",processId);
                 qp.set("step",step);
+                qp.set("step_name",stepName);
+                qp.set("check_role",checkRole);
                 this.update(qp);
         }
 }

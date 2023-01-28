@@ -13,15 +13,9 @@ public class ContractPurchaseDto {
 
     private String partB;
 
-
+    private String userId;
 
     private String constructionSite;
-
-    private Long contractAmount;
-
-    private Long taxRate;
-
-    private Long amountExcludingTax;
 
     private String createUser;
 
@@ -33,17 +27,19 @@ public class ContractPurchaseDto {
 
     private String contractStatus;
 
-    private String fileC;
-
-
-
     private Page page;
-
-
 
     private String signingBeginDate;
 
     private String signingEndDate;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
 
     public void setSigningBeginDate(String signingBeginDate) {
         this.signingBeginDate = signingBeginDate;
@@ -112,29 +108,6 @@ public class ContractPurchaseDto {
         this.constructionSite = constructionSite == null ? null : constructionSite.trim();
     }
 
-    public Long getContractAmount() {
-        return contractAmount;
-    }
-
-    public void setContractAmount(Long contractAmount) {
-        this.contractAmount = contractAmount;
-    }
-
-    public Long getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(Long taxRate) {
-        this.taxRate = taxRate;
-    }
-
-    public Long getAmountExcludingTax() {
-        return amountExcludingTax;
-    }
-
-    public void setAmountExcludingTax(Long amountExcludingTax) {
-        this.amountExcludingTax = amountExcludingTax;
-    }
 
     public String getCreateUser() {
         return createUser;
@@ -176,11 +149,5 @@ public class ContractPurchaseDto {
         this.contractStatus = contractStatus == null ? null : contractStatus.trim();
     }
 
-    public String getFileC() {
-        return fileC;
-    }
 
-    public void setFileC(String fileC) {
-        this.fileC = fileC == null ? null : fileC.trim();
-    }
 }

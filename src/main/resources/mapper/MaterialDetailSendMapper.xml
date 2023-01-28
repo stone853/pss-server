@@ -22,5 +22,6 @@
     <if test="foreignCode != null and foreignCode != ''">
       and t.foreign_code = #{foreignCode}
     </if>
+    order by t.id
   </select>
 </mapper>

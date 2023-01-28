@@ -57,8 +57,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         );
                         this.saveBatch(list);
                 } catch (ServiceException s) {
-                        s.printStackTrace();
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
+                        throw s;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加物料明细失败");
@@ -74,19 +73,21 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * @return
          */
         public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list,String type) {
-                if (list == null || list.size() == 0) {
-                        return true;
-                }
-
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
 
-                List<Integer> detailIdsB = list.stream().map(MaterialDetail::getId).collect(Collectors.toList());
-                detailIdsB.removeIf(p -> p== null);
+                if (list == null || list.size() == 0) {
+                        QueryWrapper<MaterialDetail> dw = new QueryWrapper<MaterialDetail>();
+                        dw.eq("foreign_code",foreignCode);
+                        materialDetailMapper.delete(dw);
+                        return true;
+                }
 
                 //不在里面的先删除
+                List<Integer> detailIdsB = list.stream().map(MaterialDetail::getId).collect(Collectors.toList());
+                detailIdsB.removeIf(p -> p== null);
                 try {
                         QueryWrapper<MaterialDetail> dw = new QueryWrapper<MaterialDetail>();
                         if (detailIdsB !=null && detailIdsB.size() >0) {
@@ -109,14 +110,15 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
                                         }
-                                        if (StringUtils.isEmpty(p.getForeignCode())) {
-                                                p.setForeignCode(foreignCode);
-                                        }
+
+                                        p.setForeignCode(foreignCode);
                                         p.setType(type);
                                 }
 
                         );
                         this.saveOrUpdateBatch(list);
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加或修改物料明细失败");

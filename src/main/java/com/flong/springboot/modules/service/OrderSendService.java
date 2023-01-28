@@ -3,30 +3,39 @@ package com.flong.springboot.modules.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.flong.springboot.base.model.MaterialLogTypeEnum;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
+import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.process.OrderPurProcessHandle;
 import com.flong.springboot.core.util.StringUtils;
-import com.flong.springboot.modules.entity.MaterialDetailLog;
+import com.flong.springboot.modules.entity.Order;
 import com.flong.springboot.modules.entity.OrderSend;
+import com.flong.springboot.modules.entity.OrderSendLog;
 import com.flong.springboot.modules.entity.dto.OrderSendDto;
 import com.flong.springboot.modules.entity.dto.OrderSendMaterialDto;
-import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.dto.PssProcessDto;
+import com.flong.springboot.modules.entity.dto.UpdSendStatus;
 import com.flong.springboot.modules.entity.vo.MaterialDetailSendOrderVo;
 import com.flong.springboot.modules.entity.vo.OrderSendVo;
 import com.flong.springboot.modules.mapper.MaterialDetailSendMapper;
 import com.flong.springboot.modules.mapper.OrderSendMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.flong.springboot.core.exception.CommMsgCode.NOT_FOUND;
+
+@Slf4j
 @Service
 public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
         @Autowired
@@ -38,6 +47,14 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
         @Autowired
         MaterialDetailSendService materialDetailSendService;
 
+        @Autowired
+        PssProcessService pssProcessService;
+
+        @Autowired
+        OrderService orderService;
+
+        @Autowired
+        OrderSendLogService orderSendLogService;
 
         public IPage<OrderSend> page (OrderSendDto orderSendDto) {
                 QueryWrapper<OrderSend> build = buildWrapper(orderSendDto);
@@ -64,34 +81,94 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
          * @param c
          */
         @Transactional
-        public int insert (OrderSend c) {
+        public OrderSend insert (OrderSend c) {
                 String orderCode = c.getOrderCode();
                 if (StringUtils.isEmpty(orderCode)) {
                         throw new ServiceException(CommMsgCode.NO_DATA,"订单编号orderCode不能为空");
                 }
-
                 String orderSendCode = "";
-                //返回
-                int r = 0;
                 try {
 
                         Integer keyId = c.getId();
                         if (keyId !=null && keyId !=0) {
                                 OrderSendVo orderSend = this.getOneById(keyId);
                                 orderSendCode = orderSend.getOrderSendCode();
-                                r = orderSendMapper.updateById(c); //修改状态
+                                orderSendMapper.updateById(c); //修改状态
                         } else {
                                 orderSendCode = GeneratorKeyUtil.getOrderSendNextCode();
                                 c.setOrderSendCode(orderSendCode);
-                                r = orderSendMapper.insert(c);;
+                                orderSendMapper.insert(c);;
                         }
+
+                        //处理发货流程 begin
+//                        String sendStatus = c.getSendStatus();
+//                        if (StringUtils.isNotEmpty(sendStatus) && sendStatus.equals(CommonConstant.ORDER_SEND_STATUS)) {
+//                                handleProcess(c);
+//                        }
+                        //处理发货流程 end
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加发货单失败");
                 }
 
                 materialDetailSendService.updateOrInsertOrDelete(orderCode,orderSendCode,c.getMaterialDetailSendList(), "");
-                return r;
+                return c;
+        }
+
+
+        /**
+         * 查询订单下是否全部送货
+         * @param orderCode
+         * @return
+         */
+        public boolean isSendAll (String orderCode) {
+                QueryWrapper<OrderSend> q = new QueryWrapper<>();
+                q.eq("order_code",orderCode);
+                q.ne("send_status","1");  // 1运输中
+                q.ne("send_status","3");  //3 验收
+                List<OrderSend> list = this.list(q);
+                if (list !=null && list.size() >0) {
+                        return false;
+                }
+                return true;
+        }
+
+        /**
+         * 查询订单下是否全部验收
+         * @param orderCode
+         * @return
+         */
+        public boolean isCheckSendAll (String orderCode) {
+                QueryWrapper<OrderSend> q = new QueryWrapper<>();
+                q.eq("order_code",orderCode);
+                q.ne("send_status","3");
+                List<OrderSend> list = this.list(q);
+                if (list !=null && list.size() >0) {
+                        return false;
+                }
+                return true;
+        }
+
+        /**
+         * 修改发货单状态  3 验收  2 驳回
+         * @param updSendStatus
+         */
+        public void updSendStatus (UpdSendStatus updSendStatus) {
+                String sendStatus = updSendStatus.getSendStatus();
+                String orderSendCode =updSendStatus.getOrderSendCode();
+
+                UpdateWrapper<OrderSend> q = new UpdateWrapper<>();
+                q.set("send_status",sendStatus);
+                q.eq("order_send_code",orderSendCode);
+                this.update(q);
+
+                //记录日志
+                OrderSendLog orderSendLog = new OrderSendLog();
+                orderSendLog.setSendStatus(sendStatus);
+                orderSendLog.setOrderSendCode(orderSendCode);
+                orderSendLog.setOptUser(updSendStatus.getUserId());
+                orderSendLog.setOptTime(UserHelper.getDateTime());
+                orderSendLogService.save(orderSendLog);
         }
 
 
@@ -140,6 +217,24 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                 }
 
                 return pageList;
+        }
+
+        private void handleProcess (OrderSend orderSend) {
+                String orderCode = orderSend.getOrderCode();
+                Order order = orderService.getOneByCode(orderCode);
+                if (order == null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"查找订单失败:"+orderCode);
+                }
+                String processId = order.getProcessId();
+                if (StringUtils.isEmpty(processId)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,orderCode+"订单processId为空");
+                }
+                PssProcessDto processDto = new PssProcessDto();
+                processDto.setOpinion("发货");
+                processDto.setResult(1);
+                processDto.setProcessId(processId);
+                pssProcessService.orderPurProcess(CommonConstant.ORDER_PUR_TYPE,processDto);
+                log.info("发货单流程{}触发成功", processId);
         }
 
 

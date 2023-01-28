@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.MaterialStockMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.MaterialStock">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="upd_time" jdbcType="CHAR" property="updTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
+          parameterType="com.flong.springboot.modules.entity.dto.MaterialStockDto">
+    select t.*,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_stock t
+    left join t_pss_material_mgt t1 on t.material_code = t1.material_code
+    where 1=1
+    <if test="materialStockDto.materialCodeList != null and materialStockDto.materialCodeList.size() > 0">
+      and t.material_code in
+      <foreach collection="materialStockDto.materialCodeList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by t.id
+  </select>
+
+  <select id="findStockDetail" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
+          parameterType="com.flong.springboot.modules.entity.dto.MaterialStockDto">
+    select t.*,t1.material_model materialModel,t1.measure_unit measureUnit,t1.brand,
+    IFNULL(A.quantityToIn,0) quantityToIn,IFNULL(A1.quantityIn,0) quantityIn,
+    IFNULL(B.quantityToOut,0) quantityToOut,IFNULL(B1.quantityOut,0) quantityOut,
+    t.quantity - IFNULL(B.quantityToOut,0) avlQuantity
+    from t_pss_material_stock t
+    LEFT JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
+    LEFT JOIN (
+    select t1.material_code,sum(t1.quantity) quantityToIn from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` > '1' and t.`status` not in ( '4','7')
+    and t.order_type = '1'
+    and t1.material_code is not null
+    group by t1.material_code
+    ) A on t.material_code = A.material_code
+
+    LEFT JOIN (
+    select t1.material_code,sum(t1.quantity) quantityIn from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` = '7'
+    and t.order_type = '1'
+    and t1.material_code is not null
+    group by t1.material_code
+    ) A1 on t.material_code = A1.material_code
+
+    LEFT JOIN (
+
+    select t1.material_code,sum(t1.quantity) quantityToOut from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` > '1' and t.`status` not in ( '4','7')
+    and t.order_type = '2'
+    and t1.material_code is not null
+    group by t1.material_code
+    ) B on t.material_code = B.material_code
+
+    LEFT JOIN(
+    select t1.material_code,sum(t1.quantity) quantityOut from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    where t.`status` = '7'
+    and t.order_type = '2'
+    and t1.material_code is not null
+    group by t1.material_code
+    ) B1 on t.material_code = B1.material_code
+  </select>
+
+
+</mapper>

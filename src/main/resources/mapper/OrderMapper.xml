@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="order_class" jdbcType="VARCHAR" property="orderClass" />
+    <result column="contract_code_p" jdbcType="VARCHAR" property="contractCodeP" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+    <result column="send_type" jdbcType="VARCHAR" property="sendType" />
+    <result column="ship_addr" jdbcType="VARCHAR" property="shipAddr" />
+    <result column="applicant" jdbcType="VARCHAR" property="applicant" />
+    <result column="applicant_tel" jdbcType="VARCHAR" property="applicantTel" />
+    <result column="application_date" jdbcType="CHAR" property="applicationDate" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="finish_time" jdbcType="CHAR" property="finishTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
+  </resultMap>
+
+  <select id="pagePurList" resultType="com.flong.springboot.modules.entity.vo.OrderVo"
+          parameterType="com.flong.springboot.modules.entity.dto.OrderDto">
+    select t.*,t1.supplier_name as supplierName,t2.note as orderStatusNote,
+    t3.note as sendTypeNote,
+    t4.contract_name as contractName,
+    t5.note as payTypeNote,
+    t6.note orderClassName,
+    t7.materialName,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
+    from t_pss_order t
+    left join t_pss_supplier t1 on t.supplier_code = t1.supplier_code
+    left join t_pss_dict t2 on t.status = t2.code and t2.type = 'ddzt'
+    left join t_pss_dict t3 on t.send_type = t3.code and t3.type = 'sdfs'
+    left join t_pss_contract_purchase t4 on t.contract_code_p = t4.contract_code
+    left join t_pss_dict t5 on t.pay_type = t5.code and t5.type = 'fkfs'
+    left join t_pss_dict t6 on t.order_class = t6.code and t6.type = 'ddxl'
+    left join (select foreign_code,GROUP_CONCAT(material_name) materialName from t_pss_material_detail_log group by foreign_code) t7 on t.order_code = t7.foreign_code
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'cgdd'
+    left join t_pss_status_button t93 on t93.`status` = t.`status` and t93.type ='ddzt'
+    where 1=1
+    <if test="orderDto.status != null and orderDto.status != ''">
+      and t.status = #{orderDto.status}
+    </if>
+    <if test="orderDto.orderType != null and orderDto.orderType != ''">
+      and t.order_type = #{orderDto.orderType}
+    </if>
+    <if test="orderDto.orderClass != null and orderDto.orderClass != ''">
+      and t.order_class = #{orderDto.orderClass}
+    </if>
+    <if test="orderDto.orderCode != null and orderDto.orderCode != ''">
+      and t.order_code = #{orderDto.orderCode}
+    </if>
+    <if test="orderDto.materialName != null and orderDto.materialName != ''">
+      and t7.materialName like "%"#{orderDto.materialName}"%"
+    </if>
+    <if test="orderDto.contractName != null and orderDto.contractName != ''">
+      and t4.contract_name like "%"#{orderDto.contractName}"%"
+    </if>
+    <if test="orderDto.sendType != null and orderDto.sendType != ''">
+      and t.send_type = #{orderDto.sendType}
+    </if>
+    <if test="orderDto.appBeginDate != null and orderDto.appBeginDate != '' and orderDto.appEndDate != null and orderDto.appEndDate != ''">
+      and t.application_date between #{orderDto.appBeginDate} and #{orderDto.appEndDate}
+    </if>
+    order by t.id
+  </select>
+
+
+  <select id="pageOutList" resultType="com.flong.springboot.modules.entity.vo.OrderVo"
+          parameterType="com.flong.springboot.modules.entity.dto.OrderDto">
+    select t.*,t1.supplier_name as supplierName,t2.note as orderStatusNote,
+    t3.note as sendTypeNote,
+    t4.contract_name as contractName,
+    t5.note as payTypeNote,
+    t6.note orderClassName,
+    t7.materialName,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
+    from t_pss_order t
+    left join t_pss_supplier t1 on t.supplier_code = t1.supplier_code
+    left join t_pss_dict t2 on t.status = t2.code and t2.type = 'ddzt'
+    left join t_pss_dict t3 on t.send_type = t3.code and t3.type = 'sdfs'
+    left join t_pss_contract_purchase t4 on t.contract_code_p = t4.contract_code
+    left join t_pss_dict t5 on t.pay_type = t5.code and t5.type = 'fkfs'
+    left join t_pss_dict t6 on t.order_class = t6.code and t6.type = 'ddxl'
+    left join (select foreign_code,GROUP_CONCAT(material_name) materialName from t_pss_material_detail_log group by foreign_code) t7 on t.order_code = t7.foreign_code
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'ckd'
+    left join t_pss_status_button t93 on t93.`status` = t.`status` and t93.type ='ddzt'
+    where 1=1
+    <if test="orderDto.status != null and orderDto.status != ''">
+      and t.status = #{orderDto.status}
+    </if>
+    <if test="orderDto.orderType != null and orderDto.orderType != ''">
+      and t.order_type = #{orderDto.orderType}
+    </if>
+    <if test="orderDto.orderClass != null and orderDto.orderClass != ''">
+      and t.order_class = #{orderDto.orderClass}
+    </if>
+    <if test="orderDto.orderCode != null and orderDto.orderCode != ''">
+      and t.order_code = #{orderDto.orderCode}
+    </if>
+    <if test="orderDto.materialName != null and orderDto.materialName != ''">
+      and t7.materialName like "%"#{orderDto.materialName}"%"
+    </if>
+    <if test="orderDto.contractName != null and orderDto.contractName != ''">
+      and t4.contract_name like "%"#{orderDto.contractName}"%"
+    </if>
+    <if test="orderDto.sendType != null and orderDto.sendType != ''">
+      and t.send_type = #{orderDto.sendType}
+    </if>
+    <if test="orderDto.appBeginDate != null and orderDto.appBeginDate != '' and orderDto.appEndDate != null and orderDto.appEndDate != ''">
+      and t.application_date between #{orderDto.appBeginDate} and #{orderDto.appEndDate}
+    </if>
+    order by t.id
+  </select>
+
+  <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
+    select t.*,t1.supplier_name as supplierName,t2.note as orderStatusNote,
+    t3.note as sendTypeNote,
+    t4.contract_name as contractName,
+    t5.note as payTypeNote,
+    t6.note orderClassName,
+    t7.materialName
+    from t_pss_order t
+    left join t_pss_supplier t1 on t.supplier_code = t1.supplier_code
+    left join t_pss_dict t2 on t.status = t2.code and t2.type = 'ddzt'
+    left join t_pss_dict t3 on t.send_type = t3.code and t3.type = 'sdfs'
+    left join t_pss_contract_purchase t4 on t.contract_code_p = t4.contract_code
+    left join t_pss_dict t5 on t.pay_type = t5.code and t5.type = 'fkfs'
+    left join t_pss_dict t6 on t.order_class = t6.code and t6.type = 'ddxl'
+    left join (select foreign_code,GROUP_CONCAT(material_name) materialName from t_pss_material_detail_log group by foreign_code) t7 on t.order_code = t7.foreign_code
+    where 1=1
+    <if test="id != null and id != ''">
+      and t.id = #{id}
+    </if>
+  </select>
+
+</mapper>

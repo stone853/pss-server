@@ -10,23 +10,21 @@ import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
-import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.util.StringUtils;
+import com.flong.springboot.core.process.ContractSaleProcessHandle;
 import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
-import com.flong.springboot.modules.entity.dto.CustomerDto;
+import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
-import com.flong.springboot.modules.entity.vo.CustomerVo;
 import com.flong.springboot.modules.mapper.ContractSaleMapper;
-import com.flong.springboot.modules.mapper.MaterialDetailMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ContractSaleService extends ServiceImpl<ContractSaleMapper, ContractSale> {
@@ -40,18 +38,17 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
         PssProcessService pssProcessService;
 
         @Autowired
-        PssProcessTaskService pssProcessTaskService;
+        ContractSaleProcessHandle processHandle;
+
+        @Autowired
+        UserService userService;
 
 //        public IPage<ContractSale> page (ContractSaleDto contractSale) {
 //                QueryWrapper<ContractSale> build = buildWrapper(contractSale);
 //                return contractSaleMapper.selectPage(contractSale.getPage()==null ? new Page<>() : contractSale.getPage(),build);
 //        }
 
-        public ContractSale getOneByCode (String code) {
-                QueryWrapper<ContractSale> build = new QueryWrapper<ContractSale>();
-                build.eq("contract_code",code);
-                return contractSaleMapper.selectOne(build);
-        }
+
 
         private QueryWrapper<ContractSale> buildWrapper(ContractSaleDto contractSaleDto) {
                 QueryWrapper<ContractSale> build = new QueryWrapper<>();
@@ -67,14 +64,13 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          * @param c
          */
         @Transactional
-        public int insert (ContractSale c) {
+        public ContractSale insert (ContractSale c) {
 
                 String subStatus = CommonConstant.CONTRACT_SALE_SUB_STATUS;
                 String contractStatus = c.getContractStatus();
                 String processId = "";
                 String contractCode = "";
-                //返回
-                int r = 0;
+
                 try {
 
                         c.setCreateTime(UserHelper.getDateTime());
@@ -85,7 +81,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                                 ContractSale contractSaleProcess = this.getOneById(keyId);
                                 processId = contractSaleProcess.getProcessId();
                         }
-                        processId = pssProcessService.handleProcessByStatus(keyId,processId,c.getContractName(),contractStatus,subStatus);
+                        processId = processHandle.handleProcessByStatus(keyId,processId,c.getContractName(),contractStatus,subStatus,CommonConstant.CONTRACT_SALE_PROCESS_TYPE);
                         if (StringUtils.isNotEmpty(contractStatus) && contractStatus.equals(subStatus) && StringUtils.isEmpty(c.getProcessId())) {
                                 c.setProcessId(processId);
                         }
@@ -94,34 +90,22 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         if (keyId !=null && keyId !=0) {//处理合同信息
                                 ContractSale contractSale = this.getOneById(keyId);
                                 contractCode = contractSale.getContractCode();
-                                r = contractSaleMapper.updateById(c); //修改合同
+                                contractSaleMapper.updateById(c); //修改合同
                         } else {
                                 contractCode = GeneratorKeyUtil.getConractSaleNextCode();
                                 c.setContractCode(contractCode);
-                                r = contractSaleMapper.insert(c);;  //新增合同
+                                contractSaleMapper.insert(c);;  //新增合同
                         }
 
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加销售合同失败");
                 }
 
-
                 materialDetailService.updateOrInsertOrDelete(contractCode,c.getMaterialDetailList(),"1");
-//                try {
-//                        List<MaterialDetail> list = c.getMaterialDetailList();
-//                        list.stream().forEach(p ->
-//                                p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode())
-//                                        .setForeignCode(contractCode)
-//                        );
-//                        materialDetailService.saveBatch(c.getMaterialDetailList());
-//                } catch (Exception e) {
-//                        e.printStackTrace();
-//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加物料明细失败");
-//                }
-
-
-                return r;
+                return c;
         }
 
 
@@ -143,6 +127,8 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 //先修改合同
                 try {
                         contractSaleMapper.updateById(c);
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改销售合同失败");
@@ -153,8 +139,11 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
 
         public IPage<ContractSaleVo> pageList (ContractSaleDto contractSaleDto) {
                 IPage<ContractSaleVo> pageList = contractSaleMapper.pageList(contractSaleDto.getPage()==null ? new Page<>():contractSaleDto.getPage(),contractSaleDto);
-                List<ContractSaleVo> customerList = pageList.getRecords();
-                customerList.stream().forEach(p -> p.setJsonArray(JSONArray.parseArray( p.getFileC())));
+                List<ContractSaleVo> saleList = pageList.getRecords();
+                saleList.stream().forEach((p) -> {
+                        convertJsonArray(p);
+                        setOptButton(contractSaleDto,p); //设置操作按钮
+                });
                 return  pageList;
         }
 
@@ -165,6 +154,63 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
          * @return
          */
         public ContractSaleVo getOneById (int id) {
-                return contractSaleMapper.getOneById(id);
+                return convertJsonArray(contractSaleMapper.getOneById(id));
         }
+
+        public ContractSaleVo getOneByCode (String code) {
+               return convertJsonArray(contractSaleMapper.getOneByCode(code));
+        }
+
+
+        private ContractSaleVo convertJsonArray (ContractSaleVo c) {
+                if (c !=null) {
+                        c.setJsonArray(JSONArray.parseArray( c.getFileC()));
+                }
+                return c;
+        }
+
+        private ContractSaleVo setOptButton (ContractSaleDto dto, ContractSaleVo c) {
+                if (c == null) {
+                        return null;
+                }
+                String userId = dto.getUserId();
+                String createUser = c.getCreateUser();
+                List<String> optButton = new ArrayList<>();
+                //返回基本的详情按钮
+                if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(createUser)) {
+                        optButton.add("详情");
+                        c.setOptButton(optButton);
+                        return c;
+                }
+
+                String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
+                StringBuilder sb = new StringBuilder();
+                if (c.getCreateUser() != null && c.getCreateUser().equals(userId)) { //用户操作按钮
+                        sb.append(c.getCreateUserButton()+";");
+                }
+                if (userRoles !=null && userRoles.length >0) {  //返回角色按钮
+                        List<String> roleList = Arrays.asList(userRoles);
+                        if (roleList.contains(c.getCheckRoleCode())) {
+                                sb.append(c.getCheckUserButton()+";");
+                        }
+                }
+                if (StringUtils.isEmpty(sb.toString())){
+                        sb.append("详情");
+                }
+
+                String [] s = sb.toString().split(";");
+                optButton = Arrays.asList(s);
+                c.setOptButton(Arrays.asList(s));
+
+                //非创建用户过滤 重新发起、删除、编辑
+                if (!userId.equals(createUser)) {
+                        optButton.remove("编辑");
+                        optButton.remove("删除");
+                        optButton.remove("重新发起");
+                }
+
+                c.setOptButton(optButton);
+                return c;
+        }
+
 }

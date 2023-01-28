@@ -37,9 +37,10 @@ public class PssDriverController {
     @ApiOperation("增加司机")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "PssDriver",dataTypeClass = PssDriver.class , value ="")})
     @PostMapping("/v1/add")
-    public boolean add(@RequestHeader("token") String token,@RequestBody PssDriver pssDriver) {
+    public PssDriver add(@RequestHeader("token") String token,@RequestBody PssDriver pssDriver) {
         pssDriver.setDriverCode(GeneratorKeyUtil.getDriverNextCode());
-        return pssDriverService.save(pssDriver);
+        pssDriverService.save(pssDriver);
+        return pssDriver;
     }
 
     /**

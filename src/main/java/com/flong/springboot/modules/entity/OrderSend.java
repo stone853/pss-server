@@ -2,6 +2,7 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -25,14 +26,33 @@ public class OrderSend {
     private String estimatedDeliveryTime;
 
     private String remark;
-
+    @JsonIgnore
     private String fileC;
 
     private String sendStatus;
 
+    private String acptTime;
+
+    private String sendTime;
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;
+
+    public void setAcptTime(String acptTime) {
+        this.acptTime = acptTime;
+    }
+
+    public String getAcptTime() {
+        return acptTime;
+    }
+
+    public String getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(String sendTime) {
+        this.sendTime = sendTime;
+    }
 
     public OrderSend setFileBeanList(List<FileBean> fileBeanList) {
         this.fileBeanList = fileBeanList;

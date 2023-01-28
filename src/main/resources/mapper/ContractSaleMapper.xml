@@ -44,6 +44,7 @@
     <if test="contractSale.contractStatus != null and contractSale.contractStatus != ''">
       and t.contract_status = #{contractSale.contractStatus}
     </if>
+    order by t.id
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo">
@@ -53,6 +54,18 @@
     where 1=1
     <if test="id != null and id != ''">
       and t.id = #{id}
+    </if>
+
+  </select>
+
+
+  <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo">
+    select t.*,t1.cust_name as custName,t2.note as contractStatusNote from t_pss_contract_sale t
+    left join t_pss_customer t1 on t.part_a = t1.cust_code
+    left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
+    where 1=1
+    <if test="contractCode != null and contractCode != ''">
+      and t.contract_code = #{contractCode}
     </if>
 
   </select>

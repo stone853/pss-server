@@ -2,6 +2,7 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -40,7 +41,7 @@ public class ContractPurchase {
 
     private String contractStatus;
 
-
+    @JsonIgnore
     private String fileC;
 
     private String custCode;
@@ -54,6 +55,23 @@ public class ContractPurchase {
     private BigDecimal taxRate;
 
     private BigDecimal amountExcludingTax;
+
+    private String processId;
+
+
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+    @TableField(exist = false)
+    private List<MaterialDetail> materialDetailList;
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
 
     public void setAmountExcludingTax(BigDecimal amountExcludingTax) {
         this.amountExcludingTax = amountExcludingTax;
@@ -79,8 +97,7 @@ public class ContractPurchase {
         return taxRate;
     }
 
-    @TableField(exist = false)
-    private List<FileBean> fileBeanList;
+
 
     public ContractPurchase setFileBeanList(List<FileBean> fileBeanList) {
         this.fileBeanList = fileBeanList;
@@ -91,8 +108,7 @@ public class ContractPurchase {
         return fileBeanList;
     }
 
-    @TableField(exist = false)
-    private List<MaterialDetail> materialDetailList;
+
 
     public ContractPurchase setMaterialDetailList(List<MaterialDetail> materialDetailList) {
         this.materialDetailList = materialDetailList;

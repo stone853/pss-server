@@ -4,7 +4,6 @@ package com.flong.springboot.modules.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
-import com.flong.springboot.modules.entity.vo.OrderPurchaseVo;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

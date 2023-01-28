@@ -2,6 +2,7 @@ package com.flong.springboot.modules.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import lombok.*;
@@ -46,10 +47,16 @@ public class ContractSale {
     private String paymentTerm;
 
     private String contractStatus;
-
+    @JsonIgnore
     private String fileC;
 
     private String processId;
+
+    @TableField(exist = false)
+    private List<FileBean> fileBeanList;
+
+    @TableField(exist = false)
+    private List<MaterialDetail> materialDetailList;
 
     public void setProcessId(String processId) {
         this.processId = processId;
@@ -59,8 +66,7 @@ public class ContractSale {
         return processId;
     }
 
-    @TableField(exist = false)
-    private List<FileBean> fileBeanList;
+
 
     public ContractSale setFileBeanList(List<FileBean> fileBeanList) {
         this.fileBeanList = fileBeanList;
@@ -71,8 +77,7 @@ public class ContractSale {
         return fileBeanList;
     }
 
-    @TableField(exist = false)
-    private List<MaterialDetail> materialDetailList;
+
 
     public ContractSale setMaterialDetailList(List<MaterialDetail> materialDetailList) {
         this.materialDetailList = materialDetailList;

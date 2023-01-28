@@ -3,11 +3,13 @@ package com.flong.springboot.modules.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
+import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
 import com.flong.springboot.modules.entity.vo.CustomerVo;
 import com.flong.springboot.modules.service.ContractSaleService;
@@ -44,12 +46,12 @@ public class ContractSaleController {
     @ApiOperation("增加销售合同信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "ContractSale",dataTypeClass = ContractSale.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@Validated @RequestBody ContractSale t) {
+    public ContractSale add(@RequestHeader("token") String token,@Validated @RequestBody ContractSale t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        t.setCreateUser(request.getSession().getAttribute("userId").toString());
+        t.setCreateUser(UserHelper.getUserId(token));
         return contractSaleService.insert(t);
     }
 
@@ -63,7 +65,7 @@ public class ContractSaleController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             contractSale.setFileC(JSONArray.toJSONString(fileBeanList));
         }
-        contractSaleService.update(contractSale);
+        contractSaleService.insert(contractSale);
     }
     /**
      * 删除通过多个主键Id进行删除
@@ -92,7 +94,18 @@ public class ContractSaleController {
 //     */
     @PostMapping("/page")
     public IPage<ContractSaleVo> page(@RequestHeader("token") String token, @RequestBody ContractSaleDto contractSaleDto) {
+        contractSaleDto.setUserId(UserHelper.getUserId(token));
         return contractSaleService.pageList(contractSaleDto);
+    }
+
+    /**
+     * 查询合同详情
+     *
+     * @param contractCode
+     */
+    @GetMapping("/getOneByContractCode")
+    public ContractSaleVo getOneByCode(@RequestHeader("token") String token, @RequestParam("contractCode") String contractCode) {
+        return contractSaleService.getOneByCode(contractCode);
     }
 
 

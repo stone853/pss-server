@@ -148,8 +148,8 @@ public class GeneratorKeyUtil {
         return "CGHT" + nextId();
     }
 
-    public static String getOrderPurchaseNextCode () {
-        return "CGDD" + nextId();
+    public static String getOrderNextCode () {
+        return "DD" + nextId();
     }
 
     public static String getRoleNextId () {
@@ -179,6 +179,10 @@ public class GeneratorKeyUtil {
 
     public static String getOrderSendNextCode () {
         return "FHD" + nextId();
+    }
+
+    public static String getBillNextCode () {
+        return "PD" + nextId();
     }
 
     public static void main (String args[]) {

@@ -43,6 +43,8 @@ public class EvaIndexService extends ServiceImpl<EvaIndexMapper, EvaIndex> {
                                 }
                         );
                         this.saveBatch(list);
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加指标失败");

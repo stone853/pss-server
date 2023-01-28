@@ -22,6 +22,26 @@ public class PssProcessTask {
 
     private String stepName;
 
+    private String checkRole;
+
+    private String processType;
+
+    public void setProcessType(String processType) {
+        this.processType = processType;
+    }
+
+    public String getProcessType() {
+        return processType;
+    }
+
+    public void setCheckRole(String checkRole) {
+        this.checkRole = checkRole;
+    }
+
+    public String getCheckRole() {
+        return checkRole;
+    }
+
     public Integer getId() {
         return id;
     }

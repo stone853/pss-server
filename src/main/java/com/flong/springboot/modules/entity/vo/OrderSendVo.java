@@ -2,11 +2,6 @@ package com.flong.springboot.modules.entity.vo;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.flong.springboot.modules.entity.FileBean;
-import com.flong.springboot.modules.entity.MaterialDetailSend;
-import com.flong.springboot.modules.entity.OrderPurchase;
-import com.flong.springboot.modules.entity.OrderSend;
 
 import java.util.List;
 
@@ -39,7 +34,47 @@ public class OrderSendVo {
 
     private String telNo;
 
+    private String carInfo;
+
+    private String acptTime;
+
+    private String sendTime;
+
+    private String shipAddr;
+
     private List<MaterialDetailSendVo> materialSendVo;
+
+    public void setAcptTime(String acptTime) {
+        this.acptTime = acptTime;
+    }
+
+    public String getAcptTime() {
+        return acptTime;
+    }
+
+    public void setCarInfo(String carInfo) {
+        this.carInfo = carInfo;
+    }
+
+    public String getCarInfo() {
+        return carInfo;
+    }
+
+    public void setSendTime(String sendTime) {
+        this.sendTime = sendTime;
+    }
+
+    public String getSendTime() {
+        return sendTime;
+    }
+
+    public void setShipAddr(String shipAddr) {
+        this.shipAddr = shipAddr;
+    }
+
+    public String getShipAddr() {
+        return shipAddr;
+    }
 
     public OrderSendVo setMaterialSendVo(List<MaterialDetailSendVo> materialSendVo) {
         this.materialSendVo = materialSendVo;

@@ -99,7 +99,7 @@ public class DictTreeService extends ServiceImpl<DictTreeMapper, DictTree> {
 
                 return transferDictTreeVo(list, 0L);
             } catch (Exception e){
-                return null;
+                throw e;
             }
 
 

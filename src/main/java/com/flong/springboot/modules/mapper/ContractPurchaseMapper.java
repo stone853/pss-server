@@ -10,7 +10,7 @@ import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface ContractPurchaseMapper extends BaseMapper<ContractPurchase> {
-    public IPage<ContractPurchaseVo> pageList(Page<ContractPurchase> page, @Param("contractPurchase") ContractPurchaseDto contractPurchase);
+    IPage<ContractPurchaseVo> pageList(Page<ContractPurchase> page, @Param("contractPurchase") ContractPurchaseDto contractPurchase);
 
     ContractPurchaseVo getOneById(@Param("id") int id);
 

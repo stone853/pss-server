@@ -6,13 +6,13 @@ package com.flong.springboot.base.model;
  * @Version 1.0
  * 采购物料明细来源
  */
-public enum MaterialLogTypeEnum {
+public enum OrderTypeEnum {
     IN("1","入库"),
     OUT("2","出库"),
     INVENTORY("3","盘点")
     ;
 
-    MaterialLogTypeEnum(String code, String msg) {
+    OrderTypeEnum(String code, String msg) {
         this.code = code;
         this.msg = msg;
     }

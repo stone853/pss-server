@@ -70,7 +70,7 @@ public class LoginController {
         }
 
 
-        return lv.setToken(UserHelper.getToken(u.getMobile(),u.getPassword()))
+        return lv.setToken(UserHelper.getToken(u.getUserId(),u.getPassword()))
                 .setUserName(u.getName()).setUserId(u.getUserId());
     }
 

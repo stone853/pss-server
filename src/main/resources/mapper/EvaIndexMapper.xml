@@ -5,7 +5,19 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="scheme_code" jdbcType="VARCHAR" property="schemeCode" />
     <result column="index_name" jdbcType="VARCHAR" property="indexName" />
-    <result column="index_weight" jdbcType="DECIMAL" property="indexWeight" />
+    <result column="index_weight" jdbcType="DOUBLE" property="indexWeight" />
+    <result column="index_score" jdbcType="DOUBLE" property="indexScore" />
   </resultMap>
 
+
+  <select id="findIndexList" resultMap="BaseResultMap">
+    SELECT * FROM
+      t_pss_eva_index
+    WHERE
+      scheme_code IN (
+      SELECT scheme_code FROM t_pss_eva_scheme
+        WHERE
+          enable_flag = '1'
+    )
+  </select>
 </mapper>

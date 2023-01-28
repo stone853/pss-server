@@ -11,6 +11,16 @@ public class OrderSendDto {
 
     private String sendStatus;
 
+    private String orderSendCode;
+
+    public void setOrderSendCode(String orderSendCode) {
+        this.orderSendCode = orderSendCode;
+    }
+
+    public String getOrderSendCode() {
+        return orderSendCode;
+    }
+
     public void setSendStatus(String sendStatus) {
         this.sendStatus = sendStatus;
     }

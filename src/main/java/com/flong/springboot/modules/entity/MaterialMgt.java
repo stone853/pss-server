@@ -1,5 +1,6 @@
 package com.flong.springboot.modules.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -40,6 +41,8 @@ public class MaterialMgt {
     private String brand;
 
     private String isDelete;
+
+
 
     public String getMaterialCode() {
         return materialCode;

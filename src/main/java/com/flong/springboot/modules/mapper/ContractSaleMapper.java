@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
+import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
 import com.flong.springboot.modules.entity.vo.MaterialDetailVo;
 import org.apache.ibatis.annotations.Param;
@@ -16,5 +17,7 @@ public interface ContractSaleMapper extends BaseMapper<ContractSale> {
     public IPage<ContractSaleVo> pageList(Page<ContractSale> page, @Param("contractSale") ContractSaleDto contractSale);
 
     ContractSaleVo getOneById(@Param("id") int id);
+
+    ContractSaleVo getOneByCode(@Param("contractCode") String contractCode);
 
 }

@@ -61,7 +61,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return userMapper.selectOne(build);
     }
 
-    public int insert (User u) {
+    public User insert (User u) {
         QueryWrapper<User> q = new QueryWrapper<User>();
         q.eq("mobile",u.getMobile());
         User temp = userMapper.selectOne(q);
@@ -69,15 +69,16 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
         }
 
+        QueryWrapper<User> q1 = new QueryWrapper<User>();
+        q1.eq("name",u.getName());
+        List<User> listTemp = userMapper.selectList(q);
+        if (listTemp !=null && listTemp.size() > 0) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"用户名已存在");
+        }
+
         String userId = GeneratorKeyUtil.getUserNextId();
-//        user.setUserId(userId)
-////                .setPassword(MD5Utils.encrypt("123456"))
-////                .setDeptCode(u.getDeptCode())
-////                .setName(u.getName())
-////                .setMobile(u.getMobile())
-////                .setRemark(u.getRemark());
         u.setUserId(userId).setPassword(MD5Utils.encrypt("123456"));
-        int r = userMapper.insert(u);
+        userMapper.insert(u);
 
         String roleCodes = u.getRoleCodes();
         List<UserRole> listUserRole = new ArrayList<UserRole>();
@@ -93,7 +94,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         //插入用户角色关系
         userRoleService.saveBatch(listUserRole);
 
-        return r;
+        return u;
     }
 
     public IPage<User> page (UserDto userDto) {
@@ -120,7 +121,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             if (StringUtils.isEmpty(roleCodes)) {
                 return null;
             }
-            return roleCodes.split(";");
+            return roleCodes.split(",");
         }
 
     }

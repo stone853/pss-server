@@ -37,21 +37,22 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
          * @return
          */
         public synchronized boolean updateOrInsertOrDelete (String orderCode,String foreignCode,List<MaterialDetailSend> list,String type) {
-                if (list == null || list.size() == 0) {
-                        return true;
-                }
-
                 //查询库中目前有的物料明细
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
+
+                if (list == null || list.size() == 0) {
+                        QueryWrapper<MaterialDetailSend> dw = new QueryWrapper<MaterialDetailSend>();
+                        dw.eq("foreign_code",foreignCode);
+                        materialDetailSendMapper.delete(dw);
+                        return true;
+                }
                 //判断发送数量是否超过剩余数量
                 isSendable(orderCode,list);
-
+                //不在里面的先删除
                 List<Integer> detailIdsB = list.stream().map(MaterialDetailSend::getId).collect(Collectors.toList());
                 detailIdsB.removeIf(p -> p== null);
-
-                //不在里面的先删除
                 try {
                         QueryWrapper<MaterialDetailSend> dw = new QueryWrapper<MaterialDetailSend>();
                         if (detailIdsB !=null && detailIdsB.size() >0) {
@@ -74,17 +75,16 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
                                         }
-                                        if (StringUtils.isEmpty(p.getForeignCode())) {
-                                                p.setForeignCode(foreignCode);
-                                        }
 
+                                        p.setForeignCode(foreignCode);
                                         p.setOrderCode(orderCode);
-
                                         p.setSourceType(type);
                                 }
 
                         );
                         this.saveOrUpdateBatch(list);
+                }catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加或修改物料明细失败");

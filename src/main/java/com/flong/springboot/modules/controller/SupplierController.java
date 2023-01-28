@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.utils.FileUtil;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.config.PssConfig;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
@@ -55,7 +56,7 @@ public class SupplierController {
     @ApiOperation("增加供应商信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Supplier",dataTypeClass = Supplier.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody Supplier t) {
+    public Supplier add(@RequestHeader("token") String token,@RequestBody Supplier t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));

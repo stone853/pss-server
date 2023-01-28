@@ -1,8 +1,9 @@
 package com.flong.springboot.modules.entity.vo;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.Supplier;
-
+@JsonIgnoreProperties(value = {"fileC","fileBeanList","materialDetailList"})
 public class SupplierVo extends Supplier {
     private String typename;
 

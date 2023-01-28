@@ -20,7 +20,9 @@ public class EvaIndex {
 
     private String indexName;
 
-    private BigDecimal indexWeight;
+    private Double indexWeight;
+
+    private Double indexScore;
 
     public Integer getId() {
         return id;
@@ -47,11 +49,19 @@ public class EvaIndex {
     }
 
 
-    public BigDecimal getIndexWeight() {
+    public Double getIndexWeight() {
         return indexWeight;
     }
 
-    public void setIndexWeight(BigDecimal indexWeight) {
+    public void setIndexWeight(Double indexWeight) {
         this.indexWeight = indexWeight;
+    }
+
+    public void setIndexScore(Double indexScore) {
+        this.indexScore = indexScore;
+    }
+
+    public Double getIndexScore() {
+        return indexScore;
     }
 }

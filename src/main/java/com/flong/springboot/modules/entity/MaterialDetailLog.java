@@ -3,6 +3,7 @@ package com.flong.springboot.modules.entity;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -25,6 +26,8 @@ public class MaterialDetailLog {
 
     private String materialCode;
 
+    private String materialName;
+
     private String sourceType;
 
     private Integer quantity;
@@ -39,19 +42,37 @@ public class MaterialDetailLog {
 
     private String recordTime;
 
+    private String remark;
+    @JsonIgnore
     private String fileC;
 
-    @TableField(exist = false)
-    private JSONArray jsonArray;
-
-    public void setJsonArray(JSONArray jsonArray) {
-        this.jsonArray = jsonArray;
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
     }
 
-
-    public JSONArray getJsonArray() {
-        return jsonArray;
+    public String getMaterialName() {
+        return materialName;
     }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    //    @TableField(exist = false)
+//    private JSONArray jsonArray;
+//
+//    public void setJsonArray(JSONArray jsonArray) {
+//        this.jsonArray = jsonArray;
+//    }
+//
+//
+//    public JSONArray getJsonArray() {
+//        return jsonArray;
+//    }
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;

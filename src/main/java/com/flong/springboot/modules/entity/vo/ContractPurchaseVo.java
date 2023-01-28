@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.ContractPurchase;
 
+import java.util.List;
+
+@JsonIgnoreProperties(value = {"fileC","fileBeanList","materialDetailList"})
 public class ContractPurchaseVo extends ContractPurchase {
 
     private String supplierName;
@@ -14,6 +17,47 @@ public class ContractPurchaseVo extends ContractPurchase {
     private String custName;
 
     private String contractNameS;
+
+    private String checkUserButton;
+
+    private String createUserButton;
+
+    private String checkRoleCode;
+
+    private List<String> optButton;
+
+
+    public void setOptButton(List<String> optButton) {
+        this.optButton = optButton;
+    }
+
+    public void setCheckRoleCode(String checkRoleCode) {
+        this.checkRoleCode = checkRoleCode;
+    }
+
+    public void setCreateUserButton(String createUserButton) {
+        this.createUserButton = createUserButton;
+    }
+
+    public void setCheckUserButton(String checkUserButton) {
+        this.checkUserButton = checkUserButton;
+    }
+
+    public List<String> getOptButton() {
+        return optButton;
+    }
+
+    public String getCheckRoleCode() {
+        return checkRoleCode;
+    }
+
+    public String getCreateUserButton() {
+        return createUserButton;
+    }
+
+    public String getCheckUserButton() {
+        return checkUserButton;
+    }
 
     public void setContractNameS(String contractNameS) {
         this.contractNameS = contractNameS;
