@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.model.OrderTypeEnum;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.PageUtils;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
@@ -21,6 +22,7 @@ import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.OrderVo;
 import com.flong.springboot.modules.mapper.OrderMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 public class OrderService extends ServiceImpl<OrderMapper, Order> {
         @Autowired
@@ -106,7 +109,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                                 processId = order.getProcessId();
                         }
 
-                        processId = processHandle.handleProcessByStatus(keyId,processId,c.getOrderCode(),orderStatus,subStatus,processType);
+                        processId = processHandle.handleProcessByStatus(c.getApplicant(),keyId,processId,c.getOrderCode(),orderStatus,subStatus,processType);
 
                         if (StringUtils.isNotEmpty(orderStatus) && orderStatus.equals(subStatus) && StringUtils.isEmpty(c.getProcessId())) {
                                 c.setProcessId(processId);
@@ -211,43 +214,25 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                         return null;
                 }
                 String userId = dto.getUserId();
-                String createUser = c.getApplicant();
-                List<String> optButton = new ArrayList<>();
-                //返回基本的详情按钮
-                if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(createUser)) {
-                        optButton.add("详情");
-                        c.setOptButton(optButton);
-                        return c;
-                }
-
                 String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
-                StringBuilder sb = new StringBuilder();
-                if (c.getApplicant() != null && c.getApplicant().equals(userId)) { //用户操作按钮
-                        sb.append(c.getCreateUserButton()+";");
-                }
-                if (userRoles !=null && userRoles.length >0) {  //返回角色按钮
-                        List<String> roleList = Arrays.asList(userRoles);
-                        if (roleList.contains(c.getCheckRoleCode())) {
-                                sb.append(c.getCheckUserButton()+";");
-                        }
-                }
-                if (org.apache.commons.lang3.StringUtils.isEmpty(sb.toString())){
-                        sb.append("详情");
-                }
+                log.info("获取页面操作按钮:userId:{}", userId);
 
-                String [] s = sb.toString().split(";");
-                optButton = Arrays.asList(s);
-                c.setOptButton(Arrays.asList(s));
-
-                //非创建用户过滤 重新发起、删除、编辑
-                if (!userId.equals(createUser)) {
-                        optButton.remove("编辑");
-                        optButton.remove("删除");
-                        optButton.remove("重新发起");
-                }
-
-                c.setOptButton(optButton);
+                PageUtils pu = new PageUtils();
+                List<String> buttonList = pu.getOptButtons(dto.getUserId(),c.getApplicant(),userRoles,c.getCreateUserButton(),
+                        c.getCheckRoleCode(),c.getCheckUserButton());
+                c.setOptButton(buttonList);
                 return c;
         }
 
+
+        public Order getOrder (String processId) {
+                QueryWrapper<Order> q = new QueryWrapper<>();
+                q.eq("process_id",processId);
+                q.last("limit 1");
+                Order order = this.getOne(q);
+                if (order == null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"找不到流程对应订单，processId:"+processId);
+                }
+                return order;
+        }
 }

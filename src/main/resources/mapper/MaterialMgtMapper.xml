@@ -30,7 +30,7 @@
     <if test="materialMgt.materialModel != null and materialMgt.materialModel != ''">
       and t.material_model = #{materialMgt.materialModel}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
 </mapper>

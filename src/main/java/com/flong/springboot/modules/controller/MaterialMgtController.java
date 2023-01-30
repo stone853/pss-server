@@ -24,7 +24,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:物料管理控制层
  */
-@Api(tags = "物料管理信息")
+@Api(tags = "物料管理")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/materailmgt")
 public class MaterialMgtController {

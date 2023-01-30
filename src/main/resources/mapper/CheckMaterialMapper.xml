@@ -28,7 +28,7 @@
     and checkMaterialDto.endTime != '' and checkMaterialDto.endTime != ''">
       and t.opt_time between #{checkMaterialDto.beginTime} and #{checkMaterialDto.endTime}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
 

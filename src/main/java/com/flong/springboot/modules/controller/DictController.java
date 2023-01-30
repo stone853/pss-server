@@ -19,7 +19,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:字典控制层
  */
-@Api(tags = "字典信息")
+@Api(tags = "字典")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/dict")
 public class DictController {

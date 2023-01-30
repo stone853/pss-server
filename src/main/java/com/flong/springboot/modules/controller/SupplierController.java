@@ -33,7 +33,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:供应商控制层
  */
-@Api(tags = "供应商信息")
+@Api(tags = "供应商")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/supplier")
 public class SupplierController {

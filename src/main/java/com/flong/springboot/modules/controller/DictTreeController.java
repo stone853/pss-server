@@ -23,7 +23,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:字典树控制层
  */
-@Api(tags = "字典树信息")
+@Api(tags = "字典树")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/dictTree")
 public class DictTreeController {

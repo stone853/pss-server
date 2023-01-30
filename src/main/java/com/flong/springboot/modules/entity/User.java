@@ -37,12 +37,24 @@ public class User extends Model<User> implements Serializable {
 
     private String deptCode;
 
+    private String userType;
+
+
+
     @TableField(exist = false)
     private String roleCodes;
 
     public User setRoleCodes(String roleCodes) {
         this.roleCodes = roleCodes;
         return this;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 
     public String getRoleCodes() {

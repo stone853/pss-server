@@ -9,5 +9,7 @@ import com.flong.springboot.modules.entity.vo.EvaOrderVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface EvaOrderMapper extends BaseMapper<EvaOrder> {
-    public IPage<EvaOrderVo> pageList(Page<EvaOrder> page, @Param("evaOrder") EvaOrderDto evaOrderDto);
+    IPage<EvaOrderVo> pageList(Page<EvaOrder> page, @Param("evaOrder") EvaOrderDto evaOrderDto);
+
+    EvaOrderVo getOneById(@Param("id") int id);
 }

@@ -9,6 +9,36 @@ public class LoginVo {
 
     private String roleCode;
 
+    private String roleName;
+
+    private String deptName;
+
+    private String userType;
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
     public void setRoleCode(String roleCode) {
         this.roleCode = roleCode;
     }

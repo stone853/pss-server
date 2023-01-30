@@ -11,39 +11,35 @@
   </resultMap>
 
   <sql id="selectQuantityToIn">
-    select t1.material_code,sum(t1.quantity) quantityToIn from t_pss_order t
+    select t1.material_code,t1.quantity from t_pss_order t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
     where t.`status` > '1' and t.`status` not in ( '4','7')
     and t.order_type = '1'
     and t1.material_code is not null
-    group by t1.material_code
   </sql>
 
   <sql id="selectQuantityIn">
-    select t1.material_code,sum(t1.quantity) quantityIn from t_pss_order t
+    select t1.material_code,t1.quantity from t_pss_order t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
     where t.`status` = '7'
     and t.order_type = '1'
     and t1.material_code is not null
-    group by t1.material_code
   </sql>
 
   <sql id="selectQuantityToOut">
-    select t1.material_code,sum(t1.quantity) quantityToOut from t_pss_order t
+    select t1.material_code,t1.quantity from t_pss_order t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
     where t.`status` > '1' and t.`status` not in ( '4','7')
     and t.order_type = '2'
     and t1.material_code is not null
-    group by t1.material_code
   </sql>
 
   <sql id="selectQuantityOut">
-    select t1.material_code,sum(t1.quantity) quantityOut from t_pss_order t
+    select t1.material_code,t1.quantity from t_pss_order t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
     where t.`status` = '7'
     and t.order_type = '2'
     and t1.material_code is not null
-    group by t1.material_code
   </sql>
 
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
@@ -60,7 +56,7 @@
     order by t.id
   </select>
 
-  <select id="findStockDetail" resultType="com.flong.springboot.modules.entity.vo.MaterialStockDetailVo"
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.MaterialStockDetailVo"
           parameterType="com.flong.springboot.modules.entity.dto.MaterialStockDto">
     select t.*,t1.material_model materialModel,t1.measure_unit measureUnit,t1.brand,
     IFNULL(A.quantityToIn,0) quantityToIn,IFNULL(A1.quantityIn,0) quantityIn,
@@ -69,21 +65,106 @@
     from t_pss_material_stock t
     LEFT JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
     LEFT JOIN (
-    <include refid="selectQuantityToIn"></include>
+        select material_code,sum(quantity) quantityToIn from (
+          <include refid="selectQuantityToIn"></include>
+        ) x1
+        group by material_code
     ) A on t.material_code = A.material_code
 
     LEFT JOIN (
-    <include refid="selectQuantityIn"></include>
+        select material_code,sum(quantity) quantityIn from (
+          <include refid="selectQuantityIn"></include>
+        ) x2
+        group by material_code
     ) A1 on t.material_code = A1.material_code
 
     LEFT JOIN (
-    <include refid="selectQuantityToOut"></include>
+        select material_code,sum(quantity) quantityToOut from (
+          <include refid="selectQuantityToOut"></include>
+        ) x3
+        group by material_code
     ) B on t.material_code = B.material_code
 
     LEFT JOIN(
-    <include refid="selectQuantityOut"></include>
+        select material_code,sum(quantity) quantityOut from (
+          <include refid="selectQuantityOut"></include>
+        ) x4
+        group by material_code
     ) B1 on t.material_code = B1.material_code
+    <if test="materialStockDto.materialCodeList != null and materialStockDto.materialCodeList.size() > 0">
+      and t.material_code in
+      <foreach collection="materialStockDto.materialCodeList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by t.id desc
   </select>
 
+
+  <select id="pageMaterialLogList" resultType="com.flong.springboot.modules.entity.vo.MaterialStockLogVo"
+          parameterType="com.flong.springboot.modules.entity.dto.MaterialStockLogDto">
+    SELECT
+    t1.order_type orderType,
+    t80.note orderTypeName,
+    t1.send_type sendType,
+    t81.note sendTypeName,
+    t1.application_date applicationDate,
+    t1.order_code orderCode,
+    t1.supplier_code supplierCode,
+    t2.supplier_name supplierName,
+    t1.applicant,
+    t3. NAME userName,
+    t.material_code materialCode,
+    t.material_name materialName,
+
+    CASE
+    WHEN t1.`status` > '1'
+    AND t1.`status` NOT IN ('4', '7')
+    AND t1.order_type = '1' THEN
+    t.quantity
+    ELSE
+    0
+    END quantityToIn,
+
+    CASE
+    WHEN t1.`status` = '7'
+    AND t1.order_type = '1' THEN
+    t.quantity
+    ELSE
+    0
+    END quantityIn,
+
+    CASE
+    WHEN t1.`status` > '1'
+    AND t1.`status` NOT IN ('4', '7')
+    AND t1.order_type = '2' THEN
+    t.quantity
+    ELSE
+    0
+    END quantityToOut,
+
+    CASE
+    WHEN t1.`status` = '7'
+    AND t1.order_type = '2' THEN
+    t.quantity
+    ELSE
+    0
+    END quantityOut
+
+    FROM
+    t_pss_order t1
+    LEFT JOIN t_pss_material_detail_log t ON t.foreign_code = t1.order_code
+    LEFT JOIN t_pss_dict t80 ON t1.order_type = t80. CODE
+    AND t80.type = 'ddlx'
+    LEFT JOIN t_pss_dict t81 ON t1.send_type = t81. CODE
+    AND t81.type = 'sdfs'
+    LEFT JOIN t_pss_supplier t2 ON t1.supplier_code = t2.supplier_code
+    LEFT JOIN t_pss_user t3 ON t1.applicant = t3.user_id
+    WHERE
+    t.material_code IS NOT NULL
+    <if test="materialStockLogDto.materialCode != null and materialStockLogDto.materialCode != ''">
+      and t.material_code = #{materialStockLogDto.materialCode}
+    </if>
+  </select>
 
 </mapper>

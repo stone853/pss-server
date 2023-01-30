@@ -24,6 +24,7 @@ import com.flong.springboot.modules.mapper.UserMapper;
 import com.flong.springboot.modules.mapper.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User temp = userMapper.selectOne(q);
         if (temp !=null) {
             throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
+        }
+
+        String userType = u.getUserType();
+        if (StringUtils.isEmpty(userType)) {
+            u.setUserType("1"); //默认企业内部
         }
 
         QueryWrapper<User> q1 = new QueryWrapper<User>();
@@ -154,5 +160,32 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
 
         return build;
+    }
+
+    @Transactional
+    public void updateUser (User u) {
+        String roleCodes = u.getRoleCodes();
+        //先修改基本信息
+        this.updateById(u);
+        //在修改角色
+        u = this.getById(u.getId());
+        //先删除
+        String userId = u.getUserId();
+        QueryWrapper<UserRole> q = new QueryWrapper<>();
+        q.eq("user_id",userId);
+        userRoleService.remove(q);
+        //修改角色
+        List<UserRole> listUserRole = new ArrayList<UserRole>();
+        if (StringUtils.isNotEmpty(roleCodes)) {
+            String[] array = roleCodes.split(";");
+            if (array.length > 0) {
+                for (int i = 0; i < array.length;i ++) {
+                    listUserRole.add(new UserRole().setUserId(u.getUserId())
+                            .setRoleCode(array[i]));
+                }
+            }
+        }
+        //插入用户角色关系
+        userRoleService.saveBatch(listUserRole);
     }
 }

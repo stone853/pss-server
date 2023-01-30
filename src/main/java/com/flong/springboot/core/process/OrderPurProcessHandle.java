@@ -1,11 +1,14 @@
 package com.flong.springboot.core.process;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
 import com.flong.springboot.modules.service.MaterialStockService;
+import com.flong.springboot.modules.service.OrderService;
+import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +27,14 @@ public class OrderPurProcessHandle extends ProcessHandle {
     @Autowired
     MaterialStockService materialStockService;
 
-    private Order order;
 
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    @Autowired
+    OrderService orderService;
 
 
     @Override
     public String getNextStep (PssProcess pssProcess) {
+        Order order = orderService.getOrder(this.getProcessId());
         String sendType = order.getSendType();
         String currentStep = pssProcess.getStep();
         if (!currentStep.equals("4")) {
@@ -48,6 +49,12 @@ public class OrderPurProcessHandle extends ProcessHandle {
 
     public void finish () {
         try {
+            Order order = orderService.getOrder(this.getProcessId());
+
+            //修改订单完成时间
+            order.setFinishTime(UserHelper.getDateTime());
+            orderService.updateById(order);
+
             String orderCode = order.getOrderCode();
             QueryWrapper<MaterialDetailLog> q = new QueryWrapper<>();
             q.eq("foreign_code",orderCode);
@@ -66,6 +73,8 @@ public class OrderPurProcessHandle extends ProcessHandle {
         }
 
     }
+
+
 
 
 }

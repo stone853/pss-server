@@ -21,7 +21,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:部门控制层
  */
-@Api(tags = "部门信息")
+@Api(tags = "部门")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/dept")
 public class DeptController {

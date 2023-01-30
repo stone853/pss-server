@@ -8,6 +8,7 @@
     <result column="eva_status" jdbcType="VARCHAR" property="evaStatus" />
     <result column="eva_time" jdbcType="CHAR" property="evaTime" />
     <result column="eva_des" jdbcType="VARCHAR" property="evaDes" />
+    <result column="opt_user" jdbcType="VARCHAR" property="optUser" />
     <result column="index_string" jdbcType="VARCHAR" property="indexString" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
   </resultMap>
@@ -15,11 +16,12 @@
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.EvaOrderVo"
           parameterType="com.flong.springboot.modules.entity.dto.EvaOrderDto">
-    select t.*,t2.supplier_name as supplierName,t3.note as evaStatusName
+    select t.*,t4.`name` userName,t1.finish_time finishTime,t2.supplier_name as supplierName,t3.note as evaStatusName
     from t_pss_eva_order t
     left join t_pss_order t1 on t.order_code = t1.order_code
     left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
     left join t_pss_dict t3 on t.eva_status = t3.`code` and t3.type = 'pjzt'
+    left join t_pss_user t4 on t.opt_user = t4.user_id
     where 1=1
     <if test="evaOrder.orderCode != null and evaOrder.orderCode != ''">
       and t.order_code = #{evaOrder.orderCode}
@@ -34,6 +36,19 @@
     and evaOrder.endTime != '' and evaOrder.endTime != ''">
       and t.eva_time between #{evaOrder.beginTime} and #{evaOrder.endTime}
     </if>
-    order by t.id
+    order by t.id desc
+  </select>
+
+  <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.EvaOrderVo">
+    select t.*,t4.`name` userName,t1.finish_time finishTime,t2.supplier_name as supplierName,t3.note as evaStatusName
+    from t_pss_eva_order t
+    left join t_pss_order t1 on t.order_code = t1.order_code
+    left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+    left join t_pss_dict t3 on t.eva_status = t3.`code` and t3.type = 'pjzt'
+    left join t_pss_user t4 on t.opt_user = t4.user_id
+    where 1=1
+    <if test="id != null and id != ''">
+      and t.id = #{id}
+    </if>
   </select>
 </mapper>

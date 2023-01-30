@@ -17,7 +17,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:物料流水明细控制层
  */
-@Api(tags = "物料流水明细信息")
+@Api(tags = "物料流水明细")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/material/detail/log")
 public class MaterialDetailLogController {

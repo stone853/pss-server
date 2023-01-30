@@ -38,11 +38,42 @@ public class OrderSend {
 
     private String sendTime;
 
+    private String acptResult;
+
+    private String acptUserId;
+
     @TableField(exist = false)
     private String userId;
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;
+
+    @TableField(exist = false)
+    private List<MaterialDetailSend> materialDetailSendList;
+
+    public void setAcptUserId(String acptUserId) {
+        this.acptUserId = acptUserId;
+    }
+
+    public String getAcptUserId() {
+        return acptUserId;
+    }
+
+    public void setAcptResult(String acptResult) {
+        this.acptResult = acptResult;
+    }
+
+    public String getAcptResult() {
+        return acptResult;
+    }
+
+    public void setAcptFileC(String acptFileC) {
+        this.acptFileC = acptFileC;
+    }
+
+    public String getAcptFileC() {
+        return acptFileC;
+    }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -87,8 +118,7 @@ public class OrderSend {
 
 
 
-    @TableField(exist = false)
-    private List<MaterialDetailSend> materialDetailSendList;
+
 
     public OrderSend setMaterialDetailSendList(List<MaterialDetailSend> materialDetailSendList) {
         this.materialDetailSendList = materialDetailSendList;

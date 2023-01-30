@@ -27,7 +27,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:角色控制层
  */
-@Api(tags = "角色信息")
+@Api(tags = "角色")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/role")
 public class RoleController {

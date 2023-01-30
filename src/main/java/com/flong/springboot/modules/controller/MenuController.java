@@ -20,7 +20,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:菜单控制层
  */
-@Api(tags = "菜单信息")
+@Api(tags = "菜单")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/menus")
 public class MenuController {

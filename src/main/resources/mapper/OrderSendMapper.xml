@@ -10,6 +10,8 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="send_status" jdbcType="VARCHAR" property="sendStatus" />
     <result column="send_time" jdbcType="CHAR" property="sendTime" />
+    <result column="acpt_result" jdbcType="CHAR" property="acptResult" />
+    <result column="acpt_user_id" jdbcType="CHAR" property="acptUserId" />
     <result column="acpt_time" jdbcType="CHAR" property="acptTime" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
     <result column="acpt_file_c" jdbcType="VARCHAR" property="acptFileC" />
@@ -150,9 +152,14 @@
 
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderSendVo">
-    select t.*
+    select t.*,t2.note as sendStatusName,
+    t3.driver_name as driverName,t3.car_no as carNo,t3.tel_no as telNo,
+    t3.car_info carInfo,t1.ship_addr shipAddr,t4.name userName
     from t_pss_order_send t
-
+    left join t_pss_order t1 on t.order_code = t1.order_code
+    left join t_pss_dict t2 on t.send_status = t2.code and t2.type = 'shzt'
+    left join t_pss_driver t3 on t.driver_code = t3.driver_code
+    left join t_pss_user t4 on t.acpt_user_id = t4.user_id
     where 1=1
     <if test="id != null and id != ''">
       and t.id = #{id}
@@ -162,11 +169,12 @@
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.OrderSendVo" parameterType="com.flong.springboot.modules.entity.dto.OrderSendDto">
     select t.*,t2.note as sendStatusName,
     t3.driver_name as driverName,t3.car_no as carNo,t3.tel_no as telNo,
-    t3.car_info carInfo,t1.ship_addr shipAddr
+    t3.car_info carInfo,t1.ship_addr shipAddr,t4.name userName
     from t_pss_order_send t
     left join t_pss_order t1 on t.order_code = t1.order_code
     left join t_pss_dict t2 on t.send_status = t2.code and t2.type = 'shzt'
     left join t_pss_driver t3 on t.driver_code = t3.driver_code
+    left join t_pss_user t4 on t.acpt_user_id = t4.user_id
     where 1=1
     <if test="orderSendDto.sendStatus != null and orderSendDto.sendStatus != ''">
       and t.send_status = #{orderSendDto.sendStatus}

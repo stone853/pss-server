@@ -24,7 +24,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:订单控制层
  */
-@Api(tags = "订单信息")
+@Api(tags = "订单")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/orderpur")
 public class OrderController {

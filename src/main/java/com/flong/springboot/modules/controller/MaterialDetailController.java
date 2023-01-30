@@ -20,7 +20,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:物料明细控制层
  */
-@Api(tags = "物料明细信息")
+@Api(tags = "物料明细")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/materialdetail")
 public class MaterialDetailController {

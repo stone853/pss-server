@@ -170,6 +170,13 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                 try {
                         OrderSendVo orderSend = this.getOneById(keyId);
                         orderSendCode = orderSend.getOrderSendCode();
+                        if (c.getSendStatus().equals("3")) {
+                                c.setAcptResult("验收通过");
+                        } else {
+                                c.setAcptResult("验收驳回");
+                        }
+                        c.setAcptTime(UserHelper.getDateTime());
+                        c.setAcptUserId(c.getUserId());
                         orderSendMapper.updateById(c); //修改状态
 
                         materialDetailSendService.acptQuantity(orderSendCode, c.getMaterialDetailSendList(), "");

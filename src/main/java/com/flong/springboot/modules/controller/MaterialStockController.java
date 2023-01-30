@@ -1,10 +1,14 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.util.ThreadTest;
 import com.flong.springboot.modules.entity.dto.MaterialStockDto;
+import com.flong.springboot.modules.entity.dto.MaterialStockLogDto;
+import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.MaterialStockDetailVo;
+import com.flong.springboot.modules.entity.vo.MaterialStockLogVo;
 import com.flong.springboot.modules.entity.vo.MaterialStockVo;
 import com.flong.springboot.modules.service.MaterialStockService;
 import io.swagger.annotations.Api;
@@ -38,10 +42,16 @@ public class MaterialStockController {
         return materialStockService.findAll(materialStockDto);
     }
 
-    @ApiOperation("查询库存详情-入库-出库（不分页）")
+    @ApiOperation("查询库存详情-入库-出库（分页）")
     @PostMapping("/v1/findStockDetail")
-    public List<MaterialStockDetailVo> findStockDetail (@RequestHeader("token") String token, @RequestBody MaterialStockDto materialStockDto) {
-        return materialStockService.findStockDetail(materialStockDto);
+    public IPage<MaterialStockDetailVo> pageList (@RequestHeader("token") String token, @RequestBody MaterialStockDto materialStockDto) {
+        return materialStockService.pageList(materialStockDto);
+    }
+
+    @ApiOperation("库存流水（分页）")
+    @PostMapping("/v1/pageMaterialLogList")
+    public IPage<MaterialStockLogVo> pageMaterialLogList (@RequestHeader("token") String token, @RequestBody MaterialStockLogDto materialStockLogDto) {
+        return materialStockService.pageMaterialLogList(materialStockLogDto);
     }
 
 

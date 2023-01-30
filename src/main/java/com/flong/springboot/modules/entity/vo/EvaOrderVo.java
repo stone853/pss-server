@@ -37,6 +37,26 @@ public class EvaOrderVo {
 
     private String evaStatusName;
 
+    private String finishTime;
+
+    private String userName;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setFinishTime(String finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public String getFinishTime() {
+        return finishTime;
+    }
+
     public void setEvaStatusName(String evaStatusName) {
         this.evaStatusName = evaStatusName;
     }

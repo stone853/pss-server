@@ -33,10 +33,18 @@ public abstract class ProcessHandle {
     @Autowired
     ProcessLogService processLogService;
 
+    private String processId;
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
 
     public String executeProcess (String processType, PssProcessDto pssProcessDto) {
             String returnStatus = "";
-
 
             Integer result = pssProcessDto.getResult();
             String opinion = pssProcessDto.getOpinion();
@@ -46,6 +54,9 @@ public abstract class ProcessHandle {
             if (StringUtils.isEmpty(processId)) {
                 throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"processId不能为空");
             }
+
+            //初始化
+            setProcessId(processId);
 
             //获取当前流程步骤
             QueryWrapper<PssProcessTask> queryPt = new QueryWrapper<>();
@@ -101,7 +112,8 @@ public abstract class ProcessHandle {
             }
             pssProcessTaskService.updateTaskStepByProcessId(processId,taskStep,nextStepName,nextCheckRole);
             //记录日志
-            insertProcesslog(processId,currentStepName,"jinshi",optResult,opinion);
+
+            insertProcesslog(processId,currentStepName,pssProcessDto.getUserId(),optResult,opinion);
 
             return returnStatus;
     }
@@ -115,7 +127,7 @@ public abstract class ProcessHandle {
     }
 
     @Transactional
-    public void startProcess (String processId,String processName,String step,String processType) {
+    public void startProcess (String userId,String processId,String processName,String step,String processType) {
         PssProcess pssProcess = getProcessByTypeAndStep(processType,step);;
         String stepName = pssProcess.getStepName();//提交后步骤名称
         String roleCode = pssProcess.getRoleCode();
@@ -137,7 +149,7 @@ public abstract class ProcessHandle {
         //记录日志
         String preStep= pssProcess.getPreStep();
         PssProcess preProcess = getProcessByTypeAndStep(processType,preStep);
-        insertProcesslog(processId,preProcess.getStepName(),"jinshi","提交","");
+        insertProcesslog(processId,preProcess.getStepName(),userId,"提交","");
     }
 
     public PssProcess getProcessByTypeAndStep (String processType,String step) {
@@ -160,7 +172,7 @@ public abstract class ProcessHandle {
         processLogService.save(p);
     }
 
-    public String handleProcessByStatus (Integer keyId,String processId,String processName,String orderStatus,String subStatus,String processType) {
+    public String handleProcessByStatus (String userId,Integer keyId,String processId,String processName,String orderStatus,String subStatus,String processType) {
         if (StringUtils.isEmpty(processType)) {
             return processId;
         }
@@ -168,13 +180,14 @@ public abstract class ProcessHandle {
             if (StringUtils.isNotEmpty(orderStatus) && orderStatus.equals(subStatus)) {
                 if (com.flong.springboot.core.util.StringUtils.isEmpty(processId)) {
                     processId = GeneratorKeyUtil.getProcessNextCode();
-                    startProcess(processId,processName,subStatus,processType);
+                    startProcess(userId,processId,processName,subStatus,processType);
                 } else {
                     PssProcessDto p = new PssProcessDto();
                     p.setProcessId(processId);
                     p.setResult(1);
                     p.setOpinion("提交");
                     p.setProcessName(processName);
+                    p.setUserId(userId);
                     executeProcess(processType,p);
                     //pssProcessTaskService.updateTaskStepByProcessId(processId,subStatus);
                 }
@@ -183,7 +196,7 @@ public abstract class ProcessHandle {
         } else {
             if (StringUtils.isNotEmpty(orderStatus) && orderStatus.equals(subStatus)) {
                 processId = GeneratorKeyUtil.getProcessNextCode();
-                startProcess(processId,processName,subStatus,processType);
+                startProcess(userId,processId,processName,subStatus,processType);
 
             }
         }

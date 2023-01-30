@@ -44,7 +44,7 @@
     <if test="contractSale.contractStatus != null and contractSale.contractStatus != ''">
       and t.contract_status = #{contractSale.contractStatus}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo">

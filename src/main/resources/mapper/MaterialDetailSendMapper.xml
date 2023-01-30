@@ -22,7 +22,7 @@
     <if test="foreignCode != null and foreignCode != ''">
       and t.foreign_code = #{foreignCode}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
   <select id="getByOrderSendCode" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailSendVo">
@@ -38,7 +38,7 @@
     <if test="foreignCode != null and foreignCode != ''">
       and t.foreign_code = #{foreignCode}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
 </mapper>

@@ -2,6 +2,7 @@ package com.flong.springboot.modules.controller;
 
 
 
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.PssProcess;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date:2020-08-16
  * @Description:流程控制层
  */
-@Api(tags = "流程信息")
+@Api(tags = "流程")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/pss/process")
 public class TssProcessController {
@@ -38,6 +39,7 @@ public class TssProcessController {
     @ApiOperation("销售合同审批")
     @PutMapping("/subProcessContractSale")
     public void subProcessContractSale(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
+        pssProcessDto.setUserId(UserHelper.getUserId(token));
         pssProcessService.contractSaleProcess(CommonConstant.CONTRACT_SALE_PROCESS_TYPE,pssProcessDto);
     }
 
@@ -48,6 +50,7 @@ public class TssProcessController {
     @ApiOperation("采购合同审批")
     @PutMapping("/subProcessContractPur")
     public void subProcessContractPur(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
+        pssProcessDto.setUserId(UserHelper.getUserId(token));
         pssProcessService.contractPurProcess(CommonConstant.CONTRACT_PUR_PROCESS_TYPE,pssProcessDto);
     }
 
@@ -58,6 +61,7 @@ public class TssProcessController {
     @ApiOperation("采购订单审批")
     @PutMapping("/subProcessOrderPur")
     public void subProcessOrderPur(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
+        pssProcessDto.setUserId(UserHelper.getUserId(token));
         pssProcessService.orderPurProcess(CommonConstant.ORDER_PUR_TYPE,pssProcessDto);
     }
 
@@ -69,6 +73,7 @@ public class TssProcessController {
     @ApiOperation("出库单审批")
     @PutMapping("/subProcessOrderOut")
     public void subProcessOrderOut(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
+        pssProcessDto.setUserId(UserHelper.getUserId(token));
         pssProcessService.orderOutProcess(CommonConstant.ORDER_OUT_TYPE,pssProcessDto);
     }
 

@@ -29,7 +29,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:采购合同控制层
  */
-@Api(tags = "采购合同信息")
+@Api(tags = "采购合同")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/contractpur")
 public class ContractPurchaseController {

@@ -10,6 +10,8 @@
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
         <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+        <result column="user_type" jdbcType="VARCHAR" property="userType" />
+        <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
     </resultMap>
 
     <select id="find_AS_R" resultMap="BaseResultMap">
@@ -37,13 +39,29 @@
 
 
     <select id="findOneUserRoles" resultType="com.flong.springboot.modules.entity.vo.UserVo" parameterType="com.flong.springboot.modules.entity.dto.UserDto">
-        select t.*,GROUP_CONCAT(t2.role_code) as roleCodes,GROUP_CONCAT(t3.name) as roleNames from t_pss_user t left join t_pss_user_role t2 on t.user_id = t2.user_id
-        left join t_pss_role t3 on t2.role_code = t3.code
-        where 1=1
+        select A.*, GROUP_CONCAT(B.role_code) AS roleCodes,
+        GROUP_CONCAT(C.NAME) AS roleNames from
+        (
+            SELECT t.*,t1.name deptName from t_pss_user t
+            left join t_pss_dept t1 on t.dept_code = t1.dept_code
+            where t.user_type ='1'
+            union ALL
+            SELECT t.*,t1.cust_name deptName from t_pss_user t
+            left join t_pss_customer t1 on t.dept_code = t1.cust_code
+            where t.user_type ='2'
+            union ALL
+            SELECT t.*,t1.supplier_name deptName from t_pss_user t
+            left join t_pss_supplier t1 on t.dept_code = t1.supplier_code
+            where t.user_type ='3'
+        ) A
+        LEFT JOIN t_pss_user_role B ON A.user_id = B.user_id
+        LEFT JOIN t_pss_role C ON B.role_code = C.CODE
+        WHERE
+        1 = 1
         <if test="user.userId != null and user.userId != ''">
-            and t.user_id = #{user.userId}
+            and A.user_id = #{user.userId}
         </if>
-        group by t.id,t.user_id,t.name,t.mobile,t.is_delete,t.remark,t.dept_code
+        group by A.id,A.user_id,A.USER_TYPE,A.mobile,A.name,A.PASSWORD,A.is_delete,A.remark,A.dept_code,A.deptName
     </select>
 
 </mapper>

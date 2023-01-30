@@ -30,7 +30,7 @@
     <if test="supplier.type != null and supplier.type != ''">
       and t.type = #{supplier.type}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
 </mapper>

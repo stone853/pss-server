@@ -27,7 +27,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:方案控制层
  */
-@Api(tags = "方案指标信息")
+@Api(tags = "方案指标")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/evaindex")
 public class EvaIndexController {

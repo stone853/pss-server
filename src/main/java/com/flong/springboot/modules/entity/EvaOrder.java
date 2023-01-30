@@ -28,8 +28,9 @@ public class EvaOrder {
 
     private String evaDes;
 
-
     private String indexString;
+
+    private String optUser;
     @JsonIgnore
     private String fileC;
 
@@ -37,6 +38,14 @@ public class EvaOrder {
     private List<FileBean> fileBeanList;
     @TableField(exist = false)
     private List<EvaIndex> evaIndexList;
+
+    public void setOptUser(String optUser) {
+        this.optUser = optUser;
+    }
+
+    public String getOptUser() {
+        return optUser;
+    }
 
     public void setIndexString(String indexString) {
         this.indexString = indexString;

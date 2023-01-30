@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.util.BuildConditionWrapper;
 import com.flong.springboot.core.vo.Conditions;
-import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.UserRole;
 import com.flong.springboot.modules.service.UserRoleService;
 
@@ -26,7 +25,7 @@ import java.util.List;
  * @Date:2020-08-16
  * @Description:用户角色控制层
  */
-@Api(tags = "用户角色信息")
+@Api(tags = "用户角色")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/user_role")
 public class UserRoleController {
@@ -51,7 +50,10 @@ public class UserRoleController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "List<UserRole>",dataTypeClass = List.class, value ="")})
     @PostMapping("/v1/addBatch")
     public boolean addBatch(@RequestHeader("token") String token,@RequestBody List<UserRole> t) {
-        return userRoleService.saveBatch(t,1000);
+        if (t ==null || t.size() == 0) {
+            return true;
+        }
+        return userRoleService.insertBatch(t);
     }
 
     /**

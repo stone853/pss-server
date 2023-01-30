@@ -114,4 +114,8 @@ public class EvaOrderService extends ServiceImpl<EvaOrderMapper, EvaOrder> {
                 return sumScore;
 
         }
+
+        public EvaOrderVo getOneById(int id) {
+                return evaOrderMapper.getOneById(id);
+        }
 }

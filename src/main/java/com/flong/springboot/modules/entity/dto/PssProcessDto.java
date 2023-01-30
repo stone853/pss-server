@@ -17,6 +17,16 @@ public class PssProcessDto {
 
     private String processName;
 
+    private String userId;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
     public void setProcessId(String processId) {
         this.processId = processId;
     }

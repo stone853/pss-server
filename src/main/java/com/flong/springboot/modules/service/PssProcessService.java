@@ -97,9 +97,8 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
                 if (order == null) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"对应的订单");
                 }
-
                 //处理流程任务，并返回流程任务对应的合同状态
-                orderPurProcessHandle.setOrder(order);
+                //orderPurProcessHandle.setOrder(order);
                 //orderPurProcessHandle.setSendType(order.getSendType());
                 String returnStatus = orderPurProcessHandle.executeProcess(processType,pssProcessDto);
                 order.setStatus(returnStatus);
@@ -118,7 +117,6 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
                 }
 
                 //处理流程任务，并返回流程任务对应的合同状态
-                orderOutProcessHandle.setOrder(order);
                 String returnStatus = orderOutProcessHandle.executeProcess(processType,pssProcessDto);
                 order.setStatus(returnStatus);
                 orderService.updateById(order);
@@ -141,9 +139,7 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"查询:"+processId+"相关信息失败");
                 }
-
                 return info;
-
         }
 
 

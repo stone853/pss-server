@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.PageUtils;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
@@ -17,6 +18,7 @@ import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
 import com.flong.springboot.modules.mapper.ContractSaleMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ContractSaleService extends ServiceImpl<ContractSaleMapper, ContractSale> {
         @Autowired
@@ -81,7 +84,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                                 ContractSale contractSaleProcess = this.getOneById(keyId);
                                 processId = contractSaleProcess.getProcessId();
                         }
-                        processId = processHandle.handleProcessByStatus(keyId,processId,c.getContractName(),contractStatus,subStatus,CommonConstant.CONTRACT_SALE_PROCESS_TYPE);
+                        processId = processHandle.handleProcessByStatus(c.getCreateUser(),keyId,processId,c.getContractName(),contractStatus,subStatus,CommonConstant.CONTRACT_SALE_PROCESS_TYPE);
                         if (StringUtils.isNotEmpty(contractStatus) && contractStatus.equals(subStatus) && StringUtils.isEmpty(c.getProcessId())) {
                                 c.setProcessId(processId);
                         }
@@ -174,42 +177,13 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                         return null;
                 }
                 String userId = dto.getUserId();
-                String createUser = c.getCreateUser();
-                List<String> optButton = new ArrayList<>();
-                //返回基本的详情按钮
-                if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(createUser)) {
-                        optButton.add("详情");
-                        c.setOptButton(optButton);
-                        return c;
-                }
-
                 String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
-                StringBuilder sb = new StringBuilder();
-                if (c.getCreateUser() != null && c.getCreateUser().equals(userId)) { //用户操作按钮
-                        sb.append(c.getCreateUserButton()+";");
-                }
-                if (userRoles !=null && userRoles.length >0) {  //返回角色按钮
-                        List<String> roleList = Arrays.asList(userRoles);
-                        if (roleList.contains(c.getCheckRoleCode())) {
-                                sb.append(c.getCheckUserButton()+";");
-                        }
-                }
-                if (StringUtils.isEmpty(sb.toString())){
-                        sb.append("详情");
-                }
+                log.info("获取页面操作按钮:userId:{}", userId);
 
-                String [] s = sb.toString().split(";");
-                optButton = Arrays.asList(s);
-                c.setOptButton(Arrays.asList(s));
-
-                //非创建用户过滤 重新发起、删除、编辑
-                if (!userId.equals(createUser)) {
-                        optButton.remove("编辑");
-                        optButton.remove("删除");
-                        optButton.remove("重新发起");
-                }
-
-                c.setOptButton(optButton);
+                PageUtils pu = new PageUtils();
+                List<String> buttonList = pu.getOptButtons(dto.getUserId(),c.getCreateUser(),userRoles,c.getCreateUserButton(),
+                        c.getCheckRoleCode(),c.getCheckUserButton());
+                c.setOptButton(buttonList);
                 return c;
         }
 

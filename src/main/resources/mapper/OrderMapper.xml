@@ -64,6 +64,9 @@
     <if test="orderDto.sendType != null and orderDto.sendType != ''">
       and t.send_type = #{orderDto.sendType}
     </if>
+    <if test="orderDto.id != null and orderDto.id != ''">
+      and t.id = #{orderDto.id}
+    </if>
     <if test="orderDto.appBeginDate != null and orderDto.appBeginDate != '' and orderDto.appEndDate != null and orderDto.appEndDate != ''">
       and t.application_date between #{orderDto.appBeginDate} and #{orderDto.appEndDate}
     </if>
@@ -114,10 +117,13 @@
     <if test="orderDto.sendType != null and orderDto.sendType != ''">
       and t.send_type = #{orderDto.sendType}
     </if>
+    <if test="orderDto.id != null and orderDto.id != ''">
+      and t.id = #{orderDto.id}
+    </if>
     <if test="orderDto.appBeginDate != null and orderDto.appBeginDate != '' and orderDto.appEndDate != null and orderDto.appEndDate != ''">
       and t.application_date between #{orderDto.appBeginDate} and #{orderDto.appEndDate}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderVo">

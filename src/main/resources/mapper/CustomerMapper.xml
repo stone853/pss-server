@@ -28,6 +28,6 @@
     <if test="customer.type != null and customer.type != ''">
       and t.type = #{customer.type}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 </mapper>

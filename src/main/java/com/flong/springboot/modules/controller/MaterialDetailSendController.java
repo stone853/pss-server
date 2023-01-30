@@ -16,7 +16,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:发货单物料明细
  */
-@Api(tags = "发货单物料明细")
+@Api(tags = "发货单物料")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/material/send")
 public class MaterialDetailSendController {

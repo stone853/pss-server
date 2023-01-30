@@ -2,26 +2,11 @@ package com.flong.springboot.modules.entity.vo;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.flong.springboot.modules.entity.OrderSend;
 
 import java.util.List;
 
-public class OrderSendVo {
-
-    private Integer id;
-
-    private String orderSendCode;
-    private String orderCode;
-
-    private String driverCode;
-
-    private String estimatedDeliveryTime;
-
-    private String remark;
-
-    private String fileC;
-
-    private String sendStatus;
-
+public class OrderSendVo extends OrderSend {
 
     private JSONArray jsonArray;
 
@@ -38,15 +23,32 @@ public class OrderSendVo {
 
     private String carInfo;
 
-    private String acptTime;
-
-    private String sendTime;
-
     private String shipAddr;
 
     private String acptFileC;
 
     private double priceTax;
+
+    private String acptResult;
+
+    private String userName;
+
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setAcptResult(String acptResult) {
+        this.acptResult = acptResult;
+    }
+
+    public String getAcptResult() {
+        return acptResult;
+    }
 
     public void setPriceTax(double priceTax) {
         this.priceTax = priceTax;
@@ -74,13 +76,7 @@ public class OrderSendVo {
         return acptJsonArray;
     }
 
-    public void setAcptTime(String acptTime) {
-        this.acptTime = acptTime;
-    }
 
-    public String getAcptTime() {
-        return acptTime;
-    }
 
     public void setCarInfo(String carInfo) {
         this.carInfo = carInfo;
@@ -90,13 +86,7 @@ public class OrderSendVo {
         return carInfo;
     }
 
-    public void setSendTime(String sendTime) {
-        this.sendTime = sendTime;
-    }
 
-    public String getSendTime() {
-        return sendTime;
-    }
 
     public void setShipAddr(String shipAddr) {
         this.shipAddr = shipAddr;
@@ -131,75 +121,6 @@ public class OrderSendVo {
     public String getTelNo() {
         return telNo;
     }
-
-    public void setSendStatus(String sendStatus) {
-        this.sendStatus = sendStatus;
-    }
-
-    public String getSendStatus() {
-        return sendStatus;
-    }
-
-
-    public void setOrderSendCode(String orderSendCode) {
-        this.orderSendCode = orderSendCode;
-    }
-
-    public String getOrderSendCode() {
-        return orderSendCode;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode == null ? null : orderCode.trim();
-    }
-
-    public String getDriverCode() {
-        return driverCode;
-    }
-
-    public void setDriverCode(String driverCode) {
-        this.driverCode = driverCode == null ? null : driverCode.trim();
-    }
-
-    public String getEstimatedDeliveryTime() {
-        return estimatedDeliveryTime;
-    }
-
-    public void setEstimatedDeliveryTime(String estimatedDeliveryTime) {
-        this.estimatedDeliveryTime = estimatedDeliveryTime == null ? null : estimatedDeliveryTime.trim();
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
-
-    public String getFileC() {
-        return fileC;
-    }
-
-    public void setFileC(String fileC) {
-        this.fileC = fileC == null ? null : fileC.trim();
-    }
-
-
-
-
 
 
     public void setDriverName(String driverName) {

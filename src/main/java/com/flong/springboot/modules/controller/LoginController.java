@@ -35,7 +35,7 @@ import static com.flong.springboot.core.exception.CommMsgCode.NOT_SUPPORTED;
  * @Date:2020-08-16
  * @Description:用户控制层
  */
-@Api(tags = "登录信息")
+@Api(tags = "登录")
 @RestController
 @Slf4j
 public class LoginController {
@@ -63,6 +63,9 @@ public class LoginController {
 
             if (vo !=null) {
                 lv.setRoleCode(vo.getRoleCodes());
+                lv.setDeptName(vo.getDeptName());
+                lv.setRoleName(vo.getRoleNames());
+                lv.setUserType(vo.getUserType());
             }
         } catch (Exception e) {
             e.printStackTrace();

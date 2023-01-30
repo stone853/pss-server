@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto {
 
+    private Integer id;
+
     private String orderCode;
     private Page page;
 
@@ -26,6 +28,14 @@ public class OrderDto {
     private String appBeginDate;
 
     private String appEndDate;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 
     public void setAppBeginDate(String appBeginDate) {
         this.appBeginDate = appBeginDate;

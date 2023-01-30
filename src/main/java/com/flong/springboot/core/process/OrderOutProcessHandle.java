@@ -9,6 +9,7 @@ import com.flong.springboot.modules.entity.Order;
 import com.flong.springboot.modules.entity.PssProcess;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
 import com.flong.springboot.modules.service.MaterialStockService;
+import com.flong.springboot.modules.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class OrderOutProcessHandle extends ProcessHandle {
 
-    private Order order;
 
     @Autowired
     MaterialDetailLogService materialDetailLogService;
@@ -27,13 +27,13 @@ public class OrderOutProcessHandle extends ProcessHandle {
     @Autowired
     MaterialStockService materialStockService;
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    @Autowired
+    OrderService orderService;
 
     public void finish () {
         try {
-            String orderCode = this.order.getOrderCode();
+            Order order = orderService.getOrder(this.getProcessId());
+            String orderCode = order.getOrderCode();
             QueryWrapper<MaterialDetailLog> q = new QueryWrapper<>();
             q.eq("foreign_code",orderCode);
             List<MaterialDetailLog> list = materialDetailLogService.list(q);
@@ -65,6 +65,8 @@ public class OrderOutProcessHandle extends ProcessHandle {
         }
 
     }
+
+
 
 
 }

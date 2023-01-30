@@ -22,7 +22,7 @@ import java.util.List;
  * @Date:2022-12-25
  * @Description:方案控制层
  */
-@Api(tags = "方案信息")
+@Api(tags = "方案")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/evascheme")
 public class EvaSchemeController {

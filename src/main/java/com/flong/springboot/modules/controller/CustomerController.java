@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @Date:2022-12-25
  * @Description:客户控制层
  */
-@Api(tags = "客户信息")
+@Api(tags = "客户")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/customer")
 public class CustomerController {

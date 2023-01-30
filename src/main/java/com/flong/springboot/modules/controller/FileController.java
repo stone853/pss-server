@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date:2022-12-25
  * @Description:文件上传下载控制层
  */
-@Api(tags = "文件上传下载信息")
+@Api(tags = "文件上传下载")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/file")
 public class FileController {

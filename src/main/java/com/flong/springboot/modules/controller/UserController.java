@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @Date:2020-08-16
  * @Description:用户控制层
  */
-@Api(tags = "用户信息")
+@Api(tags = "用户")
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/user")
 public class UserController {
@@ -54,7 +54,7 @@ public class UserController {
      */
     @PutMapping("/updateById")
     public void updateById(@RequestBody User user) {
-        userService.updateById(user);
+        userService.updateUser(user);
     }
 
 
