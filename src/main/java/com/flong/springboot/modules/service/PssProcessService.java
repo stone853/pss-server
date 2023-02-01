@@ -13,6 +13,7 @@ import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.entity.dto.PssProcessDto;
 import com.flong.springboot.modules.entity.vo.ProcessInfo;
 import com.flong.springboot.modules.mapper.PssProcessMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,15 +124,19 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
         }
 
         public ProcessInfo getProcessInfo (String processId) {
+                if (StringUtils.isEmpty(processId)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"查询流程信息，流程ID不能为空");
+                }
+
                 ProcessInfo info = new ProcessInfo();
                 try {
                         QueryWrapper<PssProcessTask> queryTask = new QueryWrapper<>();
                         queryTask.eq("process_id",processId);
                         PssProcessTask prcessTask = pssProcessTaskService.getOne(queryTask);
 
-                        QueryWrapper<ProcessLog> queryLog = new QueryWrapper<>();
-                        queryLog.eq("process_id",processId);
-                        List<ProcessLog> processLog = processLogService.list(queryLog);
+//                        QueryWrapper<ProcessLog> queryLog = new QueryWrapper<>();
+//                        queryLog.eq("process_id",processId);
+                        List<ProcessLog> processLog = processLogService.findAll(processId);
 
                         info.setProcessLogList(processLog);
                         info.setProcessTask(prcessTask);

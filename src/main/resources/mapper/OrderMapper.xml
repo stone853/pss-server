@@ -70,7 +70,7 @@
     <if test="orderDto.appBeginDate != null and orderDto.appBeginDate != '' and orderDto.appEndDate != null and orderDto.appEndDate != ''">
       and t.application_date between #{orderDto.appBeginDate} and #{orderDto.appEndDate}
     </if>
-    order by t.id
+    order by t.id desc
   </select>
 
 

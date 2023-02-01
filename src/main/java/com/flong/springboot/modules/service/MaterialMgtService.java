@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.Customer;
 import com.flong.springboot.modules.entity.MaterialMgt;
 import com.flong.springboot.modules.entity.dto.MaterialMgtDto;
 import com.flong.springboot.modules.entity.vo.MaterialMgtVo;
 import com.flong.springboot.modules.mapper.MaterialMgtMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +56,17 @@ public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialM
 
 
         public int insert (MaterialMgt c) {
+                String materialCode = c.getMaterialCode();
+                if (StringUtils.isEmpty(materialCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
+                }
+                QueryWrapper<MaterialMgt> q = new QueryWrapper<>();
+                q.eq("material_code",materialCode);
+                q.last("limit 1");
+                MaterialMgt m = this.getOne(q);
+                if (m !=null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码已存在");
+                }
                 return materialMgtMapper.insert(c);
         }
-
 }

@@ -12,6 +12,7 @@ import com.flong.springboot.core.vo.Conditions;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.RoleDto;
+import com.flong.springboot.modules.entity.vo.RoleVo;
 import com.flong.springboot.modules.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +45,7 @@ public class RoleController {
     public int add(@RequestHeader("token") String token,@RequestBody Role t) {
         t.setCode(GeneratorKeyUtil.getRoleNextId());
         t.setCreateTime(UserHelper.getDateTime());
+        t.setCreateUser(UserHelper.getUserId(token));
         return roleService.getBaseMapper().insert(t);
     }
 
@@ -83,7 +85,7 @@ public class RoleController {
      * @return
      */
     @PostMapping("/page")
-    public IPage<Role> page(@RequestHeader("token") String token,@RequestBody(required=false) RoleDto roleDto) {
+    public IPage<Role> page(@RequestHeader("token") String token, @RequestBody(required=false) RoleDto roleDto) {
         return roleService.page(roleDto);
     }
 

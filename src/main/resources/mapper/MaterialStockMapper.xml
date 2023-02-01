@@ -91,11 +91,21 @@
         ) x4
         group by material_code
     ) B1 on t.material_code = B1.material_code
-    <if test="materialStockDto.materialCodeList != null and materialStockDto.materialCodeList.size() > 0">
-      and t.material_code in
-      <foreach collection="materialStockDto.materialCodeList" index="index" item="item" open="(" separator="," close=")">
-        #{item}
-      </foreach>
+    where 1=1
+    <if test="materialStockDto.materialCode != null and materialStockDto.materialCode != ''">
+      and t.material_code = #{materialStockDto.materialCode}
+    </if>
+    <if test="materialStockDto.materialName != null and materialStockDto.materialName != ''">
+      and t.material_name like "%"#{materialStockDto.materialName}"%"
+    </if>
+    <if test="materialStockDto.materialModel != null and materialStockDto.materialModel != ''">
+      and t1.material_model = #{materialStockDto.materialModel}
+    </if>
+    <if test="materialStockDto.materialType != null and materialStockDto.materialType != ''">
+      and t1.type = #{materialStockDto.materialType}
+    </if>
+    <if test="materialStockDto.excludeNull != null and materialStockDto.excludeNull != ''">
+      and t.quantity > 0
     </if>
     order by t.id desc
   </select>

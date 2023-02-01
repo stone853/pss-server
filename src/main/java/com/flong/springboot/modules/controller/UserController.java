@@ -13,6 +13,7 @@ import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.LoginVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.service.UserService;
@@ -94,6 +95,16 @@ public class UserController {
     @PostMapping("/page")
     public IPage<UserVo> page(@RequestHeader("token") String token, @RequestBody UserDto userDto) {
         return userService.findUserRoles(userDto);
+    }
+
+    /**
+     * 通过指定Id进行查询
+     *
+     */
+    @ApiOperation("首页数据")
+    @GetMapping("/v1/findIndexData")
+    public IndexDataVo findIndexData(@RequestHeader("token") String token) {
+        return userService.findIndexData();
     }
 
 }

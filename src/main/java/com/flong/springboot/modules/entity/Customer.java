@@ -42,11 +42,32 @@ public class Customer {
     private String remark;
 
     private Byte isDelete;
+
+    private String longitude;
+
+    private String latitude;
+
     @JsonIgnore
     private String filesC;
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
 
     public Customer setFileBeanList(List<FileBean> fileBeanList) {
         this.fileBeanList = fileBeanList;

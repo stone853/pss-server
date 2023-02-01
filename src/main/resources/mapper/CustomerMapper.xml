@@ -9,6 +9,8 @@
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="contracts" jdbcType="VARCHAR" property="contracts" />
     <result column="contract_tel" jdbcType="VARCHAR" property="contractTel" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
     <result column="files_c" jdbcType="VARCHAR" property="filesC" />

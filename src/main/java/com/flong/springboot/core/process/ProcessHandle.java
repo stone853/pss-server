@@ -112,7 +112,6 @@ public abstract class ProcessHandle {
             }
             pssProcessTaskService.updateTaskStepByProcessId(processId,taskStep,nextStepName,nextCheckRole);
             //记录日志
-
             insertProcesslog(processId,currentStepName,pssProcessDto.getUserId(),optResult,opinion);
 
             return returnStatus;
@@ -178,10 +177,10 @@ public abstract class ProcessHandle {
         }
         if (keyId !=null && keyId !=0) {//处理流程
             if (StringUtils.isNotEmpty(orderStatus) && orderStatus.equals(subStatus)) {
-                if (com.flong.springboot.core.util.StringUtils.isEmpty(processId)) {
+                if (StringUtils.isEmpty(processId)) {
                     processId = GeneratorKeyUtil.getProcessNextCode();
                     startProcess(userId,processId,processName,subStatus,processType);
-                } else {
+                } else {//驳回后重新提交
                     PssProcessDto p = new PssProcessDto();
                     p.setProcessId(processId);
                     p.setResult(1);

@@ -9,6 +9,7 @@ import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
+import com.flong.springboot.modules.entity.MaterialDetailLog;
 import com.flong.springboot.modules.entity.MaterialDetailSend;
 import com.flong.springboot.modules.entity.MaterialStock;
 import com.flong.springboot.modules.entity.dto.OrderSendMaterialDto;
@@ -51,6 +52,12 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                         materialDetailSendMapper.delete(dw);
                         return true;
                 }
+                //判断物料code重复
+                List<String> tempList = list.stream().map(MaterialDetailSend::getMaterialCode).distinct().collect(Collectors.toList());
+                if (tempList.size() != list.size()) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+                }
+
                 //判断发送数量是否超过剩余数量
                 isSendable(orderCode,list);
                 //不在里面的先删除

@@ -21,7 +21,27 @@ public class MaterialDetailSendOrderVo {
     private String measureUnit;
     private String brand;
 
+    private int acptQuantity;
+
+    private String acptRemark;
+
     private String estimatedDeliveryTime;
+
+    public void setAcptRemark(String acptRemark) {
+        this.acptRemark = acptRemark;
+    }
+
+    public String getAcptRemark() {
+        return acptRemark;
+    }
+
+    public void setAcptQuantity(int acptQuantity) {
+        this.acptQuantity = acptQuantity;
+    }
+
+    public int getAcptQuantity() {
+        return acptQuantity;
+    }
 
     public void setEstimatedDeliveryTime(String estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;

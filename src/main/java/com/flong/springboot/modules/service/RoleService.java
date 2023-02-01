@@ -10,6 +10,7 @@ import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.RoleDto;
+import com.flong.springboot.modules.entity.vo.RoleVo;
 import com.flong.springboot.modules.mapper.RoleMapper;
 import com.flong.springboot.modules.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,13 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
         RoleMapper roleMapper;
 
         public IPage<Role> page (RoleDto roleDto) {
-                QueryWrapper<Role> build = buildWrapper(roleDto);
-                return roleMapper.selectPage(roleDto.getPage()==null ? new Page<>() : roleDto.getPage(),build);
+                return roleMapper.pageList(roleDto.getPage()==null ? new Page<>() : roleDto.getPage(),roleDto);
         }
 
         private QueryWrapper<Role> buildWrapper(RoleDto roleDto) {
                 QueryWrapper<Role> build = new QueryWrapper<>();
                 if (roleDto.getName() !=null && !"".equals(roleDto.getName())) {
-                        build.eq("name",roleDto.getName());
+                        build.like("name",roleDto.getName());
                 }
                 if (roleDto.getIsDelete() !=null && !"".equals(roleDto.getIsDelete())) {
                         build.eq("is_delete",roleDto.getIsDelete());

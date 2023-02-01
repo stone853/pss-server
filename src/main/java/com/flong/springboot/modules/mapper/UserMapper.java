@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +18,6 @@ public interface UserMapper extends BaseMapper<User> {
     IPage<UserVo> findUserRoles(Page<User> page,@Param("user")UserDto userDto);
 
     UserVo findOneUserRoles(@Param("user")UserDto userDto);
+
+    IndexDataVo selectIndexData();
 }

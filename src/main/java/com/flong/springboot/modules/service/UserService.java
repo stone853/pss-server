@@ -19,6 +19,7 @@ import com.flong.springboot.modules.entity.UserRole;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.RoleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.UserMapper;
 import com.flong.springboot.modules.mapper.UserRoleMapper;
@@ -187,5 +188,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
         //插入用户角色关系
         userRoleService.saveBatch(listUserRole);
+    }
+
+    public IndexDataVo findIndexData () {
+        return userMapper.selectIndexData();
     }
 }

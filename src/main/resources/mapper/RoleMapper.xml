@@ -11,4 +11,14 @@
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
   </resultMap>
 
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.Role"
+          parameterType="com.flong.springboot.modules.entity.dto.RoleDto">
+    select t.*,t1.name createUser from t_pss_role t
+    left join t_pss_user t1 on t.create_user = t1.user_id
+    where 1=1
+    <if test="role.name != null and role.name != ''">
+      and t.name like "%"#{role.name}"%"
+    </if>
+    order by t.id desc
+  </select>
 </mapper>

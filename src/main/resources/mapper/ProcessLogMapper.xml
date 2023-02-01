@@ -11,4 +11,13 @@
     <result column="opt_opinion" jdbcType="VARCHAR" property="optOpinion" />
   </resultMap>
 
+  <select id="findAll" resultType="com.flong.springboot.modules.entity.ProcessLog">
+    select t.id,t.process_id,t.step_name,t.opt_time,t.opt_result,
+    t.opt_opinion,t1.name opt_user from t_pss_process_log t
+    left join t_pss_user t1 on t.opt_user = t1.user_id
+    where 1=1
+    <if test="processId != null and processId != ''">
+      and t.process_id = #{processId}
+    </if>
+  </select>
 </mapper>

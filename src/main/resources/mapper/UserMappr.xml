@@ -64,4 +64,40 @@
         group by A.id,A.user_id,A.USER_TYPE,A.mobile,A.name,A.PASSWORD,A.is_delete,A.remark,A.dept_code,A.deptName
     </select>
 
+
+    <select id="selectIndexData" resultType="com.flong.springboot.modules.entity.vo.IndexDataVo">
+        select (
+        select count(*) from t_pss_contract_sale where contract_status = '4'
+        ) contractSaleCount,
+        (
+        select count(*)  from t_pss_contract_purchase where contract_status = '4'
+        ) contractPurCount,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status !='1'
+        ) orderPurCount,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status !='1' AND left(application_date,4) = DATE_FORMAT(NOW(),'%Y')
+        ) orderPurCountYear,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status !='1' AND application_date = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        ) orderPurCountToday,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status = '7'
+        ) orderPurCountFinish,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status = '2'
+        ) orderPurCountCheck,
+        (
+        select count(*) from t_pss_order where order_type = '1' and  status = '3'
+        ) orderPurCountToSend,
+        (
+        select count(*) from t_pss_user where user_type = '1'
+        ) userCount,
+        (
+        select count(*) from t_pss_supplier
+        ) supplierCount,
+        (
+        select count(*) from t_pss_customer
+        ) customerCount from dual
+    </select>
 </mapper>

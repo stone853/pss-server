@@ -11,6 +11,7 @@ import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Dict;
 import com.flong.springboot.modules.entity.EvaIndex;
 import com.flong.springboot.modules.entity.MaterialDetail;
+import com.flong.springboot.modules.entity.MaterialDetailSend;
 import com.flong.springboot.modules.entity.dto.MaterialDetailDto;
 import com.flong.springboot.modules.entity.vo.MaterialDetailVo;
 import com.flong.springboot.modules.mapper.DictMapper;
@@ -84,6 +85,11 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         materialDetailMapper.delete(dw);
                         return true;
                 }
+                //判断物料code重复
+                List<String> tempList = list.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
+                if (tempList.size() != list.size()) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+                }
 
                 //不在里面的先删除
                 List<Integer> detailIdsB = list.stream().map(MaterialDetail::getId).collect(Collectors.toList());
@@ -123,7 +129,6 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加或修改物料明细失败");
                 }
-
                 return true;
         }
 

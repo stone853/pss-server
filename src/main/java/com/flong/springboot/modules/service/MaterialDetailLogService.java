@@ -80,13 +80,18 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
-
                 if (list == null || list.size() == 0) {
                         QueryWrapper<MaterialDetailLog> dw = new QueryWrapper();
                         dw.eq("foreign_code",foreignCode);
                         materialDetailLogMapper.delete(dw);
                         return true;
                 }
+                //判断物料code重复
+                List<String> tempList = list.stream().map(MaterialDetailLog::getMaterialCode).distinct().collect(Collectors.toList());
+                if (tempList.size() != list.size()) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+                }
+
 
                 //不在里面的先删除
                 List<Integer> detailIdsB = list.stream().map(MaterialDetailLog::getId).collect(Collectors.toList());
