@@ -143,6 +143,7 @@ public abstract class ProcessHandle {
         pssProcessTask.setStepName(stepName);
         pssProcessTask.setCheckRole(roleCode);
         pssProcessTask.setProcessType(processType);
+        pssProcessTask.setOptTime(UserHelper.getDateTime());
 
         pssProcessTaskService.saveOrUpdate(pssProcessTask);
         //记录日志

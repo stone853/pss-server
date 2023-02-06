@@ -27,13 +27,21 @@ public class MaterialDetailSend {
     private String foreignCode;
 
 
-
+    private String brand;
     private String sourceType;
 
 
     private Integer acptQuantity;
 
     private String acptRemark;
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;

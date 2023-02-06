@@ -9,7 +9,6 @@ public class MaterialDetailSendVo extends MaterialDetailSend {
     private String materialName;
     private String materialModel;
     private String measureUnit;
-    private String brand;
 
     private double priceTax;
 
@@ -37,17 +36,11 @@ public class MaterialDetailSendVo extends MaterialDetailSend {
         return materialName;
     }
 
-    public String getBrand() {
-        return brand;
-    }
 
     public String getMeasureUnit() {
         return measureUnit;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
 
     public void setMeasureUnit(String measureUnit) {
         this.measureUnit = measureUnit;

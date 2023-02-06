@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.Customer;
@@ -67,6 +68,8 @@ public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialM
                 if (m !=null) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码已存在");
                 }
+
+                c.setCreateTime(UserHelper.getDateTime());
                 return materialMgtMapper.insert(c);
         }
 }

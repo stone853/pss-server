@@ -15,6 +15,7 @@ import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.LoginVo;
+import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.service.UserService;
 import io.swagger.annotations.Api;
@@ -103,8 +104,18 @@ public class UserController {
      */
     @ApiOperation("首页数据")
     @GetMapping("/v1/findIndexData")
-    public IndexDataVo findIndexData(@RequestHeader("token") String token) {
-        return userService.findIndexData();
+    public IndexDataVo findIndexData(@RequestHeader("token") String token,@RequestParam("type") String type) {
+        return userService.findIndexData(type,UserHelper.getUserId(token));
+    }
+
+    /**
+     * 通过指定Id进行查询
+     *
+     */
+    @ApiOperation("代办任务")
+    @GetMapping("/v1/todoTask")
+    public List<TodoTaskVo> todoTask(@RequestHeader("token") String token) {
+        return userService.todoTask(UserHelper.getUserId(token));
     }
 
 }

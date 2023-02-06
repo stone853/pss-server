@@ -126,6 +126,13 @@
     order by t.id desc
   </select>
 
+  <select id="getOrderCount" resultType="com.flong.springboot.modules.entity.vo.OrderCountVo">
+    select t.`status`,t1.note statusName,count(1) orderCount from t_pss_order t
+    left join t_pss_dict t1 on t.`status` = t1.code and t1.type = 'ddzt'
+    where t.order_type  ='1'
+    group by t.`status`,t1.note
+  </select>
+
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
     select t.*,t1.supplier_name as supplierName,t2.note as orderStatusNote,
     t3.note as sendTypeNote,
@@ -144,6 +151,27 @@
     where 1=1
     <if test="id != null and id != ''">
       and t.id = #{id}
+    </if>
+  </select>
+
+  <select id="getOneByOrderCode" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
+    select t.*,t1.supplier_name as supplierName,t2.note as orderStatusNote,
+    t3.note as sendTypeNote,
+    t4.contract_name as contractName,
+    t5.note as payTypeNote,
+    t6.note orderClassName,
+    t7.materialName
+    from t_pss_order t
+    left join t_pss_supplier t1 on t.supplier_code = t1.supplier_code
+    left join t_pss_dict t2 on t.status = t2.code and t2.type = 'ddzt'
+    left join t_pss_dict t3 on t.send_type = t3.code and t3.type = 'sdfs'
+    left join t_pss_contract_purchase t4 on t.contract_code_p = t4.contract_code
+    left join t_pss_dict t5 on t.pay_type = t5.code and t5.type = 'fkfs'
+    left join t_pss_dict t6 on t.order_class = t6.code and t6.type = 'ddxl'
+    left join (select foreign_code,GROUP_CONCAT(material_name) materialName from t_pss_material_detail_log group by foreign_code) t7 on t.order_code = t7.foreign_code
+    where 1=1
+    <if test="orderCode != null and orderCode != ''">
+      and t.order_code = #{orderCode}
     </if>
   </select>
 

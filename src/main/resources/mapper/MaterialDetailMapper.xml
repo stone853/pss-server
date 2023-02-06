@@ -13,7 +13,7 @@
 
 
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailVo">
-    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_detail t
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit from t_pss_material_detail t
     left join t_pss_material_mgt t1 on t.material_code = t1.material_code
     where 1=1
     <if test="foreignCode != null and foreignCode != ''">

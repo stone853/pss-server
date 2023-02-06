@@ -10,13 +10,12 @@
     <result column="measure_unit" jdbcType="VARCHAR" property="measureUnit" />
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="create_time" jdbcType="CHAR" property="createTime" />
-    <result column="brand" jdbcType="VARCHAR" property="brand" />
     <result column="is_delete" jdbcType="CHAR" property="isDelete" />
   </resultMap>
 
   <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.MaterialMgt">
-    select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t.measure_unit,t.create_user,t.create_time,t.brand,t.is_delete from t_pss_material_mgt t
-    left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'wllb'
+    select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t.measure_unit,t.create_user,t.create_time,t.is_delete from t_pss_material_mgt t
+    left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'WLLX'
      where 1=1
     <if test="materialMgt.materialCode != null and materialMgt.materialCode != ''">
       and t.material_code like "%"#{materialMgt.materialCode}"%"

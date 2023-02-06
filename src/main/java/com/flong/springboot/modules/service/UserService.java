@@ -16,10 +16,12 @@ import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.UserRole;
+import com.flong.springboot.modules.entity.dto.IndexDataDto;
 import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.RoleDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
+import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.UserMapper;
 import com.flong.springboot.modules.mapper.UserRoleMapper;
@@ -50,9 +52,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public User login (LoginDto loginDto){
         QueryWrapper<User> build = new QueryWrapper<User>();
-        if (loginDto.getUserId() !=null && !"".equals(loginDto.getUserId())) {
-            build.eq("user_id",loginDto.getUserId());
-        }
         if (loginDto.getPwd() !=null && !"".equals(loginDto.getPwd())) {
             build.eq("password",loginDto.getPwd());
         }
@@ -190,7 +189,26 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         userRoleService.saveBatch(listUserRole);
     }
 
-    public IndexDataVo findIndexData () {
-        return userMapper.selectIndexData();
+    public IndexDataVo findIndexData (String type,String userId) {
+        IndexDataDto id = new IndexDataDto();
+
+        String deptCode = this.getUserDeptCode(new UserDto().setUserId(userId));
+        if (StringUtils.isEmpty(type) || StringUtils.isEmpty(deptCode)) {
+            return userMapper.selectIndexData(id);
+        }
+
+        if (type.equals("2")) {
+            id.setCustCode(deptCode);
+        }
+
+        if (type.equals("3")) {
+            id.setSupplierCode(deptCode);
+        }
+
+        return userMapper.selectIndexData(id);
+    }
+
+    public List<TodoTaskVo> todoTask (String userId) {
+        return userMapper.todoTask(userId);
     }
 }

@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface CustomerMapper extends BaseMapper<Customer> {
-    public IPage<CustomerVo> pageList(Page<Customer> page, @Param("customer") CustomerDto customer);
+    IPage<CustomerVo> pageList(Page<Customer> page, @Param("customer") CustomerDto customer);
 }

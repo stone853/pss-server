@@ -9,7 +9,6 @@ public class MaterialDetailLogVo extends MaterialDetailLog {
     private String materialName;
     private String materialModel;
     private String measureUnit;
-    private String brand;
 
     private JSONArray jsonArray;
 
@@ -37,17 +36,10 @@ public class MaterialDetailLogVo extends MaterialDetailLog {
         return materialName;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
     public String getMeasureUnit() {
         return measureUnit;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
 
     public void setMeasureUnit(String measureUnit) {
         this.measureUnit = measureUnit;

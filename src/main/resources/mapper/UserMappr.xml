@@ -65,30 +65,97 @@
     </select>
 
 
-    <select id="selectIndexData" resultType="com.flong.springboot.modules.entity.vo.IndexDataVo">
+    <select id="selectIndexData" resultType="com.flong.springboot.modules.entity.vo.IndexDataVo"
+            parameterType="com.flong.springboot.modules.entity.dto.IndexDataDto">
         select (
         select count(*) from t_pss_contract_sale where contract_status = '4'
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and part_a = #{indexDataDto.custCode}
+        </if>
         ) contractSaleCount,
         (
+        select sum(contract_amount)  from t_pss_contract_sale where contract_status = '4'
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and part_a = #{indexDataDto.custCode}
+        </if>
+        ) contractSaleAmount,
+        (
+        select sum(contract_amount)  from t_pss_contract_sale where contract_status = '4'
+        and left(create_time,4) = DATE_FORMAT(NOW(),'%Y')
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and part_a = #{indexDataDto.custCode}
+        </if>
+        ) contractSaleAmountYear,
+        (
         select count(*)  from t_pss_contract_purchase where contract_status = '4'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and part_b = #{indexDataDto.supplierCode}
+        </if>
         ) contractPurCount,
         (
+        select sum(contract_amount) from t_pss_contract_purchase where contract_status = '4'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and part_b = #{indexDataDto.supplierCode}
+        </if>
+        ) contractPurAmount,
+        (
+        select sum(contract_amount) from t_pss_contract_purchase where contract_status = '4'
+        and left(create_time,4) = DATE_FORMAT(NOW(),'%Y')
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and part_b = #{indexDataDto.supplierCode}
+        </if>
+        ) contractPurAmountYear,
+        (
         select count(*) from t_pss_order where order_type = '1' and  status !='1'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCount,
+
+        (
+        select sum(amount_price) from t_pss_material_detail_log t where
+        (
+        select 1 from t_pss_order t1 where t.foreign_code = t1.order_code and t1.order_type = '1' and  t1.status ='7'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and t1.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        )
+        ) orderPurAmount,
         (
         select count(*) from t_pss_order where order_type = '1' and  status !='1' AND left(application_date,4) = DATE_FORMAT(NOW(),'%Y')
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCountYear,
         (
         select count(*) from t_pss_order where order_type = '1' and  status !='1' AND application_date = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCountToday,
         (
         select count(*) from t_pss_order where order_type = '1' and  status = '7'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCountFinish,
         (
+        select count(*) from t_pss_order where order_type = '1' and  status = '7' and finish_time = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        ) orderPurCountFinishToday,
+        (
         select count(*) from t_pss_order where order_type = '1' and  status = '2'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCountCheck,
         (
         select count(*) from t_pss_order where order_type = '1' and  status = '3'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and supplier_code = #{indexDataDto.supplierCode}
+        </if>
         ) orderPurCountToSend,
         (
         select count(*) from t_pss_user where user_type = '1'
@@ -99,5 +166,40 @@
         (
         select count(*) from t_pss_customer
         ) customerCount from dual
+    </select>
+
+
+    <select id="todoTask" resultType="com.flong.springboot.modules.entity.vo.TodoTaskVo">
+        select * from (
+        select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,CONCAT_WS('-',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
+        case when t.check_role =null then t1.create_user else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_contract_purchase t1 on t.process_id = t1.process_id
+        where t.step != '-1'
+        and t.process_type = 'cght'
+
+        union all
+
+        select '待处理' taskStatus,t1.contract_code taskCode,'xsht' taskType,CONCAT_WS('-',t1.contract_name,step_name)  taskTitle,t.step,t.step_name stepName,
+        case when t.check_role =null then t1.create_user else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_contract_sale t1 on t.process_id = t1.process_id
+        where t.step != '-1'
+        and t.process_type = 'xsht'
+
+        union all
+
+        select '待处理' taskStatus,t1.order_code taskCode,case t1.order_type when '1' then 'cgdd' when '2' then 'ckd' end  taskType,CONCAT_WS('-','采购订单',t2.supplier_name,t.step_name) taskTitle,t.step,t.step_name,
+        case when t.check_role is null or t.check_role ='' then t1.applicant else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_order t1 on t.process_id = t1.process_id
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        where t.step != '-1'
+        and t.process_type = 'cgdd' ) A
+
+        where 1=1
+        <if test="userId != null and userId != ''">
+            and A.userId like "%"#{userId}"%"
+        </if>
     </select>
 </mapper>

@@ -7,6 +7,7 @@
     <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
     <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
     <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
     <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
     <result column="price_tax" jdbcType="DECIMAL" property="priceTax" />
@@ -19,9 +20,21 @@
   </resultMap>
 
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailLogVo">
-    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_detail_log t
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit from t_pss_material_detail_log t
     left join t_pss_material_mgt t1 on t.material_code = t1.material_code
     where 1=1
+    <if test="foreignCode != null and foreignCode != ''">
+      and t.foreign_code = #{foreignCode}
+    </if>
+    order by t.id desc
+  </select>
+
+
+  <select id="findRaw" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailLogVo">
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit from t_pss_material_detail_log t
+    left join t_pss_material_mgt t1 on t.material_code = t1.material_code
+    where 1=1
+    and t1.type in (select code from t_pss_dict_tree where (parent_id = 8 or id = 8))
     <if test="foreignCode != null and foreignCode != ''">
       and t.foreign_code = #{foreignCode}
     </if>

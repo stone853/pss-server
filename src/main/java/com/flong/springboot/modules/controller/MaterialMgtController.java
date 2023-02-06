@@ -4,6 +4,7 @@ package com.flong.springboot.modules.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.MaterialMgt;
 import com.flong.springboot.modules.entity.dto.MaterialMgtDto;
@@ -39,6 +40,7 @@ public class MaterialMgtController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "MaterialMgt",dataTypeClass = MaterialMgt.class , value ="")})
     @PostMapping("/v1/add")
     public int add(@RequestHeader("token") String token,@RequestBody MaterialMgt t) {
+        t.setCreateUser(UserHelper.getUserId(token));
         return materialMgtService.insert(t);
     }
 

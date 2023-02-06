@@ -2,6 +2,7 @@ package com.flong.springboot.modules.service;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.modules.entity.PssProcessTask;
 import com.flong.springboot.modules.mapper.PssProcessMapper;
 import com.flong.springboot.modules.mapper.PssProcessTaskMapper;
@@ -21,6 +22,7 @@ public class PssProcessTaskService extends ServiceImpl<PssProcessTaskMapper, Pss
                 qp.set("step",step);
                 qp.set("step_name",stepName);
                 qp.set("check_role",checkRole);
+                qp.set("opt_time", UserHelper.getDateTime());
                 this.update(qp);
         }
 }

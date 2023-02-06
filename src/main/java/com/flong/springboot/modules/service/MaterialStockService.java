@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.MaterialStock;
@@ -81,7 +82,7 @@ public class MaterialStockService extends ServiceImpl<MaterialStockMapper, Mater
         }
 
 
-        public void subInOrder (String materialCode,int outQuantity) {
+        public synchronized void subInOrder (String materialCode,String materialName,String remark,int inQuantity) {
                 if (StringUtils.isEmpty(materialCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改物料code为空");
                 }
@@ -91,9 +92,20 @@ public class MaterialStockService extends ServiceImpl<MaterialStockMapper, Mater
                 q.last("limit 1");
                 MaterialStock m = this.getOne(q);
 
-                if (outQuantity !=0) {
+                if (m == null ){
+                        m = new MaterialStock();
+                        m.setMaterialCode(materialCode);
+                        m.setMaterialName(materialName);
+                        m.setQuantity(inQuantity);
+                        m.setRemark(remark);
+                        m.setUpdTime(UserHelper.getDateTime());
+                        this.save(m);
+                        return;
+                }
+
+                if (inQuantity !=0) {
                         LambdaUpdateWrapper<MaterialStock> uSql = new LambdaUpdateWrapper<>();
-                        uSql.setSql("quantity = IFNULL(quantity,0)+" + outQuantity);
+                        uSql.setSql("quantity = IFNULL(quantity,0)+" + inQuantity);
                         uSql.eq(MaterialStock::getMaterialCode, materialCode);
                         materialStockMapper.update(null,uSql);
                 }

@@ -7,6 +7,7 @@ import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.Order;
 import com.flong.springboot.modules.entity.dto.OrderDto;
+import com.flong.springboot.modules.entity.vo.OrderCountVo;
 import com.flong.springboot.modules.entity.vo.OrderVo;
 import com.flong.springboot.modules.service.OrderService;
 import io.swagger.annotations.Api;
@@ -84,6 +85,16 @@ public class OrderController {
         return orderService.getOneById(id);
     }
 
+    /**
+     * 查询合同详情
+     *
+     * @param orderCode
+     */
+    @GetMapping("/getOneByOrderCode")
+    public OrderVo getOneByOrderCode(@RequestHeader("token") String token, @RequestParam("orderCode") String orderCode) {
+        return orderService.getOneByOrderCode(orderCode);
+    }
+
 //    /**
 //     * 订单分页，参数有多个使用下标索引进行处理.如果有两个参数(如订单名和地址)：conditionList[0].fieldName=orderPurchaseName、 conditionList[0].fieldName=address
 //     * 未转码请求分页地址: http://localhost:7011/orderPurchase/page?conditionList[0].fieldName=orderPurchaseName&conditionList[0].operation=LIKE&conditionList[0].value=周
@@ -96,6 +107,12 @@ public class OrderController {
         orderDto.setOrderType(OrderTypeEnum.IN.getCode());
         orderDto.setUserId(UserHelper.getUserId(token));
         return orderService.pagePurList(orderDto);
+    }
+
+    @ApiOperation("查询各类订单条数")
+    @PostMapping("/getOrderCount")
+    public List<OrderCountVo> getOrderCount(@RequestHeader("token") String token) {
+        return orderService.getOrderCount();
     }
 
 

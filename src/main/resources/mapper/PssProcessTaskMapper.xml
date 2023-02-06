@@ -9,7 +9,7 @@
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
     <result column="check_role" jdbcType="VARCHAR" property="checkRole" />
     <result column="process_type" jdbcType="VARCHAR" property="processType" />
-
+    <result column="opt_time" jdbcType="VARCHAR" property="optTime" />
   </resultMap>
 
 </mapper>

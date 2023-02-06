@@ -94,6 +94,7 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                 }
                 String orderSendCode = "";
                 try {
+                        c.setSendTime(UserHelper.getDateTime());
 
                         Integer keyId = c.getId();
                         if (keyId !=null && keyId !=0) {
@@ -128,10 +129,18 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
          * @return
          */
         public boolean isSendAll (String orderCode) {
+                //先查是否创建了发货单
+                QueryWrapper<OrderSend> q1 = new QueryWrapper<>();
+                q1.eq("order_code",orderCode);
+                List<OrderSend> list1 = this.list(q1);
+                if (list1 ==null || list1.size() ==0) {
+                        return false;
+                }
+
+                //查询发货单是否都发完了
                 QueryWrapper<OrderSend> q = new QueryWrapper<>();
                 q.eq("order_code",orderCode);
-                q.ne("send_status","1");  // 1运输中
-                q.ne("send_status","3");  //3 验收
+                q.in("send_status","0","2");  // 0 待发货 2 发货驳回
                 List<OrderSend> list = this.list(q);
                 if (list !=null && list.size() >0) {
                         return false;

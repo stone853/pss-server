@@ -7,6 +7,7 @@
     <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
     <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
     <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
     <result column="send_quantity" jdbcType="INTEGER" property="sendQuantity" />
     <result column="acpt_quantity" jdbcType="INTEGER" property="acptQuantity" />
     <result column="acpt_remark" jdbcType="VARCHAR" property="acptRemark" />
@@ -16,7 +17,7 @@
 
 
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailSendVo">
-    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,t1.brand from t_pss_material_detail_send t
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit from t_pss_material_detail_send t
     left join t_pss_material_mgt t1 on t.material_code = t1.material_code
     where 1=1
     <if test="foreignCode != null and foreignCode != ''">
@@ -30,8 +31,8 @@
     t.send_quantity,t.send_quantity acptQuantity,t.acpt_remark,t1.price_tax priceTax,
     t2.material_name materialName,
     t2.material_model materialModel,
-    t2.measure_unit measureUnit,
-    t2.brand from t_pss_material_detail_send t
+    t2.measure_unit measureUnit
+    from t_pss_material_detail_send t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code and t.material_code = t1.material_code
     left join t_pss_material_mgt t2 on t.material_code = t2.material_code
     where 1=1

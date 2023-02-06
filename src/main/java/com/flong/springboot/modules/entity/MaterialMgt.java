@@ -38,7 +38,6 @@ public class MaterialMgt {
 
     private String createTime;
 
-    private String brand;
 
     private String isDelete;
 
@@ -100,13 +99,6 @@ public class MaterialMgt {
         this.createTime = createTime == null ? null : createTime.trim();
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand == null ? null : brand.trim();
-    }
 
     public String getIsDelete() {
         return isDelete;

@@ -43,8 +43,19 @@ public class MaterialDetailLog {
     private String recordTime;
 
     private String remark;
+
+    private String brand;
+
     @JsonIgnore
     private String fileC;
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
 
     public void setMaterialName(String materialName) {
         this.materialName = materialName;

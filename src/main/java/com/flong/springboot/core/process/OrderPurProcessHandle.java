@@ -5,6 +5,7 @@ import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.*;
+import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
 import com.flong.springboot.modules.service.MaterialStockService;
 import com.flong.springboot.modules.service.OrderService;
@@ -56,14 +57,12 @@ public class OrderPurProcessHandle extends ProcessHandle {
             orderService.updateById(order);
 
             String orderCode = order.getOrderCode();
-            QueryWrapper<MaterialDetailLog> q = new QueryWrapper<>();
-            q.eq("foreign_code",orderCode);
-            List<MaterialDetailLog> list = materialDetailLogService.list(q);
+            List<MaterialDetailLogVo> list = materialDetailLogService.findRaw(orderCode);
             if (list !=null || list.size() > 0 ) {
                 for (int i =0; i < list.size(); i++) {
                     MaterialDetailLog m = list.get(i);
                     if (m.getQuantity() !=null) {
-                        materialStockService.subInOrder(m.getMaterialCode(),m.getQuantity());
+                        materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getQuantity());
                     }
                 }
             }

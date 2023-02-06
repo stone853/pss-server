@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.DataStatisticMapper">
+
+
+    <select id="salesRanking" resultType="java.util.Map">
+        select t.id,t.cust_code custCode,t.cust_name custName,sum(t1.amount_excluding_tax) amount from t_pss_customer t
+        left join t_pss_contract_sale t1 on t.cust_code = t1.part_a
+        group by t.id,t.cust_code,t.cust_name
+        order by sum(t1.amount_excluding_tax) desc
+    </select>
+
+    <select id="materialTop5" resultType="java.util.Map">
+        select t.material_code materialCode,t1.material_name materialName,sum(t.quantity * t.price_tax) amount,
+        (select sum(quantity * price_tax) from t_pss_material_detail) totalSales from t_pss_material_detail t
+        left JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
+        group by t.material_code,t1.material_name
+        limit 5
+    </select>
+
+    <select id="salesAnalysis" resultType="java.util.Map">
+        select left(t.create_time,7) year,sum(contract_amount) amount from t_pss_contract_sale t
+        where t.contract_status = '4'
+        group by left(t.create_time,7)
+        order by left(t.create_time,7) desc
+        limit 6
+    </select>
+
+    <select id="sendRecords" resultType="java.util.Map">
+        select t.order_send_code orderSendCode,t.send_time sendTime,t2.supplier_name supplierName from t_pss_order_send t
+        left join t_pss_order t1 on t.order_code = t.order_code
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        where t.send_status = '1'
+        order by t.id desc
+        limit 20
+    </select>
+
+    <select id="sendMaterialTop5" resultType="java.util.Map">
+        select t.material_code materialCode,t2.material_name materialName,sum(t.send_quantity) sendQuantity from t_pss_material_detail_send t
+        left join t_pss_material_mgt t2 on t.material_code = t2.material_code
+        where exists (select 1 from t_pss_order_send t1 where t.foreign_code = t1.order_send_code)
+        and t2.measure_unit = '吨'
+        group by t.material_code,t2.material_name
+        order by sum(t.send_quantity) DESC
+        limit 5
+    </select>
+
+</mapper>

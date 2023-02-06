@@ -20,6 +20,7 @@ import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
 import com.flong.springboot.modules.entity.dto.OrderDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
+import com.flong.springboot.modules.entity.vo.OrderCountVo;
 import com.flong.springboot.modules.entity.vo.OrderVo;
 import com.flong.springboot.modules.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -172,6 +173,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 return invokePage(orderDto,pageList);
         }
 
+
+
         /**
          * 出库单
          * @param orderDto
@@ -208,6 +211,15 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 return orderMapper.getOneById(id);
         }
 
+        /**
+         * 根据orderCode查，详情
+         * @param orderCode
+         * @return
+         */
+        public OrderVo getOneByOrderCode (String orderCode) {
+                return orderMapper.getOneByOrderCode(orderCode);
+        }
+
 
         private OrderVo setOptButton (OrderDto dto, OrderVo c) {
                 if (c == null) {
@@ -234,5 +246,13 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"找不到流程对应订单，processId:"+processId);
                 }
                 return order;
+        }
+
+        /**
+         * 查询各类订单条数
+         * @return
+         */
+        public List<OrderCountVo> getOrderCount () {
+                return orderMapper.getOrderCount();
         }
 }

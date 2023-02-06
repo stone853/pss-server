@@ -59,7 +59,7 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                 }
 
                 //判断发送数量是否超过剩余数量
-                isSendable(orderCode,list);
+                isSendable(orderCode,foreignCode,list);
                 //不在里面的先删除
                 List<Integer> detailIdsB = list.stream().map(MaterialDetailSend::getId).collect(Collectors.toList());
                 detailIdsB.removeIf(p -> p== null);
@@ -164,8 +164,11 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
         }
 
 
-        private boolean isSendable (String orderCode,List<MaterialDetailSend> list) {
-                List<MaterialDetailSendOrderVo> orderList =orderSendMapper.getOrderMaterial(new OrderSendMaterialDto().setOrderCode(orderCode));
+        private boolean isSendable (String orderCode,String orderSendCode,List<MaterialDetailSend> list) {
+                OrderSendMaterialDto o = new OrderSendMaterialDto();
+                o.setOrderCode(orderCode);
+                o.setOrderSendCode(orderSendCode);
+                List<MaterialDetailSendOrderVo> orderList =orderSendMapper.getOrderMaterial(o);
                 Map<String,MaterialDetailSendOrderVo> map= orderList.stream().collect(Collectors.toMap(MaterialDetailSendOrderVo :: getMaterialCode, p -> p));
 
                 if (orderList == null || orderList.size() ==0) {

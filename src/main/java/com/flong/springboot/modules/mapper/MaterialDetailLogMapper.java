@@ -12,4 +12,6 @@ public interface MaterialDetailLogMapper  extends BaseMapper<MaterialDetailLog> 
 
     List<MaterialDetailLogVo> findAll(@Param("foreignCode") String foreignCode);
 
+    List<MaterialDetailLogVo> findRaw(@Param("foreignCode") String foreignCode);
+
 }

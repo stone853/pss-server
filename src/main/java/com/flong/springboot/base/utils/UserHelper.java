@@ -34,7 +34,7 @@ public class UserHelper {
 
     public static String getDateTime () {
         Date date = new Date();
-        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
     }
 
@@ -42,5 +42,9 @@ public class UserHelper {
         Date date = new Date();
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
+    }
+
+    public static void main (String args[]) {
+        System.out.println(UserHelper.getDateTime());
     }
 }

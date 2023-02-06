@@ -26,6 +26,8 @@ public class PssProcessTask {
 
     private String processType;
 
+    private String optTime;
+
     public void setProcessType(String processType) {
         this.processType = processType;
     }
@@ -82,5 +84,11 @@ public class PssProcessTask {
         this.stepName = stepName == null ? null : stepName.trim();
     }
 
+    public void setOptTime(String optTime) {
+        this.optTime = optTime;
+    }
 
+    public String getOptTime() {
+        return optTime;
+    }
 }

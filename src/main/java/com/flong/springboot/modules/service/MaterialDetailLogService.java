@@ -147,5 +147,11 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
 
 
 
+        public List<MaterialDetailLogVo> findRaw (String foreignCode) {
+
+                return materialDetailLogMapper.findRaw(foreignCode);
+        }
+
+
 
 }
