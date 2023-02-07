@@ -1,30 +1,23 @@
 package com.flong.springboot.modules.service;
 
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.MD5Utils;
-import com.flong.springboot.core.exception.BaseException;
 import com.flong.springboot.core.exception.CommMsgCode;
-import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.UserRole;
-import com.flong.springboot.modules.entity.dto.IndexDataDto;
-import com.flong.springboot.modules.entity.dto.LoginDto;
-import com.flong.springboot.modules.entity.dto.RoleDto;
-import com.flong.springboot.modules.entity.dto.UserDto;
+import com.flong.springboot.modules.entity.dto.*;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.UserMapper;
-import com.flong.springboot.modules.mapper.UserRoleMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +29,9 @@ import java.util.List;
 public class UserService extends ServiceImpl<UserMapper, User> {
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    RoleService roleService;
 
     @Autowired
     UserRoleService userRoleService;
@@ -210,5 +206,86 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public List<TodoTaskVo> todoTask (String userId) {
         return userMapper.todoTask(userId);
+    }
+
+
+    public boolean updUserPwd (UpdUserPwdDto updUserPwdDto) {
+        String mobile = updUserPwdDto.getMobile();
+        String oldPwd = updUserPwdDto.getOldPwd();
+        String newPwd = updUserPwdDto.getNewPwd();
+        if (StringUtils.isEmpty(mobile)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号不能为空");
+        }
+        if (StringUtils.isEmpty(oldPwd)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"旧密码不能为空");
+        }
+        if (StringUtils.isEmpty(newPwd)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"新密码不能为空");
+        }
+
+        QueryWrapper<User> q = new QueryWrapper<>();
+        q.eq("mobile",mobile);
+        q.eq("password",oldPwd);
+        q.last("limit 1");
+        User u = this.getOne(q);
+        if (u == null) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号或旧密码错误");
+        }
+        u.setPassword(newPwd);
+        this.updateById(u);
+        return true;
+    }
+
+    /**
+     * 新增或者修改客户/供应商账户
+     * @param deptCode  部门code
+     * @param mobile 手机号
+     * @param userType 2-客户 3-供应商
+     */
+    public void insertOrUpdateUser (String deptCode,String mobile,String userName,String userType) {
+        try {
+            if (StringUtils.isEmpty(userType)) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"用户类型为空");
+            }
+            if (StringUtils.isEmpty(deptCode)) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"部门不能为空");
+            }
+            if (StringUtils.isEmpty(mobile)) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号不能为空");
+            }
+            if (StringUtils.isEmpty(userName)) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"姓名不能为空");
+            }
+            String roleName = "";
+            if (userType.equals("2")) {
+                roleName = "客户";
+            } else {
+                roleName = "供应商";
+            }
+
+            QueryWrapper<User> q = new QueryWrapper<>();
+            q.eq("mobile",mobile);
+            q.last("limit 1");
+            User u = this.getOne(q);
+            if (u == null) {
+                u = new User();
+                u.setUserType(userType);
+                u.setMobile(mobile);
+                u.setDeptCode(deptCode);
+                u.setName(userName);
+                u.setRoleCodes(roleService.getOneRoleByName(roleName));
+                this.insert(u);
+            } else {
+                u.setMobile(mobile);
+                u.setName(userName);
+                u.setDeptCode(deptCode);
+                u.setRoleCodes(roleService.getOneRoleByName(roleName));
+                this.updateUser(u);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("修改用户账户信息失败");
+        }
+
     }
 }

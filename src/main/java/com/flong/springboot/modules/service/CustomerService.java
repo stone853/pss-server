@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.Customer;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.vo.CustomerVo;
@@ -24,6 +25,9 @@ import java.util.List;
 public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
         @Autowired
         CustomerMapper customerMapper;
+
+        @Autowired
+        UserService userService;
 
         public IPage<Customer> page (CustomerDto customerDto) {
                 QueryWrapper<Customer> build = buildWrapper(customerDto);
@@ -60,6 +64,9 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
                 }
                 String custCode = GeneratorKeyUtil.getCustNextId();
                 customerMapper.insert(c.setCustCode(custCode));
+
+                //新增或者修改用户信息
+                userService.insertOrUpdateUser(custCode,c.getContractTel(),c.getContracts(),"2");
                 return c;
         }
 
@@ -83,4 +90,15 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
         }
 
 
+        public void updateCustomer (Customer c) {
+                this.updateById(c);
+                if (StringUtils.isEmpty(c.getCustCode())) {
+                        c = this.getById(c.getId());
+                        c.setCustCode(c.getCustCode());
+                        c.setContractTel(c.getContractTel());
+                        c.setContracts(c.getContracts());
+                }
+                //新增或者修改用户信息
+                userService.insertOrUpdateUser(c.getCustCode(),c.getContractTel(),c.getContracts(),"2");
+        }
 }

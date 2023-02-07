@@ -1,20 +1,14 @@
 package com.flong.springboot.modules.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.flong.springboot.base.model.ResultJsonModel;
 import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
-import com.flong.springboot.core.exception.BaseException;
-import com.flong.springboot.core.exception.CommMsgCode;
-import com.flong.springboot.core.exception.MsgCode;
 import com.flong.springboot.modules.entity.User;
-import com.flong.springboot.modules.entity.dto.LoginDto;
+import com.flong.springboot.modules.entity.dto.UpdUserPwdDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
-import com.flong.springboot.modules.entity.vo.LoginVo;
 import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.service.UserService;
@@ -25,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author:liangjl
@@ -66,6 +59,12 @@ public class UserController {
     public void resetPwd(@RequestBody User user) {
         user.setPassword(MD5Utils.encrypt("123456"));
         userService.updateById(user);
+    }
+
+    @ApiOperation("修改密码")
+    @PutMapping("/updUserPwd")
+    public boolean updUserPwd(@RequestBody UpdUserPwdDto updUserPwdDto) {
+        return userService.updUserPwd(updUserPwdDto);
     }
 
     /**

@@ -21,6 +21,7 @@ import com.flong.springboot.modules.mapper.SupplierMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,9 @@ import java.util.List;
 public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
         @Autowired
         SupplierMapper supplierMapper;
+
+        @Autowired
+        UserService userService;
 
         @Autowired
         MaterialDetailService materialDetailService;
@@ -76,25 +80,25 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加供应商失败");
                 }
                 materialDetailService.batchInsert(foreignCode,c.getMaterialDetailList(),"3");
+
+                //新增或者修改用户信息
+                userService.insertOrUpdateUser(foreignCode,c.getContractTel(),c.getContracts(),"3");
                 return c;
         }
+
+
 
 
         /**
          *修改
          * @param c
          */
+        @Transactional
         public void update (Supplier c) {
                 int keyId = c.getId();
                 if (keyId ==0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
-
-                if (StringUtils.isEmpty(c.getSupplierCode())) {
-                        Supplier s = supplierMapper.selectById(keyId);
-                        c.setSupplierCode(s.getSupplierCode());//加上，否则修改报错
-                }
-                String foreignCode = c.getSupplierCode();
                 //先修改
                 try {
                         supplierMapper.updateById(c);
@@ -102,9 +106,14 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改供应商信息失败");
                 }
-
-
+                if (StringUtils.isEmpty(c.getSupplierCode())) {
+                        c = supplierMapper.selectById(keyId);
+                }
+                String foreignCode = c.getSupplierCode();
                 materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"3");
+
+                //新增或者修改用户信息
+                userService.insertOrUpdateUser(foreignCode,c.getContractTel(),c.getContracts(),"3");
         }
 
 

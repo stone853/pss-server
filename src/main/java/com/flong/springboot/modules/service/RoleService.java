@@ -46,4 +46,15 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
         }
 
 
+        public String getOneRoleByName (String roleName) {
+                QueryWrapper<Role> q = new QueryWrapper<>();
+                q.eq("name",roleName);
+                q.last("limit 1");
+                Role role = this.getOne(q);
+                if (role == null) {
+                        return "";
+                }
+                return role.getCode();
+        }
+
 }

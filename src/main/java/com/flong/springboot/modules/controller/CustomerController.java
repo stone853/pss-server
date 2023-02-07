@@ -75,7 +75,9 @@ public class CustomerController {
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             customer.setFilesC(JSONArray.toJSONString(fileBeanList));
         }
-        customerService.updateById(customer);
+
+
+        customerService.updateCustomer(customer);
     }
     /**
      * 删除通过多个主键Id进行删除
