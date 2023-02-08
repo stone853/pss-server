@@ -10,6 +10,8 @@ public class MaterialDetailSendOrderVo {
 
     private String materialCode;
 
+    private String brand;
+
     private int orderQuantity;
 
     private int sendQuantity;
@@ -115,5 +117,13 @@ public class MaterialDetailSendOrderVo {
 
     public int getSendQuantity() {
         return sendQuantity;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getBrand() {
+        return brand;
     }
 }

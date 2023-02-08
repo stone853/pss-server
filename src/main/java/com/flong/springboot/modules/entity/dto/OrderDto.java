@@ -29,6 +29,16 @@ public class OrderDto {
 
     private String appEndDate;
 
+    private String supplierCode;
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

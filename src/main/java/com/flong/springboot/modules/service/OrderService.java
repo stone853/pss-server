@@ -16,12 +16,14 @@ import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.process.OrderPurProcessHandle;
 import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.Order;
+import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
 import com.flong.springboot.modules.entity.dto.OrderDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.OrderCountVo;
 import com.flong.springboot.modules.entity.vo.OrderVo;
+import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -169,6 +171,17 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
          * @return
          */
         public IPage<OrderVo> pagePurList (OrderDto orderDto) {
+                String userId = orderDto.getUserId();
+                User user = userService.getUserByUserId(userId);
+                String userType = "";
+                if (user !=null) {
+                        userType = user.getUserType();
+                }
+
+                if (!StringUtils.isEmpty(userType) && "3".equals(userType)) {//供应商
+                        orderDto.setSupplierCode(user.getDeptCode());
+                }
+
                 IPage<OrderVo> pageList = orderMapper.pagePurList(orderDto.getPage()==null ? new Page<>(): orderDto.getPage(), orderDto);
                 return invokePage(orderDto,pageList);
         }

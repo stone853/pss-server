@@ -43,6 +43,9 @@
     left join t_pss_process t92 on t91.step = t92.step and t92.type = 'cgdd'
     left join t_pss_status_button t93 on t93.`status` = t.`status` and t93.type ='ddzt'
     where 1=1
+    <if test="orderDto.supplierCode != null and orderDto.supplierCode != ''">
+      and t.supplier_code = #{orderDto.supplierCode}
+    </if>
     <if test="orderDto.status != null and orderDto.status != ''">
       and t.status = #{orderDto.status}
     </if>

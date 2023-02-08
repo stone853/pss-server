@@ -92,6 +92,7 @@
     x.acpt_quantity acptQuantity,
     x.acpt_remark acptRemark,
     x.source_type,
+    x.brand,
     y.orderQuantity,
     CASE
     WHEN IFNULL(x.send_quantity, 0) = 0 THEN
