@@ -60,14 +60,9 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
 
                 //判断发送数量是否超过剩余数量
                 isSendable(orderCode,foreignCode,list);
-                //不在里面的先删除
-                List<Integer> detailIdsB = list.stream().map(MaterialDetailSend::getId).collect(Collectors.toList());
-                detailIdsB.removeIf(p -> p== null);
+                //先删除
                 try {
                         QueryWrapper<MaterialDetailSend> dw = new QueryWrapper<MaterialDetailSend>();
-                        if (detailIdsB !=null && detailIdsB.size() >0) {
-                                dw.notIn("id",detailIdsB);
-                        }
                         dw.eq("foreign_code",foreignCode);
                         materialDetailSendMapper.delete(dw);
                 } catch (Exception e) {
@@ -82,9 +77,13 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                                                 throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
                                         }
 
+                                //全部新增，ID设置为空
+                                p.setId(null);
+
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
                                         }
+
 
                                         p.setForeignCode(foreignCode);
                                         p.setOrderCode(orderCode);
@@ -92,7 +91,7 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                                 }
 
                         );
-                        this.saveOrUpdateBatch(list);
+                        this.saveBatch(list);
                 }catch (ServiceException e) {
                         throw e;
                 } catch (Exception e) {
@@ -169,6 +168,13 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                 o.setOrderCode(orderCode);
                 o.setOrderSendCode(orderSendCode);
                 List<MaterialDetailSendOrderVo> orderList =orderSendMapper.getOrderMaterial(o);
+
+                //判断物料code重复
+//                List<String> tempList = list.stream().map(MaterialDetailSend::getMaterialCode).distinct().collect(Collectors.toList());
+//                if (tempList.size() != list.size()) {
+//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+//                }
+
                 Map<String,MaterialDetailSendOrderVo> map= orderList.stream().collect(Collectors.toMap(MaterialDetailSendOrderVo :: getMaterialCode, p -> p));
 
                 if (orderList == null || orderList.size() ==0) {

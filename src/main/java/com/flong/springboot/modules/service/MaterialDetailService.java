@@ -91,27 +91,23 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
                 }
 
-                //不在里面的先删除
-                List<Integer> detailIdsB = list.stream().map(MaterialDetail::getId).collect(Collectors.toList());
-                detailIdsB.removeIf(p -> p== null);
+                //先删除
                 try {
                         QueryWrapper<MaterialDetail> dw = new QueryWrapper<MaterialDetail>();
-                        if (detailIdsB !=null && detailIdsB.size() >0) {
-                                dw.notIn("id",detailIdsB);
-                        }
                         dw.eq("foreign_code",foreignCode);
                         materialDetailMapper.delete(dw);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"删除物料明细失败");
                 }
-
                 //修改物料明细，insert or update
                 try {
                         list.stream().forEach((p) ->{
                                         if (null == p.getMaterialCode()) {
                                                 throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
                                         }
+                                        //全部新增，ID设置为空
+                                        p.setId(null);
 
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
@@ -122,7 +118,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                 }
 
                         );
-                        this.saveOrUpdateBatch(list);
+                        this.saveBatch(list);
                 }catch (ServiceException e) {
                         throw e;
                 } catch (Exception e) {

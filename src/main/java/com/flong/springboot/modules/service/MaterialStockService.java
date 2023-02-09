@@ -113,6 +113,10 @@ public class MaterialStockService extends ServiceImpl<MaterialStockMapper, Mater
         }
 
 
+        public  MaterialStockDetailVo getOneByCode (String materialCode) {
+                return materialStockMapper.getOneByCode(materialCode);
+        }
+
 
 
 

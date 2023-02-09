@@ -20,5 +20,7 @@ public interface MaterialStockMapper  extends BaseMapper<MaterialStock> {
     List<MaterialStockVo> findAll(@Param("materialStockDto") MaterialStockDto materialStockDto);
     IPage<MaterialStockDetailVo> pageList(Page<MaterialStock> page, @Param("materialStockDto") MaterialStockDto materialStockDto);
 
+    MaterialStockDetailVo getOneByCode(@Param("materialCode") String materialCode);
+
     IPage<MaterialStockLogVo> pageMaterialLogList(Page<MaterialStockLogVo> page, @Param("materialStockLogDto") MaterialStockLogDto materialStockLogDto);
 }

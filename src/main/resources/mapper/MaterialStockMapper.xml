@@ -111,6 +111,47 @@
   </select>
 
 
+  <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.MaterialStockDetailVo">
+    select t.*,t1.material_model materialModel,t1.measure_unit measureUnit,
+    IFNULL(A.quantityToIn,0) quantityToIn,IFNULL(A1.quantityIn,0) quantityIn,
+    IFNULL(B.quantityToOut,0) quantityToOut,IFNULL(B1.quantityOut,0) quantityOut,
+    t.quantity - IFNULL(B.quantityToOut,0) avlQuantity
+    from t_pss_material_stock t
+    LEFT JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
+    LEFT JOIN (
+    select material_code,sum(quantity) quantityToIn from (
+    <include refid="selectQuantityToIn"></include>
+    ) x1
+    group by material_code
+    ) A on t.material_code = A.material_code
+
+    LEFT JOIN (
+    select material_code,sum(quantity) quantityIn from (
+    <include refid="selectQuantityIn"></include>
+    ) x2
+    group by material_code
+    ) A1 on t.material_code = A1.material_code
+
+    LEFT JOIN (
+    select material_code,sum(quantity) quantityToOut from (
+    <include refid="selectQuantityToOut"></include>
+    ) x3
+    group by material_code
+    ) B on t.material_code = B.material_code
+
+    LEFT JOIN(
+    select material_code,sum(quantity) quantityOut from (
+    <include refid="selectQuantityOut"></include>
+    ) x4
+    group by material_code
+    ) B1 on t.material_code = B1.material_code
+    where 1=1
+    <if test="materialCode != null and materialCode != ''">
+      and t.material_code = #{materialCode}
+    </if>
+  </select>
+
+
   <select id="pageMaterialLogList" resultType="com.flong.springboot.modules.entity.vo.MaterialStockLogVo"
           parameterType="com.flong.springboot.modules.entity.dto.MaterialStockLogDto">
     SELECT

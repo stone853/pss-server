@@ -23,6 +23,7 @@
     SELECT
     A.orderCode,
     A.material_code AS materialCode,
+    A.brand,
     A.orderQuantity,
     (
     A.orderQuantity - ifnull(B.sendQuantity,0)
@@ -39,12 +40,14 @@
     SELECT
     t.foreign_code AS orderCode,
     t.material_code,
+    t.brand,
     sum(t.quantity) AS orderQuantity
     FROM
     t_pss_material_detail_log t
     GROUP BY
     t.foreign_code,
-    t.material_code
+    t.material_code,
+    t.brand
     ) A
     LEFT JOIN (
     SELECT

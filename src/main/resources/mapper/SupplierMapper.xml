@@ -14,12 +14,13 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
     <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="opt_time" jdbcType="VARCHAR" property="optTime" />
   </resultMap>
 
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.SupplierVo" parameterType="com.flong.springboot.modules.entity.dto.SupplierDto">
     select t.*,t1.note as typename from t_pss_supplier t
-    left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.node_type=1
+    left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.type ='GYSLX'
     where 1=1
     <if test="supplier.supplierCode != null and supplier.supplierCode != ''">
       and t.supplier_code like "%"#{supplier.supplierCode}"%"

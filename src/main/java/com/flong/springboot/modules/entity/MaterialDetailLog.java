@@ -38,7 +38,6 @@ public class MaterialDetailLog {
 
     private String estimatedDeliveryTime;
 
-    private Integer acptQuantity;
 
     private String recordTime;
 
@@ -171,13 +170,6 @@ public class MaterialDetailLog {
         this.estimatedDeliveryTime = estimatedDeliveryTime == null ? null : estimatedDeliveryTime.trim();
     }
 
-    public Integer getAcptQuantity() {
-        return acptQuantity;
-    }
-
-    public void setAcptQuantity(Integer acptQuantity) {
-        this.acptQuantity = acptQuantity;
-    }
 
     public String getRecordTime() {
         return recordTime;

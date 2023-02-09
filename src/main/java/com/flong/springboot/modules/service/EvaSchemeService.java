@@ -32,9 +32,8 @@ public class EvaSchemeService extends ServiceImpl<EvaSchemeMapper, EvaScheme> {
 
 
 
-        public List<EvaScheme> list (EvaSchemeDto evaScheme) {
-                QueryWrapper<EvaScheme> build = buildWrapper(evaScheme);
-                return evaSchemeMapper.selectList(build);
+        public IPage<EvaSchemeVo> list (EvaSchemeDto evaSchemeDto) {
+                return evaSchemeMapper.pageList(evaSchemeDto.getPage()==null ? new Page<>():evaSchemeDto.getPage(),evaSchemeDto);
         }
 
         public EvaScheme getOneByCode (String code) {
@@ -48,7 +47,7 @@ public class EvaSchemeService extends ServiceImpl<EvaSchemeMapper, EvaScheme> {
                 if (evaSchemeDto.getSchemeName() !=null && !"".equals(evaSchemeDto.getSchemeName())) {
                         build.eq("scheme_name",evaSchemeDto.getSchemeName());
                 }
-
+                build.orderByDesc("upd_time");
                 return build;
         }
 

@@ -49,6 +49,15 @@ public class Supplier {
     @JsonIgnore
     private String fileC;
 
+    private String optTime;
+
+    public void setOptTime(String optTime) {
+        this.optTime = optTime;
+    }
+
+    public String getOptTime() {
+        return optTime;
+    }
 
     @TableField(exist = false)
     private List<FileBean> fileBeanList;

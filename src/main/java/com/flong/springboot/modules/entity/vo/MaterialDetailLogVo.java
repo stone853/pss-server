@@ -12,6 +12,17 @@ public class MaterialDetailLogVo extends MaterialDetailLog {
 
     private JSONArray jsonArray;
 
+    private Integer acptQuantity;
+
+
+    public void setAcptQuantity(Integer acptQuantity) {
+        this.acptQuantity = acptQuantity;
+    }
+
+    public Integer getAcptQuantity() {
+        return acptQuantity;
+    }
+
     public void setJsonArray(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }

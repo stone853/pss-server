@@ -1,10 +1,12 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.EvaScheme;
 import com.flong.springboot.modules.entity.dto.EvaSchemeDto;
+import com.flong.springboot.modules.entity.vo.EvaSchemeVo;
 import com.flong.springboot.modules.service.EvaSchemeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -89,7 +91,7 @@ public class EvaSchemeController {
 //     * @return
 //     */
     @PostMapping("/page")
-    public List<EvaScheme> page(@RequestHeader("token") String token, @RequestBody EvaSchemeDto evaSchemeDto) {
+    public IPage<EvaSchemeVo> page(@RequestHeader("token") String token, @RequestBody EvaSchemeDto evaSchemeDto) {
         return evaSchemeService.list(evaSchemeDto);
     }
 

@@ -44,10 +44,13 @@ public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialM
         private QueryWrapper<MaterialMgt> buildWrapper(MaterialMgtDto materialMgtDto) {
                 QueryWrapper<MaterialMgt> build = new QueryWrapper<>();
                 if (materialMgtDto.getMaterialCode() !=null && !"".equals(materialMgtDto.getMaterialCode())) {
-                        build.eq("materail_code",materialMgtDto.getMaterialCode());
+                        build.like("material_code",materialMgtDto.getMaterialCode());
                 }
                 if (materialMgtDto.getMaterialName() !=null && !"".equals(materialMgtDto.getMaterialName())) {
                         build.like("material_name",materialMgtDto.getMaterialName());
+                }
+                if (materialMgtDto.getMaterialModel() !=null && !"".equals(materialMgtDto.getMaterialModel())) {
+                        build.like("material_model",materialMgtDto.getMaterialModel());
                 }
                 if (materialMgtDto.getType() !=null && !"".equals(materialMgtDto.getType())) {
                         build.eq("type",materialMgtDto.getType());

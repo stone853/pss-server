@@ -11,7 +11,10 @@ import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.MaterialDetailLog;
+import com.flong.springboot.modules.entity.MaterialStock;
 import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
+import com.flong.springboot.modules.entity.vo.MaterialStockDetailVo;
+import com.flong.springboot.modules.entity.vo.MaterialStockVo;
 import com.flong.springboot.modules.mapper.MaterialDetailLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,8 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
         MaterialDetailLogMapper materialDetailLogMapper;
 
 
+        @Autowired
+        MaterialStockService materialStockService;
         /**
          * 根据foreignCode 批量新增
          * @param list
@@ -92,15 +97,9 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
                 }
 
-
-                //不在里面的先删除
-                List<Integer> detailIdsB = list.stream().map(MaterialDetailLog::getId).collect(Collectors.toList());
-                detailIdsB.removeIf(p -> p== null);
+                //先删除
                 try {
                         QueryWrapper<MaterialDetailLog> dw = new QueryWrapper();
-                        if (detailIdsB !=null && detailIdsB.size() >0) {
-                                dw.notIn("id",detailIdsB);
-                        }
                         dw.eq("foreign_code",foreignCode);
                         materialDetailLogMapper.delete(dw);
                 } catch (Exception e) {
@@ -113,6 +112,13 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                         list.stream().forEach((p) ->{
                                         if (null == p.getMaterialCode()) {
                                                 throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
+                                        }
+
+                                //全部新增，ID设置为空
+                                p.setId(null);
+
+                                        if ("2".equals(type)) {
+                                                isAbleOut(p.getMaterialCode(),p.getQuantity());
                                         }
 
                                         if (StringUtils.isEmpty(p.getDetailId())) {
@@ -128,7 +134,7 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                                 }
 
                         );
-                        this.saveOrUpdateBatch(list);
+                        this.saveBatch(list);
                 }catch (ServiceException e) {
                         throw e;
                 } catch (Exception e) {
@@ -139,6 +145,24 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                 return true;
         }
 
+
+        /**
+         * 判断能否出库，库存是否充足
+         * @param materialCode
+         * @param outQuantity
+         * @return
+         */
+        public boolean isAbleOut (String materialCode,int outQuantity ) {
+                MaterialStockDetailVo msd = materialStockService.getOneByCode(materialCode);
+                if (msd == null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"库存中没有找到该物料");
+                }
+                if (outQuantity > msd.getAvlQuantity()) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"库存不足");
+                }
+                return true;
+
+        }
 
         public List<MaterialDetailLogVo> list (String foreignCode) {
 

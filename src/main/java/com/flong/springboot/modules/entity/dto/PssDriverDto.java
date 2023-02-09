@@ -14,6 +14,15 @@ public class PssDriverDto {
 
     private String driverName;
 
+    private String carNo;
+
+    public void setCarNo(String carNo) {
+        this.carNo = carNo;
+    }
+
+    public String getCarNo() {
+        return carNo;
+    }
 
     public void setDriverCode(String driverCode) {
         this.driverCode = driverCode;

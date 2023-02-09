@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.base.utils.GeneratorKeyUtil;
+import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.ContractSale;
 import com.flong.springboot.modules.entity.Customer;
+import com.flong.springboot.modules.entity.MaterialDetail;
 import com.flong.springboot.modules.entity.Supplier;
 import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.dto.SupplierDto;
@@ -96,11 +98,13 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
         @Transactional
         public void update (Supplier c) {
                 int keyId = c.getId();
+                List<MaterialDetail> list = c.getMaterialDetailList();
                 if (keyId ==0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
                 //先修改
                 try {
+                        c.setOptTime(UserHelper.getDateTime());
                         supplierMapper.updateById(c);
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -110,7 +114,7 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                         c = supplierMapper.selectById(keyId);
                 }
                 String foreignCode = c.getSupplierCode();
-                materialDetailService.updateOrInsertOrDelete(foreignCode,c.getMaterialDetailList(),"3");
+                materialDetailService.updateOrInsertOrDelete(foreignCode,list,"3");
 
                 //新增或者修改用户信息
                 userService.insertOrUpdateUser(foreignCode,c.getContractTel(),c.getContracts(),"3");
