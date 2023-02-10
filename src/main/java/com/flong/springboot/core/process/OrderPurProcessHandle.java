@@ -60,9 +60,9 @@ public class OrderPurProcessHandle extends ProcessHandle {
             List<MaterialDetailLogVo> list = materialDetailLogService.findRaw(orderCode);
             if (list !=null || list.size() > 0 ) {
                 for (int i =0; i < list.size(); i++) {
-                    MaterialDetailLog m = list.get(i);
+                    MaterialDetailLogVo m = list.get(i);
                     if (m.getQuantity() !=null) {
-                        materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getQuantity());
+                        materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getAcptQuantity());
                     }
                 }
             }

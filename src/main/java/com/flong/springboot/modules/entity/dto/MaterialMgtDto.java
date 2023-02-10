@@ -16,6 +16,16 @@ public class MaterialMgtDto {
 
     private String materialModel;
 
+    private String supplierCode;
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
     public void setMaterialModel(String materialModel) {
         this.materialModel = materialModel;
     }

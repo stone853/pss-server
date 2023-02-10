@@ -49,6 +49,9 @@
     <if test="contractPurchase.contractStatus != null and contractPurchase.contractStatus != ''">
       and t.contract_status = #{contractPurchase.contractStatus}
     </if>
+    <if test="contractPurchase.supplierCode != null and contractPurchase.supplierCode != ''">
+      and t.part_b = #{contractPurchase.supplierCode}
+    </if>
     order by t.id desc
   </select>
 

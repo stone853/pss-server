@@ -32,6 +32,9 @@ public class PssDriverService extends ServiceImpl<DriverMapper, PssDriver> {
         if (pssDriver.getCarNo() !=null && !"".equals(pssDriver.getCarNo())) {
             build.like("car_no",pssDriver.getCarNo());
         }
+        if (pssDriver.getTelNo() !=null && !"".equals(pssDriver.getTelNo())) {
+            build.like("tel_no",pssDriver.getTelNo());
+        }
         return build;
     }
 

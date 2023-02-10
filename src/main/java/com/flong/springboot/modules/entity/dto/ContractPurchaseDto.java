@@ -33,6 +33,16 @@ public class ContractPurchaseDto {
 
     private String signingEndDate;
 
+    private String supplierCode;
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }

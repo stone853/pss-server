@@ -33,7 +33,10 @@
 
 
   <select id="findRaw" resultType="com.flong.springboot.modules.entity.vo.MaterialDetailLogVo">
-    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit from t_pss_material_detail_log t
+    select *,t1.material_name as materialName,t1.material_model as materialModel,t1.measure_unit as measureUnit,
+    (select sum(t2.acpt_quantity) from t_pss_material_detail_send t2
+    where t.foreign_code = t2.order_code and t.material_code = t2.material_code
+    group by t2.order_code,t2.material_code) acptQuantity from t_pss_material_detail_log t
     left join t_pss_material_mgt t1 on t.material_code = t1.material_code
     where 1=1
     and t1.type in (select code from t_pss_dict_tree where (parent_id = 8 or id = 8))

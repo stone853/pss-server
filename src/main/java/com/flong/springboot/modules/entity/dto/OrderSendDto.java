@@ -13,6 +13,16 @@ public class OrderSendDto {
 
     private String orderSendCode;
 
+    private String driverCode;
+
+    public void setDriverCode(String driverCode) {
+        this.driverCode = driverCode;
+    }
+
+    public String getDriverCode() {
+        return driverCode;
+    }
+
     public void setOrderSendCode(String orderSendCode) {
         this.orderSendCode = orderSendCode;
     }

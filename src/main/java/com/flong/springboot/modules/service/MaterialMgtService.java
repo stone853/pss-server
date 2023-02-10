@@ -10,6 +10,8 @@ import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.Customer;
+import com.flong.springboot.modules.entity.MaterialDetail;
+import com.flong.springboot.modules.entity.MaterialDetailSend;
 import com.flong.springboot.modules.entity.MaterialMgt;
 import com.flong.springboot.modules.entity.dto.MaterialMgtDto;
 import com.flong.springboot.modules.entity.vo.MaterialMgtVo;
@@ -19,14 +21,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialMgt> {
         @Autowired
         MaterialMgtMapper materialMgtMapper;
 
+        @Autowired
+        MaterialDetailService materialDetailService;
+
         public IPage<MaterialMgt> page (MaterialMgtDto materialMgtDto) {
                 QueryWrapper<MaterialMgt> build = buildWrapper(materialMgtDto);
+
+                String supplierCode = materialMgtDto.getSupplierCode();
+                if (!StringUtils.isEmpty(supplierCode)) {
+                     QueryWrapper<MaterialDetail> q = new QueryWrapper<>();
+                     q.eq("foreign_code",supplierCode);
+                     List<MaterialDetail> mdList = materialDetailService.list(q);
+                     if (mdList !=null && mdList.size() >0) {
+                             List<String> materialCodes = mdList.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
+                             build.in("material_code",materialCodes);
+                             return materialMgtMapper.selectPage(materialMgtDto.getPage()==null ? new Page<>() : materialMgtDto.getPage(),build);
+                     }
+                }
+
                 return materialMgtMapper.selectPage(materialMgtDto.getPage()==null ? new Page<>() : materialMgtDto.getPage(),build);
         }
 

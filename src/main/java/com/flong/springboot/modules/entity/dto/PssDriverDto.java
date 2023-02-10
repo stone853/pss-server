@@ -16,6 +16,16 @@ public class PssDriverDto {
 
     private String carNo;
 
+    private String telNo;
+
+    public void setTelNo(String telNo) {
+        this.telNo = telNo;
+    }
+
+    public String getTelNo() {
+        return telNo;
+    }
+
     public void setCarNo(String carNo) {
         this.carNo = carNo;
     }

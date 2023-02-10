@@ -219,6 +219,9 @@
     <if test="orderSendDto.orderSendCode != null and orderSendDto.orderSendCode != ''">
       and t.order_send_code = #{orderSendDto.orderSendCode}
     </if>
+    <if test="orderSendDto.driverCode != null and orderSendDto.driverCode != ''">
+      and t3.driver_code = #{orderSendDto.driverCode}
+    </if>
 
   </select>
 

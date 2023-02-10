@@ -69,8 +69,16 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
          * @param c
          */
         public Supplier insert (Supplier c) {
-                if (hasExist(c.getSupplierName())) {
+                if (StringUtils.isNotEmpty(c.getSupplierName()) && hasNameExist(c.getSupplierName())) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"供应商名称"+c.getSupplierName()+"已存在");
+                }
+
+                if (StringUtils.isNotEmpty(c.getContractTel()) && hasTelExist((c.getContractTel()))) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号码"+c.getContractTel()+"已存在");
+                }
+
+                if (StringUtils.isNotEmpty(c.getUscc()) && hasUsccExist(c.getUscc())) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"统一社会信用代码"+c.getUscc()+"已存在");
                 }
 
                 String foreignCode = GeneratorKeyUtil.getSupplierNextId();
@@ -121,9 +129,29 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
         }
 
 
-        public boolean hasExist (String supplierName) {
+        public boolean hasNameExist (String supplierName) {
                 QueryWrapper<Supplier> q = new QueryWrapper<>();
                 q.eq("supplier_name",supplierName);
+                List<Supplier> list = this.list(q);
+                if (list !=null && list.size() > 0) {
+                        return true;
+                }
+                return false;
+        }
+
+        public boolean hasTelExist (String contractTel) {
+                QueryWrapper<Supplier> q = new QueryWrapper<>();
+                q.eq("contract_tel",contractTel);
+                List<Supplier> list = this.list(q);
+                if (list !=null && list.size() > 0) {
+                        return true;
+                }
+                return false;
+        }
+
+        public boolean hasUsccExist (String uscc) {
+                QueryWrapper<Supplier> q = new QueryWrapper<>();
+                q.eq("uscc",uscc);
                 List<Supplier> list = this.list(q);
                 if (list !=null && list.size() > 0) {
                         return true;

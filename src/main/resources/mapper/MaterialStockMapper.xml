@@ -19,8 +19,8 @@
   </sql>
 
   <sql id="selectQuantityIn">
-    select t1.material_code,t1.quantity from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    select t1.material_code,t1.acpt_quantity quantity from t_pss_order t
+    left join t_pss_material_detail_send t1 on t.order_code = t1.order_code
     where t.`status` = '7'
     and t.order_type = '1'
     and t1.material_code is not null
@@ -204,7 +204,13 @@
 
     FROM
     t_pss_order t1
-    LEFT JOIN t_pss_material_detail_log t ON t.foreign_code = t1.order_code
+    LEFT JOIN (
+    select foreign_code,material_code,material_name,quantity from t_pss_material_detail_log where source_type = '2'
+    union ALL
+    select x.order_code,x.material_code,x1.material_name,sum(x.acpt_quantity) quantity  from t_pss_material_detail_send x
+    left join t_pss_material_mgt x1 on x.material_code =  x1.material_code group by x.order_code,x.material_code,x1.material_name
+    ) t ON t.foreign_code = t1.order_code
+
     LEFT JOIN t_pss_dict t80 ON t1.order_type = t80. CODE
     AND t80.type = 'ddlx'
     LEFT JOIN t_pss_dict t81 ON t1.send_type = t81. CODE
