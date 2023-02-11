@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +41,7 @@ public class OrderController {
     @ApiOperation("添加采购单")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Order",dataTypeClass = Order.class , value ="")})
     @PostMapping("/v1/add")
-    public Order add(@RequestHeader("token") String token,@RequestBody Order t) {
+    public Order add(@RequestHeader("token") String token,@Validated @RequestBody Order t) {
         t.setOrderType(OrderTypeEnum.IN.getCode());
         t.setApplicant(UserHelper.getUserId(token));
         return orderService.insert(t);
@@ -50,7 +51,7 @@ public class OrderController {
     @ApiOperation("添加出库单")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Order",dataTypeClass = Order.class , value ="")})
     @PostMapping("/v1/addOutOrder")
-    public Order addOutOrder(@RequestHeader("token") String token,@RequestBody Order t) {
+    public Order addOutOrder(@RequestHeader("token") String token,@Validated @RequestBody Order t) {
         t.setOrderType(OrderTypeEnum.OUT.getCode());
         t.setApplicant(UserHelper.getUserId(token));
         return orderService.insert(t);
@@ -62,7 +63,7 @@ public class OrderController {
      */
     @ApiOperation("只修改订单，不修改明细")
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody Order order) {
+    public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody Order order) {
         order.setApplicant(UserHelper.getUserId(token));
         orderService.updateById(order);
     }

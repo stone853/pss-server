@@ -3,6 +3,7 @@ package com.flong.springboot.modules.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @Builder
@@ -18,8 +19,10 @@ public class Dict {
 
     private String code;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String note;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
 
     public Integer getId() {

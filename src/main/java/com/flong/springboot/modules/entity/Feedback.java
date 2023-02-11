@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Feedback {
 
     private String company;
 
+    @Length(max = 300,message = "长度不能大于300")
     private String content;
 
     private String fileC;

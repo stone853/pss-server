@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class UserController {
     @ApiOperation("增加用户信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "User",dataTypeClass = User.class , value ="")})
     @PostMapping("/v1/add")
-    public User add(@RequestHeader("token") String token,@RequestBody User user) {
+    public User add(@RequestHeader("token") String token,@Validated @RequestBody User user) {
         return userService.insert(user);
     }
 
@@ -48,7 +49,7 @@ public class UserController {
      * @param user
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody User user) {
+    public void updateById(@Validated @RequestBody User user) {
         userService.updateUser(user);
     }
 

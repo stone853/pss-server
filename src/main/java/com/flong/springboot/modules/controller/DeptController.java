@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class DeptController {
     @ApiOperation("增加部门信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "dept",dataTypeClass = Dept.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody Dept t) {
+    public int add(@RequestHeader("token") String token,@Validated @RequestBody Dept t) {
         t.setDeptCode(GeneratorKeyUtil.getDeptNextId());
         return deptService.insert(t);
     }
@@ -45,7 +46,7 @@ public class DeptController {
      * @param dept
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Dept dept) {
+    public void updateById(@Validated @RequestBody Dept dept) {
         deptService.updateById(dept);
     }
     /**

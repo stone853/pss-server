@@ -63,7 +63,7 @@ public class DictTreeController {
      * @param dictTree
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody DictTree dictTree) {
+    public void updateById(@Validated @RequestBody DictTree dictTree) {
         dictTreeService.updateById(dictTree);
     }
     /**

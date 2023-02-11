@@ -52,7 +52,7 @@ public class EvaSchemeController {
      * @param evaScheme
      */
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody EvaScheme evaScheme) {
+    public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody EvaScheme evaScheme) {
         evaSchemeService.update(evaScheme);
     }
 

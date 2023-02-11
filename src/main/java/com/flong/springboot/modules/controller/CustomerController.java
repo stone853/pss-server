@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,7 +58,7 @@ public class CustomerController {
     @ApiOperation("增加客户信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Customer",dataTypeClass = Customer.class , value ="")})
     @PostMapping("/v1/add")
-    public Customer add(@RequestHeader("token") String token,@RequestBody Customer t) {
+    public Customer add(@RequestHeader("token") String token,@Validated @RequestBody Customer t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFilesC(JSONArray.toJSONString(fileBeanList));
@@ -70,7 +71,7 @@ public class CustomerController {
      * @param customer
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Customer customer) {
+    public void updateById(@Validated @RequestBody Customer customer) {
         List<FileBean> fileBeanList = customer.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             customer.setFilesC(JSONArray.toJSONString(fileBeanList));

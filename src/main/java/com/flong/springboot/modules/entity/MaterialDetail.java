@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class MaterialDetail {
     private String foreignCode;
 
     @NotNull(message =  "物料编码不能为空" )
+    @Length(max = 30,message = "编码长度不能大于30")
     private String materialCode;
 
     private String type;

@@ -8,6 +8,8 @@ public class UserVo extends User {
 
     private String deptName;
 
+
+
     public void setDeptName(String deptName) {
         this.deptName = deptName;
     }

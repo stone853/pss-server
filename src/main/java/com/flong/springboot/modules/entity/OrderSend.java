@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class OrderSend {
 
     private String estimatedDeliveryTime;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
     @JsonIgnore
     private String fileC;
@@ -49,7 +51,18 @@ public class OrderSend {
     private List<FileBean> fileBeanList;
 
     @TableField(exist = false)
+    private List<FileBean> acptFileBeanList;
+
+    @TableField(exist = false)
     private List<MaterialDetailSend> materialDetailSendList;
+
+    public void setAcptFileBeanList(List<FileBean> acptFileBeanList) {
+        this.acptFileBeanList = acptFileBeanList;
+    }
+
+    public List<FileBean> getAcptFileBeanList() {
+        return acptFileBeanList;
+    }
 
     public void setAcptUserId(String acptUserId) {
         this.acptUserId = acptUserId;

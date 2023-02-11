@@ -22,6 +22,10 @@ public class OrderVo extends Order {
 
         private String materialName;
 
+        private String custName;
+
+        private String applicantName;
+
     private String checkUserButton;
 
     private String createUserButton;
@@ -30,6 +34,21 @@ public class OrderVo extends Order {
 
     private List<String> optButton;
 
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
 
     public void setOptButton(List<String> optButton) {
         this.optButton = optButton;

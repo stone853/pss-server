@@ -31,6 +31,16 @@ public class OrderDto {
 
     private String supplierCode;
 
+    private String custCode;
+
+    public void setCustCode(String custCode) {
+        this.custCode = custCode;
+    }
+
+    public String getCustCode() {
+        return custCode;
+    }
+
     public void setSupplierCode(String supplierCode) {
         this.supplierCode = supplierCode;
     }

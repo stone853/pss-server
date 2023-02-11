@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class Dept {
     private Long id;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String name;
 
     private String deptCode;
@@ -25,6 +27,7 @@ public class Dept {
 
     private Byte nodeType;
 
+    @Length(max = 300,message = "地址长度不能大于300")
     private String address;
 
     private Integer sort;

@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,11 +43,10 @@ public class RoleController {
     @ApiOperation("增加角色信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Role",dataTypeClass = Role.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody Role t) {
-        t.setCode(GeneratorKeyUtil.getRoleNextId());
-        t.setCreateTime(UserHelper.getDateTime());
+    public Role add(@RequestHeader("token") String token,@Validated @RequestBody Role t) {
+
         t.setCreateUser(UserHelper.getUserId(token));
-        return roleService.getBaseMapper().insert(t);
+        return roleService.insert(t);
     }
 
     /**
@@ -54,7 +54,7 @@ public class RoleController {
      * @param role
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Role role) {
+    public void updateById(@Validated @RequestBody Role role) {
         roleService.updateById(role);
     }
     /**

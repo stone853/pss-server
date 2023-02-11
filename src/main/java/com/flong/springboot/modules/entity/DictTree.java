@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,10 +23,12 @@ public class DictTree {
 
     private String code;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String note;
 
     private String type;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
     @NotNull (message =  "parentId父节点ID不能为空" )
     private Long parentId;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ContractPurchase {
 
     private String contractCode;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String contractName;
 
     private String partB;

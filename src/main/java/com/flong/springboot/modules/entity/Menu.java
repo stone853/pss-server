@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 @Data
@@ -16,6 +17,7 @@ import java.util.List;
 public class Menu {
     private Long id;
 
+    @Length(max = 30,message = "备注长度不能大于30")
     private String name;
 
     private String menuCode;

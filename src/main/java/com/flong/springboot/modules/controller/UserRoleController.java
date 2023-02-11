@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class UserRoleController {
     @ApiOperation("增加用户角色信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "userRole",dataTypeClass = UserRole.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody UserRole t) {
+    public int add(@RequestHeader("token") String token,@Validated @RequestBody UserRole t) {
         return userRoleService.getBaseMapper().insert(t);
     }
 
@@ -49,7 +50,7 @@ public class UserRoleController {
     @ApiOperation("批量新增")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "List<UserRole>",dataTypeClass = List.class, value ="")})
     @PostMapping("/v1/addBatch")
-    public boolean addBatch(@RequestHeader("token") String token,@RequestBody List<UserRole> t) {
+    public boolean addBatch(@RequestHeader("token") String token,@Validated @RequestBody List<UserRole> t) {
         if (t ==null || t.size() == 0) {
             return true;
         }
@@ -61,7 +62,7 @@ public class UserRoleController {
      * @param userRole
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody UserRole userRole) {
+    public void updateById(@Validated @RequestBody UserRole userRole) {
         userRoleService.updateById(userRole);
     }
     /**

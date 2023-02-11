@@ -276,12 +276,18 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 u.setRoleCodes(roleService.getOneRoleByName(roleName));
                 this.insert(u);
             } else {
+                if (!u.getUserType().equals(userType)) {
+                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"当前联系人电话在其他公司已存在");
+                }
                 u.setMobile(mobile);
                 u.setName(userName);
                 u.setDeptCode(deptCode);
                 u.setRoleCodes(roleService.getOneRoleByName(roleName));
                 this.updateUser(u);
             }
+        } catch (ServiceException s) {
+            s.printStackTrace();
+            throw s;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("修改用户账户信息失败");

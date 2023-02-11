@@ -66,6 +66,7 @@ public class LoginController {
                 lv.setDeptName(vo.getDeptName());
                 lv.setRoleName(vo.getRoleNames());
                 lv.setUserType(vo.getUserType());
+                lv.setDeptCode(vo.getDeptCode());
             }
         } catch (Exception e) {
             e.printStackTrace();

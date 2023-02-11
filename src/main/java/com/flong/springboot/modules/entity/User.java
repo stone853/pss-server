@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,12 +28,14 @@ public class User extends Model<User> implements Serializable {
 
     private String mobile;
 
+    @Length(max = 30,message = "姓名长度不能大于30")
     private String name;
 
     private String password;
 
     private Byte isDelete;
 
+    @Length(max = 300,message = "姓名长度不能大于300")
     private String remark;
 
     private String deptCode;

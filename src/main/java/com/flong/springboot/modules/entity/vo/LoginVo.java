@@ -15,6 +15,16 @@ public class LoginVo {
 
     private String userType;
 
+    private String deptCode;
+
+    public void setDeptCode(String deptCode) {
+        this.deptCode = deptCode;
+    }
+
+    public String getDeptCode() {
+        return deptCode;
+    }
+
     public void setUserType(String userType) {
         this.userType = userType;
     }

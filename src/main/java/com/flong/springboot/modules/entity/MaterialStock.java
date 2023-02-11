@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @Builder
@@ -15,9 +16,11 @@ import lombok.*;
 public class MaterialStock {
     private Integer id;
 
+    @Length(max = 30,message = "编码长度不能大于30")
     private String materialCode;
 
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String materialName;
 
     private Integer quantity;

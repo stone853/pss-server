@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Wrapper;
@@ -39,7 +40,7 @@ public class MaterialMgtController {
     @ApiOperation("增加物料管理信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "MaterialMgt",dataTypeClass = MaterialMgt.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody MaterialMgt t) {
+    public int add(@RequestHeader("token") String token,@Validated @RequestBody MaterialMgt t) {
         t.setCreateUser(UserHelper.getUserId(token));
         return materialMgtService.insert(t);
     }
@@ -49,7 +50,7 @@ public class MaterialMgtController {
      * @param materialMgt
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody MaterialMgt materialMgt) {
+    public void updateById(@Validated @RequestBody MaterialMgt materialMgt) {
         materialMgtService.updateById(materialMgt);
     }
     /**

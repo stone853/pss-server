@@ -28,6 +28,9 @@ public class TodoTaskVo {
     @ApiModelProperty("处理人")
     private String userId;
 
+    @ApiModelProperty("处理人名字")
+    private String userName;
+
     @ApiModelProperty("流程ID")
     private String processId;
 

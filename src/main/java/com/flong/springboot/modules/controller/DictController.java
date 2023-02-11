@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class DictController {
     @ApiOperation("增加字典信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "dict",dataTypeClass = Dict.class , value ="")})
     @PostMapping("/v1/add")
-    public boolean add(@RequestHeader("token") String token,@RequestBody Dict t) {
+    public boolean add(@RequestHeader("token") String token,@Validated @RequestBody Dict t) {
         return dictService.save(t);
     }
 
@@ -42,7 +43,7 @@ public class DictController {
      * @param dict
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Dict dict) {
+    public void updateById(@Validated @RequestBody Dict dict) {
         dictService.updateById(dict);
     }
     /**

@@ -85,6 +85,8 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                 try {
                         c.setSupplierCode(foreignCode);
                         supplierMapper.insert(c);
+                } catch (ServiceException e) {
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加供应商失败");
@@ -114,6 +116,9 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
                 try {
                         c.setOptTime(UserHelper.getDateTime());
                         supplierMapper.updateById(c);
+                } catch (ServiceException e) {
+
+                        throw e;
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改供应商信息失败");

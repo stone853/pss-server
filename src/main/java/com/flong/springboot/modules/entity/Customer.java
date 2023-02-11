@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -29,16 +30,21 @@ public class Customer {
 
     private String custCode;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String custName;
 
+    @Length(max = 255,message = "地址长度不能大于255")
     private String addr;
 
     private String type;
 
+    @Length(max = 30,message = "联系人长度不能大于30")
     private String contracts;
 
+    @Length(max = 20,message = "联系电话长度不能大于20")
     private String contractTel;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
 
     private Byte isDelete;

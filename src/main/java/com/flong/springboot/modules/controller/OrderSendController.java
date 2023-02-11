@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class OrderSendController {
     @ApiOperation("增加发货信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "orderSend",dataTypeClass = OrderSend.class , value ="")})
     @PostMapping("/v1/add")
-    public OrderSend add(@RequestHeader("token") String token,@RequestBody OrderSend t) {
+    public OrderSend add(@RequestHeader("token") String token,@Validated @RequestBody OrderSend t) {
         FileBean f = new FileBean();
         t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
 
@@ -55,7 +56,7 @@ public class OrderSendController {
      */
     @ApiOperation("只修改发货单，不修改明细")
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody OrderSend orderSend) {
+    public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody OrderSend orderSend) {
         orderSendService.updateById(orderSend);
     }
 
@@ -68,8 +69,7 @@ public class OrderSendController {
     @PutMapping("/acptOrderSend")
     public void acptOrderSend(@RequestHeader("token") String token,@RequestBody OrderSend t) {
         FileBean f = new FileBean();
-        t.setAcptFileC(f.fileBeanListToString(t.getFileBeanList()));
-
+        t.setAcptFileC(f.fileBeanListToString(t.getAcptFileBeanList()));
         t.setUserId(UserHelper.getUserId(token));
         orderSendService.acptOrderSend(t);
     }

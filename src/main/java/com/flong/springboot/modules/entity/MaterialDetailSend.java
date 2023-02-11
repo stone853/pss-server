@@ -3,6 +3,7 @@ package com.flong.springboot.modules.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @Builder
@@ -33,6 +34,7 @@ public class MaterialDetailSend {
 
     private Integer acptQuantity;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String acptRemark;
 
     public void setBrand(String brand) {

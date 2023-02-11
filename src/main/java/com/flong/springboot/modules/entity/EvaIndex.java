@@ -3,6 +3,7 @@ package com.flong.springboot.modules.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 
@@ -18,6 +19,7 @@ public class EvaIndex {
 
     private String schemeCode;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String indexName;
 
     private Double indexWeight;

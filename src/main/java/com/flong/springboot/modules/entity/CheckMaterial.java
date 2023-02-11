@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class CheckMaterial {
 
     private String billCode;
 
+    @Length(max = 30,message = "名称长度不能大于30")
     private String materialName;
 
     private String optUser;
@@ -35,6 +37,7 @@ public class CheckMaterial {
     @TableField(exist = false)
     private List<MaterialStock> checkMaterialList;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
     @JsonIgnore
     private String fileC;

@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class CheckMaterialController {
     @ApiOperation("增加盘点")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "CheckMaterial",dataTypeClass = CheckMaterial.class , value ="")})
     @PostMapping("/v1/add")
-    public CheckMaterial add(@RequestHeader("token") String token,@RequestBody CheckMaterial t) {
+    public CheckMaterial add(@RequestHeader("token") String token,@Validated @RequestBody CheckMaterial t) {
         FileBean f = new FileBean();
         t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
 

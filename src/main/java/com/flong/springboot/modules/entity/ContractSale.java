@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flong.springboot.modules.entity.dto.ContractSaleDto;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public class ContractSale {
     private String contractCode;
 
     @NotNull(message =  "合同名称不能为空" )
+    @Length(max = 30,message = "名称长度不能大于30")
     private String contractName;
 
     private String partA;
@@ -44,6 +46,7 @@ public class ContractSale {
 
     private String updateTime;
 
+    @Length(max = 300,message = "条款长度不能大于300")
     private String paymentTerm;
 
     private String contractStatus;

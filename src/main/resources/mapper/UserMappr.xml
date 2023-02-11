@@ -170,7 +170,7 @@
 
 
     <select id="todoTask" resultType="com.flong.springboot.modules.entity.vo.TodoTaskVo">
-        select * from (
+        select A.*,B.name userName from (
         select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,CONCAT_WS('-',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
         case when t.check_role =null then t1.create_user else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
@@ -196,7 +196,7 @@
         left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
         where t.step != '-1'
         and t.process_type = 'cgdd' ) A
-
+        left join t_pss_user B on A.userId = B.user_id
         where 1=1
         <if test="userId != null and userId != ''">
             and A.userId like "%"#{userId}"%"

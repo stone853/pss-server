@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.util.StringUtils;
 import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.entity.vo.MaterialDetailLogVo;
 import com.flong.springboot.modules.service.MaterialDetailLogService;
@@ -61,7 +62,7 @@ public class OrderPurProcessHandle extends ProcessHandle {
             if (list !=null || list.size() > 0 ) {
                 for (int i =0; i < list.size(); i++) {
                     MaterialDetailLogVo m = list.get(i);
-                    if (m.getQuantity() !=null) {
+                    if (m.getAcptQuantity() !=null) {
                         materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getAcptQuantity());
                     }
                 }

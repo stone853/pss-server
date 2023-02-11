@@ -25,6 +25,8 @@ public class DictTreeService extends ServiceImpl<DictTreeMapper, DictTree> {
 
 
         public int insert(DictTree dictTree) {
+                
+
                 //如果插入的当前节点为根节点，parentId指定为0
 
                 if(dictTree.getParentId().longValue() == 0){

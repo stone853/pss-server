@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,8 +25,10 @@ public class MaterialDetailLog {
 
     private String foreignCode;
 
+    @Length(max = 30,message = "编码长度不能大于30")
     private String materialCode;
 
+    @Length(max = 30,message = "编码名称长度不能大于30")
     private String materialName;
 
     private String sourceType;
@@ -41,6 +44,7 @@ public class MaterialDetailLog {
 
     private String recordTime;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
 
     private String brand;

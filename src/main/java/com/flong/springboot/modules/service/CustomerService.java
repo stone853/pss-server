@@ -59,14 +59,22 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
          * @param c
          */
         public Customer insert (Customer c) {
-                if (hasExist(c.getCustName())) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"客户名称"+c.getCustName()+"已存在");
-                }
-                String custCode = GeneratorKeyUtil.getCustNextId();
-                customerMapper.insert(c.setCustCode(custCode));
+                try {
+                        if (hasExist(c.getCustName())) {
+                                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"客户名称"+c.getCustName()+"已存在");
+                        }
+                        String custCode = GeneratorKeyUtil.getCustNextId();
+                        customerMapper.insert(c.setCustCode(custCode));
 
-                //新增或者修改用户信息
-                userService.insertOrUpdateUser(custCode,c.getContractTel(),c.getContracts(),"2");
+                        //新增或者修改用户信息
+                        userService.insertOrUpdateUser(custCode,c.getContractTel(),c.getContracts(),"2");
+                } catch (ServiceException e) {
+                        throw e;
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加客户失败");
+                }
+
                 return c;
         }
 
@@ -91,14 +99,25 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
 
 
         public void updateCustomer (Customer c) {
-                this.updateById(c);
-                if (StringUtils.isEmpty(c.getCustCode())) {
-                        c = this.getById(c.getId());
-                        c.setCustCode(c.getCustCode());
-                        c.setContractTel(c.getContractTel());
-                        c.setContracts(c.getContracts());
+                try {
+                        this.updateById(c);
+                        if (StringUtils.isEmpty(c.getCustCode())) {
+                                c = this.getById(c.getId());
+                                c.setCustCode(c.getCustCode());
+                                c.setContractTel(c.getContractTel());
+                                c.setContracts(c.getContracts());
+                        }
+                        //新增或者修改用户信息
+                        userService.insertOrUpdateUser(c.getCustCode(),c.getContractTel(),c.getContracts(),"2");
+                } catch (ServiceException e) {
+                        throw e;
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改客户失败");
                 }
-                //新增或者修改用户信息
-                userService.insertOrUpdateUser(c.getCustCode(),c.getContractTel(),c.getContracts(),"2");
+
+
+
+
         }
 }

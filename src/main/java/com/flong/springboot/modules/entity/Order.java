@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
+
 import java.util.List;
 
 @Data
@@ -25,6 +27,7 @@ public class Order {
 
     private String sendType;
 
+    @Length(max = 300,message = "地址长度不能大于300")
     private String shipAddr;
 
     private String applicant;
@@ -35,6 +38,7 @@ public class Order {
 
     private String finishTime;
 
+    @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
 
     private String status;

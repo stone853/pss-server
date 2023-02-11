@@ -51,7 +51,7 @@ public class FeedbackController {
      * @param Feedback
      */
     @PutMapping("/v1/updateById")
-    public void updateById(@RequestHeader("token") String token,@RequestBody Feedback Feedback) {
+    public void updateById(@RequestHeader("token") String token,@Validated @RequestBody Feedback Feedback) {
         List<FileBean> fileBeanList = Feedback.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             Feedback.setFileC(JSONArray.toJSONString(fileBeanList));

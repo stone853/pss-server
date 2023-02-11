@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -110,7 +111,7 @@ public class RoleMenuController {
     @ApiOperation("批量新增")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "List<RoleMenu>",dataTypeClass = List.class, value ="")})
     @PostMapping("/v1/addBatch")
-    public boolean addBatch(@RequestHeader("token") String token,@RequestBody List<RoleMenu> t) {
+    public boolean addBatch(@RequestHeader("token") String token,@Validated @RequestBody List<RoleMenu> t) {
         if (t ==null || t.size() == 0) {
             return true;
         }

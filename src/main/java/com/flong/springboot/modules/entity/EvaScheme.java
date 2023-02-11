@@ -3,7 +3,9 @@ package com.flong.springboot.modules.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class EvaScheme {
 
     private String code;
 
+    @Length(max = 30,message = "方案名称长度不能大于30")
     private String name;
 
     private String updUser;
@@ -27,6 +30,7 @@ public class EvaScheme {
 
     private String enableFlag;
 
+    @Length(max = 30,message = "描述长度不能大于30")
     private String schemeDes;
 
     @TableField(exist = false)

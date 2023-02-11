@@ -60,7 +60,7 @@ public class ContractSaleController {
      * @param contractSale
      */
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody ContractSale contractSale) {
+    public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody ContractSale contractSale) {
         List<FileBean> fileBeanList = contractSale.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             contractSale.setFileC(JSONArray.toJSONString(fileBeanList));

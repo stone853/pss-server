@@ -90,19 +90,17 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
 
                         //采购订单
                         if (orderType.equals(OrderTypeEnum.IN.getCode())) {
-                                FileBean f = new FileBean();
-                                c.setFileC(f.fileBeanListToString(c.getFileBeanList()));
                                 //设置供应商
                                 c.setSupplierCode(userService.getUserDeptCode(new UserDto().setUserId(c.getApplicant())));
-
                                 processType = CommonConstant.ORDER_PUR_TYPE;
                         } else if (orderType.equals(OrderTypeEnum.OUT.getCode())){
                                 if (StringUtils.isEmpty(c.getOrderClass())) {
                                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"出库单需要输入orderClass出库类型");
                                 }
-
                                 processType = CommonConstant.ORDER_OUT_TYPE;
                         }
+                        FileBean f = new FileBean();
+                        c.setFileC(f.fileBeanListToString(c.getFileBeanList()));
                         c.setApplicationDate(UserHelper.getDate());
 
                         Integer keyId = c.getId();
@@ -124,7 +122,12 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                                 orderCode = order.getOrderCode();
                                 orderMapper.updateById(c); //修改状态
                         } else {
-                                orderCode = GeneratorKeyUtil.getOrderNextCode();
+                                if (orderType.equals(OrderTypeEnum.IN.getCode())) {
+                                        orderCode = GeneratorKeyUtil.getInOrderNextCode();
+                                } else {
+                                        orderCode = GeneratorKeyUtil.getOutOrderNextCode();
+                                }
+
                                 c.setOrderCode(orderCode);
                                 orderMapper.insert(c);
                         }
@@ -177,9 +180,11 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 if (user !=null) {
                         userType = user.getUserType();
                 }
-
                 if (!StringUtils.isEmpty(userType) && "3".equals(userType)) {//供应商
                         orderDto.setSupplierCode(user.getDeptCode());
+                }
+                if (!StringUtils.isEmpty(userType) && "2".equals(userType)) {//客户
+                        orderDto.setCustCode(user.getDeptCode());
                 }
 
                 IPage<OrderVo> pageList = orderMapper.pagePurList(orderDto.getPage()==null ? new Page<>(): orderDto.getPage(), orderDto);

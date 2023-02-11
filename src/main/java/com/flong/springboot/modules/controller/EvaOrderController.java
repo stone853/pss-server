@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class EvaOrderController {
     @ApiOperation("评价订单")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "EvaOrder",dataTypeClass = EvaOrder.class , value ="")})
     @PostMapping("/v1/add")
-    public EvaOrder add(@RequestHeader("token") String token,@RequestBody EvaOrder t) {
+    public EvaOrder add(@RequestHeader("token") String token,@Validated @RequestBody EvaOrder t) {
         t.setOptUser(UserHelper.getUserId(token));
         return evaOrderService.insert(t);
     }
@@ -46,7 +47,7 @@ public class EvaOrderController {
      */
     @ApiOperation("修改订单评价")
     @PutMapping("/updateById")
-    public void updateOrInsert(@RequestHeader("token") String token,@RequestBody EvaOrder evaOrder) {
+    public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody EvaOrder evaOrder) {
         evaOrderService.update(evaOrder);
     }
     /**

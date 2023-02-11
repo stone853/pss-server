@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,7 +57,7 @@ public class SupplierController {
     @ApiOperation("增加供应商信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Supplier",dataTypeClass = Supplier.class , value ="")})
     @PostMapping("/v1/add")
-    public Supplier add(@RequestHeader("token") String token,@RequestBody Supplier t) {
+    public Supplier add(@RequestHeader("token") String token,@Validated  @RequestBody Supplier t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
@@ -69,7 +70,7 @@ public class SupplierController {
      * @param supplier
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Supplier supplier) {
+    public void updateById(@Validated @RequestBody Supplier supplier) {
         List<FileBean> fileBeanList = supplier.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             supplier.setFileC(JSONArray.toJSONString(fileBeanList));

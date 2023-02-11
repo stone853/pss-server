@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class PssDriverController {
     @ApiOperation("增加司机")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "PssDriver",dataTypeClass = PssDriver.class , value ="")})
     @PostMapping("/v1/add")
-    public PssDriver add(@RequestHeader("token") String token,@RequestBody PssDriver pssDriver) {
+    public PssDriver add(@RequestHeader("token") String token,@Validated @RequestBody PssDriver pssDriver) {
         pssDriver.setDriverCode(GeneratorKeyUtil.getDriverNextCode());
         pssDriverService.save(pssDriver);
         return pssDriver;
@@ -46,7 +47,7 @@ public class PssDriverController {
      * @param pssDriver
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody PssDriver pssDriver) {
+    public void updateById(@Validated @RequestBody PssDriver pssDriver) {
         pssDriverService.updateById(pssDriver);
     }
 

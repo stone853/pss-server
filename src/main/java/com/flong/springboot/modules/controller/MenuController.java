@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class MenuController {
     @ApiOperation("增加菜单信息")
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "Menu",dataTypeClass = Menu.class , value ="")})
     @PostMapping("/v1/add")
-    public int add(@RequestHeader("token") String token,@RequestBody Menu t) {
+    public int add(@RequestHeader("token") String token,@Validated @RequestBody Menu t) {
         return menuService.insert(t);
     }
 
@@ -43,7 +44,7 @@ public class MenuController {
      * @param Menu
      */
     @PutMapping("/updateById")
-    public void updateById(@RequestBody Menu Menu) {
+    public void updateById(@Validated @RequestBody Menu Menu) {
         menuService.updateById(Menu);
     }
     /**
