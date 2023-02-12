@@ -27,7 +27,7 @@ public class PssDriver {
 
     @Length(max = 18,message = "电话长度不能大于18")
     private String telNo;
-
+    @Length(max = 30,message = "运载量长度不能大于30")
     private String carryCapacity;
 
     @Length(max = 30,message = "车辆信息长度不能大于30")

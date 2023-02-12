@@ -13,6 +13,7 @@ import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.entity.vo.ContractSaleVo;
 import com.flong.springboot.modules.entity.vo.CustomerVo;
 import com.flong.springboot.modules.service.ContractSaleService;
+import com.flong.springboot.modules.service.OptLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,6 +41,12 @@ public class ContractSaleController {
     @Autowired
     private HttpServletRequest request;
 
+
+
+
+    @Autowired
+    private OptLogService optLogService;
+
     /**
      * 添加
      */
@@ -47,6 +54,9 @@ public class ContractSaleController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "ContractSale",dataTypeClass = ContractSale.class , value ="")})
     @PostMapping("/v1/add")
     public ContractSale add(@RequestHeader("token") String token,@Validated @RequestBody ContractSale t) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-首页");
+
         List<FileBean> fileBeanList = t.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             t.setFileC(JSONArray.toJSONString(fileBeanList));
@@ -61,6 +71,9 @@ public class ContractSaleController {
      */
     @PutMapping("/updateById")
     public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody ContractSale contractSale) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-修改");
+
         List<FileBean> fileBeanList = contractSale.getFileBeanList();
         if (fileBeanList !=null && fileBeanList.size() > 0) {
             contractSale.setFileC(JSONArray.toJSONString(fileBeanList));
@@ -73,6 +86,9 @@ public class ContractSaleController {
      */
     @DeleteMapping("/deleteByIds")
     public void deleteByIds(@RequestHeader("token") String token,@RequestBody List<String> ids) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-删除");
+
         contractSaleService.removeByIds(ids);
     }
 
@@ -83,6 +99,8 @@ public class ContractSaleController {
      */
     @GetMapping("/getOne")
     public ContractSaleVo getOne(@RequestHeader("token") String token,@RequestParam("id") int id) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-查询详情");
         return contractSaleService.getOneById(id);
     }
 //
@@ -94,6 +112,8 @@ public class ContractSaleController {
 //     */
     @PostMapping("/page")
     public IPage<ContractSaleVo> page(@RequestHeader("token") String token, @RequestBody ContractSaleDto contractSaleDto) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-首页");
         contractSaleDto.setUserId(UserHelper.getUserId(token));
         return contractSaleService.pageList(contractSaleDto);
     }
@@ -105,7 +125,9 @@ public class ContractSaleController {
      */
     @GetMapping("/getOneByContractCode")
     public ContractSaleVo getOneByCode(@RequestHeader("token") String token, @RequestParam("contractCode") String contractCode) {
-        return contractSaleService.getOneByCode(contractCode);
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "销售合同","销售合同-查询详情");
+        return contractSaleService.getOneByCode(UserHelper.getUserId(token),contractCode);
     }
 
 

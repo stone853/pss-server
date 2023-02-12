@@ -145,7 +145,7 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 List<ContractSaleVo> saleList = pageList.getRecords();
                 saleList.stream().forEach((p) -> {
                         convertJsonArray(p);
-                        setOptButton(contractSaleDto,p); //设置操作按钮
+                        setOptButton(contractSaleDto.getUserId(),p); //设置操作按钮
                 });
                 return  pageList;
         }
@@ -160,8 +160,10 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 return convertJsonArray(contractSaleMapper.getOneById(id));
         }
 
-        public ContractSaleVo getOneByCode (String code) {
-               return convertJsonArray(contractSaleMapper.getOneByCode(code));
+        public ContractSaleVo getOneByCode (String userId,String code) {
+                ContractSaleVo cv = convertJsonArray(contractSaleMapper.getOneByCode(code));
+                setOptButton(userId,cv);
+                return cv;
         }
 
 
@@ -172,16 +174,15 @@ public class ContractSaleService extends ServiceImpl<ContractSaleMapper, Contrac
                 return c;
         }
 
-        private ContractSaleVo setOptButton (ContractSaleDto dto, ContractSaleVo c) {
+        private ContractSaleVo setOptButton (String userId, ContractSaleVo c) {
                 if (c == null) {
                         return null;
                 }
-                String userId = dto.getUserId();
                 String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
                 log.info("获取页面操作按钮:userId:{}", userId);
 
                 PageUtils pu = new PageUtils();
-                List<String> buttonList = pu.getOptButtons(dto.getUserId(),c.getCreateUser(),userRoles,c.getCreateUserButton(),
+                List<String> buttonList = pu.getOptButtons(userId,c.getCreateUser(),userRoles,c.getCreateUserButton(),
                         c.getCheckRoleCode(),c.getCheckUserButton());
                 c.setOptButton(buttonList);
                 return c;

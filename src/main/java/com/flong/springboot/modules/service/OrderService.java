@@ -58,7 +58,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
 
         public Order getOneByCode (String code) {
                 QueryWrapper<Order> build = new QueryWrapper<Order>();
-                build.eq("Order_code",code);
+                build.eq("order_code",code);
                 return orderMapper.selectOne(build);
         }
 
@@ -213,7 +213,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 if (orderList !=null && orderList.size() >0) {
                         orderList.stream().forEach((p) ->{
                                 p.setJsonArray(JSONArray.parseArray( p.getFileC()));
-                                setOptButton(orderDto,p);
+                                setOptButton(orderDto.getUserId(),p);
                         });
                 }
 
@@ -234,21 +234,26 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
          * @param orderCode
          * @return
          */
-        public OrderVo getOneByOrderCode (String orderCode) {
-                return orderMapper.getOneByOrderCode(orderCode);
+        public OrderVo getOneByOrderCode (String userId,String orderCode) {
+
+                OrderVo orderVo = orderMapper.getOneByOrderCode(orderCode);
+                orderVo.setJsonArray(JSONArray.parseArray( orderVo.getFileC()));
+
+                setOptButton(userId,orderVo);
+
+                return orderVo;
         }
 
 
-        private OrderVo setOptButton (OrderDto dto, OrderVo c) {
+        private OrderVo setOptButton (String userId, OrderVo c) {
                 if (c == null) {
                         return null;
                 }
-                String userId = dto.getUserId();
                 String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
                 log.info("获取页面操作按钮:userId:{}", userId);
 
                 PageUtils pu = new PageUtils();
-                List<String> buttonList = pu.getOptButtons(dto.getUserId(),c.getApplicant(),userRoles,c.getCreateUserButton(),
+                List<String> buttonList = pu.getOptButtons(userId,c.getApplicant(),userRoles,c.getCreateUserButton(),
                         c.getCheckRoleCode(),c.getCheckUserButton());
                 c.setOptButton(buttonList);
                 return c;
@@ -270,7 +275,17 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
          * 查询各类订单条数
          * @return
          */
-        public List<OrderCountVo> getOrderCount () {
-                return orderMapper.getOrderCount();
+        public List<OrderCountVo> getOrderCount (String userId) {
+                User user = userService.getUserByUserId(userId);
+                String userType = "";
+                String supplierCode = "";
+                if (user !=null) {
+                        userType = user.getUserType();
+                }
+                if (!StringUtils.isEmpty(userType) && "3".equals(userType)) {//供应商
+                        supplierCode = user.getDeptCode();
+                }
+
+                return orderMapper.getOrderCount(supplierCode);
         }
 }

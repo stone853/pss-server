@@ -35,7 +35,7 @@ public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialM
                 QueryWrapper<MaterialMgt> build = buildWrapper(materialMgtDto);
 
                 String supplierCode = materialMgtDto.getSupplierCode();
-                if (!StringUtils.isEmpty(supplierCode)) {
+                if (!StringUtils.isEmpty(supplierCode)) { //供应商优先查询自己下面的物料
                      QueryWrapper<MaterialDetail> q = new QueryWrapper<>();
                      q.eq("foreign_code",supplierCode);
                      List<MaterialDetail> mdList = materialDetailService.list(q);

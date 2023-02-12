@@ -68,6 +68,7 @@ public class SupplierService extends ServiceImpl<SupplierMapper, Supplier> {
          *新增
          * @param c
          */
+        @Transactional
         public Supplier insert (Supplier c) {
                 if (StringUtils.isNotEmpty(c.getSupplierName()) && hasNameExist(c.getSupplierName())) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"供应商名称"+c.getSupplierName()+"已存在");

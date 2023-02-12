@@ -10,6 +10,7 @@ import com.flong.springboot.modules.entity.dto.CheckMaterialDto;
 import com.flong.springboot.modules.entity.vo.CheckMaterialVo;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
 import com.flong.springboot.modules.service.CheckMaterialService;
+import com.flong.springboot.modules.service.OptLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,6 +38,9 @@ public class CheckMaterialController {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
+    private OptLogService optLogService;
+
     /**
      * 添加
      */
@@ -44,6 +48,8 @@ public class CheckMaterialController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "CheckMaterial",dataTypeClass = CheckMaterial.class , value ="")})
     @PostMapping("/v1/add")
     public CheckMaterial add(@RequestHeader("token") String token,@Validated @RequestBody CheckMaterial t) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "盘点单","盘点单-新增");
         FileBean f = new FileBean();
         t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
 
@@ -58,12 +64,16 @@ public class CheckMaterialController {
      */
     @DeleteMapping("/deleteByIds")
     public void deleteByIds(@RequestHeader("token") String token,@RequestBody List<String> ids) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "盘点单","盘点单-删除");
         checkMaterialService.removeByIds(ids);
     }
 
     @ApiOperation("根据ID查询详情")
     @GetMapping("/getOne")
     public CheckMaterialVo getOne(@RequestHeader("token") String token, @RequestParam("id") int id) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "盘点单","查询详情");
         return checkMaterialService.getOneById(id);
     }
 
@@ -75,6 +85,7 @@ public class CheckMaterialController {
     @ApiOperation("根据billCode查询详情")
     @GetMapping("/getOneByContractCode")
     public CheckMaterialVo getOneByCode(@RequestHeader("token") String token, @RequestParam("billCode") String billCode) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),"盘点单","查询详情");
         return checkMaterialService.getOneByCode(billCode);
     }
 
@@ -86,6 +97,7 @@ public class CheckMaterialController {
 //     */
     @PostMapping("/page")
     public IPage<CheckMaterialVo> page(@RequestHeader("token") String token, @RequestBody CheckMaterialDto checkMaterialDto) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),"盘点单","盘点单查询页面");
         return checkMaterialService.pageList(checkMaterialDto);
     }
 

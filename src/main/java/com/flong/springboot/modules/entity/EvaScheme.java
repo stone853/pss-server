@@ -30,7 +30,7 @@ public class EvaScheme {
 
     private String enableFlag;
 
-    @Length(max = 30,message = "描述长度不能大于30")
+    @Length(max = 300,message = "描述长度不能大于300")
     private String schemeDes;
 
     @TableField(exist = false)

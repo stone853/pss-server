@@ -262,11 +262,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             } else {
                 roleName = "供应商";
             }
-
+            //判断改部门联系人手机号
             QueryWrapper<User> q = new QueryWrapper<>();
-            q.eq("mobile",mobile);
+            q.eq("dept_code",deptCode);
             q.last("limit 1");
             User u = this.getOne(q);
+
             if (u == null) {
                 u = new User();
                 u.setUserType(userType);
@@ -276,10 +277,19 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 u.setRoleCodes(roleService.getOneRoleByName(roleName));
                 this.insert(u);
             } else {
-                if (!u.getUserType().equals(userType)) {
-                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"当前联系人电话在其他公司已存在");
+                QueryWrapper<User> q1 = new QueryWrapper<>();
+                q1.eq("mobile",mobile);
+                User u1 = this.getOne(q1);
+                if (u1 !=null) {
+                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
                 }
+
+                if (!u.getDeptCode().equals(deptCode)) {
+                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"该联系人手机号在其他公司已存在,请更换联系人手机号");
+                }
+
                 u.setMobile(mobile);
+                u.setUserType(userType);
                 u.setName(userName);
                 u.setDeptCode(deptCode);
                 u.setRoleCodes(roleService.getOneRoleByName(roleName));

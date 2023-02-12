@@ -5,6 +5,7 @@ package com.flong.springboot.modules.controller;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.core.enums.DictTreeEnum;
 import com.flong.springboot.modules.entity.DictTree;
+import com.flong.springboot.modules.entity.dto.DelDictTreeDto;
 import com.flong.springboot.modules.service.DictTreeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -68,11 +69,11 @@ public class DictTreeController {
     }
     /**
      * 删除通过多个主键Id进行删除
-     * @param ids
+     * @param delDictTreeDto
      */
     @DeleteMapping("/deleteByIds")
-    public void deleteByIds(@RequestBody List<String> ids) {
-        dictTreeService.removeByIds(ids);
+    public void deleteByIds(@RequestBody DelDictTreeDto delDictTreeDto) {
+        dictTreeService.deleteByIds(delDictTreeDto.getIds(),delDictTreeDto.getDictType());
     }
 
     /**

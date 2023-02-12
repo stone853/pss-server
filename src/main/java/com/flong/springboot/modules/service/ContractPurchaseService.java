@@ -49,9 +49,10 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
 //                return contractPurchaseMapper.selectPage(contractPurchase.getPage()==null ? new Page<>() : contractPurchase.getPage(),build);
 //        }
 
-        public ContractPurchaseVo getOneByCode (String code) {
+        public ContractPurchaseVo getOneByCode (String userId,String code) {
                 ContractPurchaseVo c = contractPurchaseMapper.getOneByCode(code);
                 convertJsonArray(c);
+                setOptButton(userId,c);
                 return c;
         }
 
@@ -146,7 +147,7 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                 List<ContractPurchaseVo> customerList = pageList.getRecords();
                 customerList.stream().forEach((p) -> {
                         convertJsonArray(p);
-                        setOptButton(contractPurchaseDto,p);
+                        setOptButton(contractPurchaseDto.getUserId(),p);
                         }
                 );
                 return  pageList;
@@ -159,7 +160,8 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
          * @return
          */
         public ContractPurchaseVo getOneById (int id) {
-                return contractPurchaseMapper.getOneById(id);
+                ContractPurchaseVo cv = contractPurchaseMapper.getOneById(id);
+                return cv;
         }
 
 
@@ -171,16 +173,15 @@ public class ContractPurchaseService extends ServiceImpl<ContractPurchaseMapper,
                 return c;
         }
 
-        private ContractPurchaseVo setOptButton (ContractPurchaseDto dto, ContractPurchaseVo c) {
+        private ContractPurchaseVo setOptButton (String userId, ContractPurchaseVo c) {
                 if (c == null) {
                         return null;
                 }
-                String userId = dto.getUserId();
                 String[] userRoles = userService.getUserRoles(new UserDto().setUserId(userId));
                 log.info("获取页面操作按钮:userId:{}", userId);
 
                 PageUtils pu = new PageUtils();
-                List<String> buttonList = pu.getOptButtons(dto.getUserId(),c.getCreateUser(),userRoles,c.getCreateUserButton(),
+                List<String> buttonList = pu.getOptButtons(userId,c.getCreateUser(),userRoles,c.getCreateUserButton(),
                         c.getCheckRoleCode(),c.getCheckUserButton());
                 c.setOptButton(buttonList);
                 return c;

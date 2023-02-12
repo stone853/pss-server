@@ -3,6 +3,8 @@ package com.flong.springboot.modules.entity.dto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerDto {
     private String custCode;
@@ -12,6 +14,17 @@ public class CustomerDto {
     private String type;
 
     private Page page;
+
+    private List<String> codes;
+
+    public void setCodes(List<String> codes) {
+        this.codes = codes;
+    }
+
+
+    public List<String> getCodes() {
+        return codes;
+    }
 
     public CustomerDto setPage(Page page) {
         this.page = page;

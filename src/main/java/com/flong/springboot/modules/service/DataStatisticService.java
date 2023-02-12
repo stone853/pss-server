@@ -37,4 +37,8 @@ public class DataStatisticService extends ServiceImpl<DataStatisticMapper, DataS
         return dataStatisticMapper.sendMaterialTop5();
     }
 
+    public List<Map> customerInfo () {
+        return dataStatisticMapper.customerInfo();
+    }
+
 }

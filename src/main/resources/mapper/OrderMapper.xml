@@ -144,6 +144,9 @@
     select t.`status`,t1.note statusName,count(1) orderCount from t_pss_order t
     left join t_pss_dict t1 on t.`status` = t1.code and t1.type = 'ddzt'
     where t.order_type  ='1'
+    <if test="supplierCode != null and supplierCode != ''">
+      and t.supplier_code = #{supplierCode}
+    </if>
     group by t.`status`,t1.note
   </select>
 
@@ -183,7 +186,11 @@
     t4.contract_name as contractName,
     t5.note as payTypeNote,
     t6.note orderClassName,
-    t7.materialName
+    t7.materialName,
+    t8.cust_name custName,
+    t9.name applicantName,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
     from t_pss_order t
     left join t_pss_supplier t1 on t.supplier_code = t1.supplier_code
     left join t_pss_dict t2 on t.status = t2.code and t2.type = 'ddzt'
@@ -192,6 +199,11 @@
     left join t_pss_dict t5 on t.pay_type = t5.code and t5.type = 'fkfs'
     left join t_pss_dict t6 on t.order_class = t6.code and t6.type = 'ddxl'
     left join (select foreign_code,GROUP_CONCAT(material_name) materialName from t_pss_material_detail_log group by foreign_code) t7 on t.order_code = t7.foreign_code
+    left join t_pss_customer t8 on t4.cust_code = t8.cust_code
+    left join t_pss_user t9 on t.applicant = t9.user_id
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'cgdd'
+    left join t_pss_status_button t93 on t93.`status` = t.`status` and t93.type ='ddzt'
     where 1=1
     <if test="orderCode != null and orderCode != ''">
       and t.order_code = #{orderCode}

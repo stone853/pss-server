@@ -48,9 +48,15 @@
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo">
-    select t.*,t1.cust_name as custName,t2.note as contractStatusNote from t_pss_contract_sale t
+    select t.*,t1.cust_name as custName,t2.note as contractStatusNote,
+    t4.opt_button as checkUserButton,t5.create_user_button as createUserButton,
+    t4.role_code as checkRoleCode
+    from t_pss_contract_sale t
     left join t_pss_customer t1 on t.part_a = t1.cust_code
     left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
+    left join t_pss_process_task t3 on t.process_id = t3.process_id
+    left join t_pss_process t4 on t3.step = t4.step and t4.type = 'xsht'
+    left join t_pss_status_button t5 on t5.`status` = t.contract_status and t5.type ='htzt'
     where 1=1
     <if test="id != null and id != ''">
       and t.id = #{id}
@@ -60,9 +66,15 @@
 
 
   <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.ContractSaleVo">
-    select t.*,t1.cust_name as custName,t2.note as contractStatusNote from t_pss_contract_sale t
+    select t.*,t1.cust_name as custName,t2.note as contractStatusNote,
+    t4.opt_button as checkUserButton,t5.create_user_button as createUserButton,
+    t4.role_code as checkRoleCode
+    from t_pss_contract_sale t
     left join t_pss_customer t1 on t.part_a = t1.cust_code
     left join t_pss_dict t2 on t.contract_status = t2.code and t2.type = 'htzt'
+    left join t_pss_process_task t3 on t.process_id = t3.process_id
+    left join t_pss_process t4 on t3.step = t4.step and t4.type = 'xsht'
+    left join t_pss_status_button t5 on t5.`status` = t.contract_status and t5.type ='htzt'
     where 1=1
     <if test="contractCode != null and contractCode != ''">
       and t.contract_code = #{contractCode}

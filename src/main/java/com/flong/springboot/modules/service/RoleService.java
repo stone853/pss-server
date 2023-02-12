@@ -42,7 +42,7 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
                 q.last("limit 1");
                 Role r = this.getOne(q);
                 if (r !=null) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"角色名称不能重复");
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"角色名称已存在");
                 }
 
                 t.setCode(GeneratorKeyUtil.getRoleNextId());

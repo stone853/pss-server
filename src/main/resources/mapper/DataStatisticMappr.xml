@@ -11,8 +11,8 @@
     </select>
 
     <select id="materialTop5" resultType="java.util.Map">
-        select t.material_code materialCode,t1.material_name materialName,sum(t.quantity * t.price_tax) amount,
-        (select sum(quantity * price_tax) from t_pss_material_detail) totalSales from t_pss_material_detail t
+        select t.material_code materialCode,t1.material_name materialName,IFNULL(sum(t.quantity * t.price_tax),0) amount,
+        (select IFNULL(sum(quantity * price_tax),0) from t_pss_material_detail) totalSales from t_pss_material_detail t
         left JOIN t_pss_material_mgt t1 on t.material_code = t1.material_code
         group by t.material_code,t1.material_name
         limit 5
@@ -45,4 +45,10 @@
         limit 5
     </select>
 
+    <select id="customerInfo" resultType="java.util.Map">
+        select t.cust_name custName,t.addr,t.type,t1.note typeName,t.contracts,t.contract_tel contractTel,t.latitude,t.longitude,
+        IFNULL(t2.amount,0) amount from t_pss_customer t
+        left join t_pss_dict_tree t1 on t.type = t1.code and t1.type ='KHLX'
+        left join (select part_a,sum(contract_amount) amount from t_pss_contract_sale  group by part_a) t2 on t.cust_code = t2.part_a
+    </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.flong.springboot.core.constant.CommonConstant;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,6 +44,36 @@ public class UserHelper {
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
+
+    /**
+     * 真是请求IP
+     *
+     * @param request
+     * @return
+     */
+    public static String getRealRequestIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (null != ip && ip.contains(",")) {
+            ip = ip.substring(0, ip.indexOf(","));
+        }
+        return ip;
+    }
+
 
     public static void main (String args[]) {
         System.out.println(UserHelper.getDateTime());

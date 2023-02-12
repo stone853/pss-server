@@ -30,6 +30,13 @@
     <if test="customer.type != null and customer.type != ''">
       and t.type = #{customer.type}
     </if>
+    <if test="customer.codes != null and customer.codes.size() > 0">
+      and t.type in
+      <foreach collection="customer.codes" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+
     order by t.id desc
   </select>
 

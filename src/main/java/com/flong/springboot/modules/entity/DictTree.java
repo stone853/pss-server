@@ -30,7 +30,7 @@ public class DictTree {
 
     @Length(max = 300,message = "备注长度不能大于300")
     private String remark;
-    @NotNull (message =  "parentId父节点ID不能为空" )
+
     private Long parentId;
 
     private Byte nodeType;

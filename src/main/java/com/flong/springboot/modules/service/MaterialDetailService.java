@@ -50,6 +50,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                 if (null == p.getMaterialCode()) {
                                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码不能为空");
                                 }
+
                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode())
                                         .setForeignCode(foreignCode);
                                 p.setType(type);
@@ -108,6 +109,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                         }
                                         //全部新增，ID设置为空
                                         p.setId(null);
+
 
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());

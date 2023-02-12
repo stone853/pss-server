@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.OptLogMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.OptLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="opt_ip" jdbcType="VARCHAR" property="optIp" />
+    <result column="opt_module" jdbcType="VARCHAR" property="optModule" />
+    <result column="opt_time" jdbcType="VARCHAR" property="optTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.OptLogVo" parameterType="com.flong.springboot.modules.entity.dto.OptLogDto">
+    select t.*,t1.`name` userName from t_pss_opt_log t
+    left join t_pss_user t1 on t.user_id = t1.user_id
+    where 1=1
+    <if test="optLogDto.beginDate != null and optLogDto.beginDate != '' and optLogDto.endDate != null and optLogDto.endDate != ''">
+      and left(t.opt_time,10) between #{optLogDto.beginDate} and #{optLogDto.endDate}
+    </if>
+    order by t.id desc
+  </select>
+</mapper>

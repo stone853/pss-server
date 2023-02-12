@@ -18,6 +18,8 @@ import com.flong.springboot.modules.mapper.CustomerMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Slf4j
@@ -58,6 +60,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
          *新增
          * @param c
          */
+        @Transactional
         public Customer insert (Customer c) {
                 try {
                         if (hasExist(c.getCustName())) {
@@ -97,7 +100,7 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
                 return false;
         }
 
-
+        @Transactional
         public void updateCustomer (Customer c) {
                 try {
                         this.updateById(c);

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -93,7 +92,7 @@ public class OrderController {
      */
     @GetMapping("/getOneByOrderCode")
     public OrderVo getOneByOrderCode(@RequestHeader("token") String token, @RequestParam("orderCode") String orderCode) {
-        return orderService.getOneByOrderCode(orderCode);
+        return orderService.getOneByOrderCode(UserHelper.getUserId(token),orderCode);
     }
 
 //    /**
@@ -113,7 +112,7 @@ public class OrderController {
     @ApiOperation("查询各类订单条数")
     @PostMapping("/getOrderCount")
     public List<OrderCountVo> getOrderCount(@RequestHeader("token") String token) {
-        return orderService.getOrderCount();
+        return orderService.getOrderCount(UserHelper.getUserId(token));
     }
 
 
