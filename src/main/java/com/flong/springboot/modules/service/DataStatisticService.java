@@ -41,4 +41,8 @@ public class DataStatisticService extends ServiceImpl<DataStatisticMapper, DataS
         return dataStatisticMapper.customerInfo();
     }
 
+    public List<Map> supplierCount () {
+        return dataStatisticMapper.supplierCount();
+    }
+
 }

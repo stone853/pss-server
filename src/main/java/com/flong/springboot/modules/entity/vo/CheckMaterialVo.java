@@ -16,6 +16,16 @@ public class CheckMaterialVo extends CheckMaterial {
 
     private JSONArray checkMaterialJsonArray;
 
+    private String userName;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
     public void setCheckMaterialJsonArray(JSONArray checkMaterialJsonArray) {
         this.checkMaterialJsonArray = checkMaterialJsonArray;
     }

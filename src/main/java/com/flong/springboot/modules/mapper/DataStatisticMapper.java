@@ -19,4 +19,6 @@ public interface DataStatisticMapper extends BaseMapper<DataStatistic> {
     List<Map> sendMaterialTop5();
 
     List<Map> customerInfo();
+
+    List<Map> supplierCount();
 }

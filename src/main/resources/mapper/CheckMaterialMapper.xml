@@ -16,27 +16,29 @@
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo"
           parameterType="com.flong.springboot.modules.entity.dto.CheckMaterialDto">
-    select t.*,t1.note checkResultName
+    select t.*,t1.note checkResultName,t3.name userName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'
+    left join t_pss_user t3 on t.opt_user = t3.user_id
     where 1=1
     <if test="checkMaterialDto.materialName != null and checkMaterialDto.materialName != ''">
       and t.material_name like "%"#{checkMaterialDto.materialName}"%"
     </if>
     <if test="checkMaterialDto.beginTime != null and checkMaterialDto.beginTime != ''
     and checkMaterialDto.endTime != '' and checkMaterialDto.endTime != ''">
-      and t.opt_time between #{checkMaterialDto.beginTime} and #{checkMaterialDto.endTime}
+      and left(t.opt_time,10) between #{checkMaterialDto.beginTime} and #{checkMaterialDto.endTime}
     </if>
     order by t.id desc
   </select>
 
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo">
-    select t.*,t1.note checkResultName
+    select t.*,t1.note checkResultName,t3.name userName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'
+    left join t_pss_user t3 on t.opt_user = t3.user_id
     where 1=1
     <if test="id != null and id != ''">
     and t.id = #{id}
@@ -44,10 +46,11 @@
   </select>
 
   <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo">
-    select t.*,t1.note checkResultName
+    select t.*,t1.note checkResultName,t3.name userName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'
+    left join t_pss_user t3 on t.opt_user = t3.user_id
     where 1=1
     <if test="billCode != null and billCode != ''">
       and t.bill_code = #{billCode}

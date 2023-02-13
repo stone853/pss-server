@@ -12,20 +12,54 @@
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.FeedbackVo"
           parameterType="com.flong.springboot.modules.entity.dto.FeedbackDto">
-    select t.*,t1.name userName,t2.cust_name companyName from t_pss_feedback t
-    left join t_pss_user t1 on t.opt_user = t1.user_id
-    left join t_pss_customer t2 on t.company = t2.cust_code
-    where 1=1
+    SELECT
+    t.*, t1. NAME userName,
+    t2.companyName
+    FROM
+    t_pss_feedback t
+    LEFT JOIN t_pss_user t1 ON t.opt_user = t1.user_id
+    LEFT JOIN (
+    SELECT
+    cust_code companyCode,
+    cust_name companyName
+    FROM
+    t_pss_customer
+    UNION ALL
+    SELECT
+    supplier_code companyCode,
+    supplier_name companyName
+    FROM
+    t_pss_supplier
+    ) t2 ON t.company = t2.companyCode
+    WHERE
+    1 = 1
     <if test="feedbackDto.beginDate != null and feedbackDto.beginDate != '' and feedbackDto.endDate != null and feedbackDto.endDate != ''">
       and t.opt_time between #{feedbackDto.beginDate} and #{feedbackDto.endDate}
     </if>
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.FeedbackVo">
-    select t.*,t1.name userName,t2.cust_name companyName from t_pss_feedback t
-    left join t_pss_user t1 on t.opt_user = t1.user_id
-    left join t_pss_customer t2 on t.company = t2.cust_code
-    where 1=1
+    SELECT
+    t.*, t1. NAME userName,
+    t2.companyName
+    FROM
+    t_pss_feedback t
+    LEFT JOIN t_pss_user t1 ON t.opt_user = t1.user_id
+    LEFT JOIN (
+    SELECT
+    cust_code companyCode,
+    cust_name companyName
+    FROM
+    t_pss_customer
+    UNION ALL
+    SELECT
+    supplier_code companyCode,
+    supplier_name companyName
+    FROM
+    t_pss_supplier
+    ) t2 ON t.company = t2.companyCode
+    WHERE
+    1 = 1
     <if test="id != null and id != ''">
       and t.id = #{id}
     </if>

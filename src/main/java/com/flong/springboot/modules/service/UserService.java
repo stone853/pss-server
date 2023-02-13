@@ -269,6 +269,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             User u = this.getOne(q);
 
             if (u == null) {
+                QueryWrapper<User> q1 = new QueryWrapper<>();
+                q1.eq("mobile",mobile);
+                User u1 = this.getOne(q1);
+                if (u1 !=null) {
+                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
+                }
+
                 u = new User();
                 u.setUserType(userType);
                 u.setMobile(mobile);
@@ -277,17 +284,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 u.setRoleCodes(roleService.getOneRoleByName(roleName));
                 this.insert(u);
             } else {
-                QueryWrapper<User> q1 = new QueryWrapper<>();
-                q1.eq("mobile",mobile);
-                User u1 = this.getOne(q1);
-                if (u1 !=null) {
-                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
-                }
-
-                if (!u.getDeptCode().equals(deptCode)) {
-                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"该联系人手机号在其他公司已存在,请更换联系人手机号");
-                }
-
                 u.setMobile(mobile);
                 u.setUserType(userType);
                 u.setName(userName);

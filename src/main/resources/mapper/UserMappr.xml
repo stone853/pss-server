@@ -106,9 +106,14 @@
         </if>
         ) contractPurAmountYear,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status !='1'
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status !='1'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCount,
 
@@ -122,33 +127,69 @@
         )
         ) orderPurAmount,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status !='1' AND left(application_date,4) = DATE_FORMAT(NOW(),'%Y')
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status !='1' AND left(t.application_date,4) = DATE_FORMAT(NOW(),'%Y')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
             and supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountYear,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status !='1' AND application_date = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status !='1' AND left(t.application_date,7) = DATE_FORMAT(NOW(),'%Y-%m')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
+        </if>
+        ) orderPurCountMonth,
+        (
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status !='1' AND t.application_date = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountToday,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status = '7'
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status = '7'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountFinish,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status = '7' and finish_time = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status = '7' and t.finish_time = DATE_FORMAT(NOW(),'%Y-%m-%d')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountFinishToday,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status = '2'
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where t.order_type = '1' and  t.status = '2'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
             and supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountCheck,
         (

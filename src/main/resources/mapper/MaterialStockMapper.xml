@@ -93,7 +93,7 @@
     ) B1 on t.material_code = B1.material_code
     where 1=1
     <if test="materialStockDto.materialCode != null and materialStockDto.materialCode != ''">
-      and t.material_code = #{materialStockDto.materialCode}
+      and t.material_code like "%"#{materialStockDto.materialCode}"%"
     </if>
     <if test="materialStockDto.materialName != null and materialStockDto.materialName != ''">
       and t.material_name like "%"#{materialStockDto.materialName}"%"
@@ -222,6 +222,7 @@
     <if test="materialStockLogDto.materialCode != null and materialStockLogDto.materialCode != ''">
       and t.material_code = #{materialStockLogDto.materialCode}
     </if>
+    order by t1.id desc
   </select>
 
 </mapper>

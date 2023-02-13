@@ -14,6 +14,10 @@ public class IndexDataVo {
     private int orderPurCount;
     @ApiModelProperty("今年以来采购订单数量")
     private int orderPurCountYear;
+
+    @ApiModelProperty("月度采购订单数量")
+    private int orderPurCountMonth;
+
     @ApiModelProperty("今日订单数量")
     private int orderPurCountToday;
     @ApiModelProperty("今日订单完成数量")

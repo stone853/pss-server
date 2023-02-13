@@ -50,6 +50,7 @@ public class DataStatisticController {
         List<Map> sendRecords = dsService.sendRecords();
         List<Map> sendMaterialTop5 = dsService.sendMaterialTop5();
         List<Map> customerInfo = dsService.customerInfo();
+        List<Map> supplierCount = dsService.supplierCount();
         IndexDataVo indexDataVo = userService.findIndexData("1", UserHelper.getUserId(token));
         map.put("salesRanking",salesRanking); //客户销售金额排行
         map.put("materialTop5",materialTop5); //销售材料金额前五占比
@@ -58,6 +59,7 @@ public class DataStatisticController {
         map.put("sendMaterialTop5",sendMaterialTop5);//发货前五名物料
         map.put("indexDataVo",indexDataVo);//发货前五名物料
         map.put("customerInfo",customerInfo);//客户信息
+        map.put("supplierCount",supplierCount);//供应商信息
         return map;
     }
 
