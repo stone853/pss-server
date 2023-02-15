@@ -141,13 +141,13 @@
   </select>
 
   <select id="getOrderCount" resultType="com.flong.springboot.modules.entity.vo.OrderCountVo">
-    select t.`status`,t1.note statusName,count(1) orderCount from t_pss_order t
-    left join t_pss_dict t1 on t.`status` = t1.code and t1.type = 'ddzt'
-    where t.order_type  ='1'
+    select t1.code status,t1.note statusName,count(t.order_code) orderCount from t_pss_dict t1
+    left join t_pss_order t on t.`status` = t1.code and t.order_type  ='1'
+    where t1.type = 'ddzt'
     <if test="supplierCode != null and supplierCode != ''">
       and t.supplier_code = #{supplierCode}
     </if>
-    group by t.`status`,t1.note
+    group by t1.code,t1.note
   </select>
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
@@ -210,4 +210,18 @@
     </if>
   </select>
 
+
+  <select id="pushEvaOrder" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
+    SELECT t.*  FROM t_pss_order t
+    WHERE
+    left(DATE_FORMAT(NOW(),'%Y-%m-%d'),10) >DATE_SUB(
+    t.finish_time, INTERVAL - (
+    SELECT
+    after_days
+    FROM
+    t_pss_eva_setting
+    ) DAY
+    )
+    AND t.order_type = '1'
+  </select>
 </mapper>

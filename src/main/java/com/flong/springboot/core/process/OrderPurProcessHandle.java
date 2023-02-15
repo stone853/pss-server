@@ -1,6 +1,7 @@
 package com.flong.springboot.core.process;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
@@ -13,7 +14,9 @@ import com.flong.springboot.modules.service.OrderService;
 import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,13 +70,61 @@ public class OrderPurProcessHandle extends ProcessHandle {
                     }
                 }
             }
+
+            try {
+                inertOutOrder(order,list);
+            } catch (ServiceException s) {
+                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"自动创建出库单失败");
+            }
+
+        } catch (ServiceException s) {
+            throw s;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改库存失败");
         }
 
+
+
     }
 
+    @Transactional
+    private void inertOutOrder (Order inOrder,List<MaterialDetailLogVo> inMaterial) {
+        Order outOrder = new Order();
+        outOrder.setApplicant(inOrder.getApplicant());
+        outOrder.setOrderClass("201");//领券出库
+        outOrder.setRemark("直达现场订单-自动出库");
+        outOrder.setStatus("7"); //完成
+        outOrder.setOrderType("2");//出库
+        outOrder.setApplicationDate(UserHelper.getDate());
+        outOrder.setFinishTime(inOrder.getFinishTime());
+        outOrder.setFileC(inOrder.getFileC());
+        String outOrderCode = GeneratorKeyUtil.getZDOutOrderNextCode();
+        outOrder.setOrderCode(outOrderCode);
+        orderService.save(outOrder);
+
+        List<MaterialDetailLog> outMaterialList = new ArrayList<>();
+        if (inMaterial !=null && inMaterial.size() >0) {
+            inMaterial.stream().forEach( (p) -> {
+                MaterialDetailLog outMaterial = new MaterialDetailLog();
+                outMaterial.setSourceType("2");
+                outMaterial.setFileC(p.getFileC());
+                outMaterial.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
+                outMaterial.setRemark("直达现场订单-自动出库");
+               // outMaterial.setAmountPrice(p.getAmountPrice());
+                outMaterial.setBrand(p.getBrand());
+                outMaterial.setForeignCode(outOrderCode);
+                outMaterial.setMaterialCode(p.getMaterialCode());
+                outMaterial.setMaterialName(p.getMaterialName());
+                outMaterial.setQuantity(p.getAcptQuantity());
+
+                outMaterialList.add(outMaterial);
+            });
+        }
+
+        materialDetailLogService.saveBatch(outMaterialList);
+
+    }
 
 
 

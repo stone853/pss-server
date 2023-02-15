@@ -4,6 +4,8 @@ package com.flong.springboot.modules.entity.dto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
@@ -23,7 +25,16 @@ public class UserDto {
 
     private String roleCodes;
 
+    private List<String> codes; //部门编号集
 
+
+    public void setCodes(List<String> codes) {
+        this.codes = codes;
+    }
+
+    public List<String> getCodes() {
+        return codes;
+    }
 
     public void setRoleCodes(String roleCodes) {
         this.roleCodes = roleCodes;

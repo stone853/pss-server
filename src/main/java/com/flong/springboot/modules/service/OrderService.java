@@ -14,10 +14,12 @@ import com.flong.springboot.core.constant.CommonConstant;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.core.process.OrderPurProcessHandle;
+import com.flong.springboot.modules.entity.EvaOrder;
 import com.flong.springboot.modules.entity.FileBean;
 import com.flong.springboot.modules.entity.Order;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
+import com.flong.springboot.modules.entity.dto.EvaOrderDto;
 import com.flong.springboot.modules.entity.dto.OrderDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
@@ -27,6 +29,7 @@ import com.flong.springboot.modules.entity.vo.UserVo;
 import com.flong.springboot.modules.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
 
         @Autowired
         UserService userService;
+
+        @Autowired
+        EvaOrderService evaOrderService;
 
 
         public IPage<Order> page (OrderDto OrderDto) {
@@ -287,5 +293,28 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 }
 
                 return orderMapper.getOrderCount(supplierCode);
+        }
+
+        public void pushEvaOrder () {
+                try {
+                        List<OrderVo> list= orderMapper.pushEvaOrder();
+                        if (list !=null && list.size() > 0) {
+                                for (int i = 0; i < list.size(); i++) {
+                                        OrderVo o = list.get(i);
+                                        String orderCode =  o.getOrderCode();
+                                        if (o !=null && StringUtils.isNotEmpty(orderCode)) {
+                                                EvaOrder e = new EvaOrder();
+                                                e.setOrderCode(orderCode);
+                                                evaOrderService.insert(e);
+                                        }
+
+                                }
+
+                        }
+                } catch (Exception e) {
+                        log.error("推送订单评价任务失败");
+                        e.printStackTrace();
+                }
+
         }
 }

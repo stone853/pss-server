@@ -55,6 +55,10 @@ public class LoginController {
             throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
         }
 
+        if (u.getIsDelete() !=null && String.valueOf(u.getIsDelete()).equals("1")) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "该用户被禁用");
+        }
+
 
 
         UserVo vo = new UserVo();

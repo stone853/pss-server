@@ -156,6 +156,10 @@ public class GeneratorKeyUtil {
         return "CKD" + nextId();
     }
 
+    public static String getZDOutOrderNextCode () {
+        return "ZD-CKD" + nextId();
+    }
+
     public static String getRoleNextId () {
         return "JS" + nextId();
     }

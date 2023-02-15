@@ -79,7 +79,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
 
         String userId = GeneratorKeyUtil.getUserNextId();
-        u.setUserId(userId).setPassword(MD5Utils.encrypt("123456"));
+        u.setUserId(userId);
+        String pwd = u.getPassword();
+        if (StringUtils.isEmpty(pwd)) {
+            u.setPassword(MD5Utils.encrypt("123456"));
+        }
+
         userMapper.insert(u);
 
         String roleCodes = u.getRoleCodes();
@@ -185,6 +190,15 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         userRoleService.saveBatch(listUserRole);
     }
 
+
+    /**
+     * 用户禁止
+     * @param u
+     */
+    public void forbiddenUser (User u) {
+        this.updateById(u);
+    }
+
     public IndexDataVo findIndexData (String type,String userId) {
         IndexDataDto id = new IndexDataDto();
 
@@ -229,7 +243,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         q.last("limit 1");
         User u = this.getOne(q);
         if (u == null) {
-            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号或旧密码错误");
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"原密码错误");
         }
         u.setPassword(newPwd);
         this.updateById(u);
@@ -300,4 +314,5 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
 
     }
+
 }

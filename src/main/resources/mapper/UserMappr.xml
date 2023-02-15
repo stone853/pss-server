@@ -34,6 +34,12 @@
         <if test="user.deptCode != null and user.deptCode != ''">
             and t.dept_code = #{user.deptCode}
         </if>
+        <if test="user.codes != null and user.codes.size() > 0">
+            and t.dept_code in
+            <foreach collection="user.codes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         group by t.id,t.user_id,t.name,t.mobile,t.is_delete,t.remark,t.dept_code
     </select>
 
@@ -131,7 +137,7 @@
         left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
         where t.order_type = '1' and  t.status !='1' AND left(t.application_date,4) = DATE_FORMAT(NOW(),'%Y')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
         </if>
         <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
             and t2.cust_code = #{indexDataDto.custCode}
@@ -186,26 +192,34 @@
         left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
         where t.order_type = '1' and  t.status = '2'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
         </if>
         <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
             and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountCheck,
         (
-        select count(*) from t_pss_order where order_type = '1' and  status = '3'
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where order_type = '1' and  status = '3'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
-            and supplier_code = #{indexDataDto.supplierCode}
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
         </if>
         ) orderPurCountToSend,
         (
-        select count(*) from t_pss_user where user_type = '1'
+        select count(*) from t_pss_user t where t.user_type = '1'
+        and exists (select 1 from t_pss_dept t1 where t.dept_code = t1.dept_code)
         ) userCount,
         (
-        select count(*) from t_pss_supplier
+        select count(*) from t_pss_user t where t.user_type = '3'
+        and exists (select 1 from t_pss_supplier t1 where t.dept_code = t1.supplier_code)
         ) supplierCount,
         (
-        select count(*) from t_pss_customer
+        select count(*) from t_pss_user t where t.user_type = '2'
+        and exists (select 1 from t_pss_customer t1 where t.dept_code = t1.cust_code)
         ) customerCount from dual
     </select>
 
@@ -213,7 +227,7 @@
     <select id="todoTask" resultType="com.flong.springboot.modules.entity.vo.TodoTaskVo">
         select A.*,B.name userName from (
         select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,CONCAT_WS('-',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
-        case when t.check_role =null then t1.create_user else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        case when t.check_role =null then t1.create_user else (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_purchase t1 on t.process_id = t1.process_id
         where t.step != '-1'
@@ -222,7 +236,7 @@
         union all
 
         select '待处理' taskStatus,t1.contract_code taskCode,'xsht' taskType,CONCAT_WS('-',t1.contract_name,step_name)  taskTitle,t.step,t.step_name stepName,
-        case when t.check_role =null then t1.create_user else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        case when t.check_role =null then t1.create_user else  (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_sale t1 on t.process_id = t1.process_id
         where t.step != '-1'
@@ -231,7 +245,7 @@
         union all
 
         select '待处理' taskStatus,t1.order_code taskCode,case t1.order_type when '1' then 'cgdd' when '2' then 'ckd' end  taskType,CONCAT_WS('-','采购订单',t2.supplier_name,t.step_name) taskTitle,t.step,t.step_name,
-        case when t.check_role is null or t.check_role ='' then t1.applicant else (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role) end userId,
+        case when t.check_role is null or t.check_role ='' then t1.applicant else  (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_order t1 on t.process_id = t1.process_id
         left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code

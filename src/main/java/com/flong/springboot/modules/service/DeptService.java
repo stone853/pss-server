@@ -2,9 +2,14 @@ package com.flong.springboot.modules.service;
 
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.core.exception.BaseException;
+import com.flong.springboot.core.exception.CommMsgCode;
+import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.Dept;
+import com.flong.springboot.modules.entity.MaterialDetailSend;
+import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.mapper.DeptMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -14,12 +19,16 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeptService extends ServiceImpl<DeptMapper, Dept> {
 
         @Autowired
         DeptMapper deptMapper;
+
+        @Autowired
+        UserService userService;
 
 
         public Dept getDeptById (String DeptId){
@@ -199,5 +208,25 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
         //        return null;
         //
         //    }
+
+
+    public void removeDept (List<String> list) {
+        QueryWrapper<Dept> q = new QueryWrapper<>();
+        q.in("id",list);
+        List<Dept> deptList = this.list(q);
+        if (deptList ==null || deptList.size() == 0) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"找不到该部门");
+        }
+
+        List<String> deptCodes = deptList.stream().map(Dept::getDeptCode).distinct().collect(Collectors.toList());
+        QueryWrapper<User> q1 = new QueryWrapper<>();
+        q1.in("dept_code",deptCodes);
+        List<User> userList = userService.list(q1);
+        if (userList !=null && userList.size() > 0) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"该分类下有数据，无法删除");
+        }
+
+        this.removeByIds(list);
+    }
 
 }

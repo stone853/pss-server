@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
 import com.flong.springboot.modules.entity.EvaSetting;
 import com.flong.springboot.modules.service.EvaSettingService;
+import com.flong.springboot.modules.service.OrderService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class EvaSettingController {
     private EvaSettingService evaSettingService;
 
 
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 修改
@@ -44,6 +47,9 @@ public class EvaSettingController {
             up.set("cycle",evaSetting.getCycle());
             evaSettingService.update(up);
         }
+
+        //推送
+        //orderService.pushEvaOrder();
     }
 
 

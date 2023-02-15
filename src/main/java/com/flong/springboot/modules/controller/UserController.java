@@ -54,6 +54,16 @@ public class UserController {
     }
 
 
+    /**
+     * 修改
+     * @param user
+     */
+    @PutMapping("/forbiddenUser")
+    public void forbiddenUser( @RequestBody User user) {
+        userService.forbiddenUser(user);
+    }
+
+
 
     @ApiOperation("重置用于密码")
     @PutMapping("/resetPwd")

@@ -154,7 +154,8 @@
 
   <select id="pageMaterialLogList" resultType="com.flong.springboot.modules.entity.vo.MaterialStockLogVo"
           parameterType="com.flong.springboot.modules.entity.dto.MaterialStockLogDto">
-    SELECT
+    select * from (SELECT
+    t1.id,
     t1.order_type orderType,
     t80.note orderTypeName,
     t1.send_type sendType,
@@ -170,9 +171,10 @@
 
     CASE
     WHEN t1.`status` > '1'
-    AND t1.`status` NOT IN ('4', '7')
-    AND t1.order_type = '1' THEN
+    AND t1.`status` NOT IN ('4', '6','7')
+    AND t1.order_type = '1'  and  t1.send_type ='2' THEN
     t.quantity
+
     ELSE
     0
     END quantityToIn,
@@ -180,7 +182,7 @@
     CASE
     WHEN t1.`status` = '7'
     AND t1.order_type = '1' THEN
-    t.quantity
+    t.acpt_quantity
     ELSE
     0
     END quantityIn,
@@ -205,11 +207,12 @@
     FROM
     t_pss_order t1
     LEFT JOIN (
-    select foreign_code,material_code,material_name,quantity from t_pss_material_detail_log where source_type = '2'
-    union ALL
-    select x.order_code,x.material_code,x1.material_name,sum(x.acpt_quantity) quantity  from t_pss_material_detail_send x
-    left join t_pss_material_mgt x1 on x.material_code =  x1.material_code group by x.order_code,x.material_code,x1.material_name
-    ) t ON t.foreign_code = t1.order_code
+    select t.order_code,t1.material_code,t1.material_name,t1.quantity,t2.acpt_quantity from t_pss_order t
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    left join (select order_code,material_code,sum(acpt_quantity) acpt_quantity from t_pss_material_detail_send
+    group by order_code,material_code
+    ) t2 on t1.foreign_code = t2.order_code and t1.material_code = t2.material_code
+    ) t ON t.order_code = t1.order_code
 
     LEFT JOIN t_pss_dict t80 ON t1.order_type = t80. CODE
     AND t80.type = 'ddlx'
@@ -217,12 +220,14 @@
     AND t81.type = 'sdfs'
     LEFT JOIN t_pss_supplier t2 ON t1.supplier_code = t2.supplier_code
     LEFT JOIN t_pss_user t3 ON t1.applicant = t3.user_id
-    WHERE
-    t.material_code IS NOT NULL
+    )  A
+    where 1=1
+    and A.materialCode IS NOT NULL
+    and (A.quantityToIn != 0 or A.quantityIn != 0 or A.quantityToOut != 0 or A.quantityOut != 0 )
     <if test="materialStockLogDto.materialCode != null and materialStockLogDto.materialCode != ''">
-      and t.material_code = #{materialStockLogDto.materialCode}
+      and A.materialCode = #{materialStockLogDto.materialCode}
     </if>
-    order by t1.id desc
+    order by A.id desc
   </select>
 
 </mapper>

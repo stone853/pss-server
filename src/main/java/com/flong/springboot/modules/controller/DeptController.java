@@ -55,7 +55,7 @@ public class DeptController {
      */
     @DeleteMapping("/deleteByIds")
     public void deleteByIds(@RequestBody List<String> ids) {
-        deptService.removeByIds(ids);
+        deptService.removeDept(ids);
     }
 
     /**
