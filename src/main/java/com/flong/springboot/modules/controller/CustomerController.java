@@ -104,6 +104,11 @@ public class CustomerController {
     public IPage<CustomerVo> page(@RequestHeader("token") String token, @RequestBody CustomerDto CustomerDto) {
         return customerService.pageList(CustomerDto);
     }
+
+    @PostMapping("/findByMobile")
+    public List<CustomerVo> findByMobile(@RequestHeader("token") String token, @RequestParam("mobile") String mobile) {
+        return customerService.findByMobile(mobile);
+    }
 //
 //    @ApiOperation("上传文件")
 //    @PostMapping("/v1/uploadFiles")

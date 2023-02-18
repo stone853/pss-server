@@ -124,7 +124,7 @@
         ) orderPurCount,
 
         (
-        select sum(amount_price) from t_pss_material_detail_log t where
+        select IFNULL(sum(t.quantity * t.price_tax),0) from t_pss_material_detail_log t where
         (
         select 1 from t_pss_order t1 where t.foreign_code = t1.order_code and t1.order_type = '1' and  t1.status ='7'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">

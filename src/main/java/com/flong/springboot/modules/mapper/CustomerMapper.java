@@ -8,8 +8,11 @@ import com.flong.springboot.modules.entity.dto.CustomerDto;
 import com.flong.springboot.modules.entity.vo.CustomerVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 
 
 public interface CustomerMapper extends BaseMapper<Customer> {
     IPage<CustomerVo> pageList(Page<Customer> page, @Param("customer") CustomerDto customer);
+
+    List<CustomerVo> findByMobile(@Param("mobile") String mobile);
 }

@@ -53,13 +53,13 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                         return true;
                 }
                 //判断物料code重复
-                List<String> tempList = list.stream().map(MaterialDetailSend::getMaterialCode).distinct().collect(Collectors.toList());
+                List<String> tempList = list.stream().map((p) -> p.getMaterialCode()+p.getBrand()).distinct().collect(Collectors.toList());
                 if (tempList.size() != list.size()) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料重复");
                 }
 
                 //判断发送数量是否超过剩余数量
-                isSendable(orderCode,foreignCode,list);
+                //isSendable(orderCode,foreignCode,list);
                 //先删除
                 try {
                         QueryWrapper<MaterialDetailSend> dw = new QueryWrapper<MaterialDetailSend>();

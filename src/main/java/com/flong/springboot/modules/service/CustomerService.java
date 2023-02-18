@@ -89,6 +89,10 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
                 return  pageList;
         }
 
+        public List<CustomerVo> findByMobile (String mobile) {
+                return  customerMapper.findByMobile(mobile);
+        }
+
 
         public boolean hasExist (String custName) {
                 QueryWrapper<Customer> q = new QueryWrapper<>();

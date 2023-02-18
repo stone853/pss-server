@@ -10,6 +10,7 @@ import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
 import com.flong.springboot.modules.entity.CheckMaterial;
+import com.flong.springboot.modules.entity.MaterialCheckLog;
 import com.flong.springboot.modules.entity.MaterialStock;
 import com.flong.springboot.modules.entity.dto.CheckMaterialDto;
 import com.flong.springboot.modules.entity.vo.CheckMaterialVo;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,12 +30,20 @@ public class CheckMaterialService extends ServiceImpl<CheckMaterialMapper, Check
         @Autowired
         MaterialStockService materialStockService ;
 
+        @Autowired
+        MaterialCheckLogService materialCheckLogService;
+
         @Transactional
         public CheckMaterial insert (CheckMaterial cm) {
                 List<MaterialStock> mgtList = cm.getCheckMaterialList();
                 if (mgtList ==null || mgtList.size() == 0) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入要盘点的物料");
                 }
+
+                String billCode = GeneratorKeyUtil.getBillNextCode();
+
+                //盘点流水
+                List<MaterialCheckLog> materialCheckLogList = new ArrayList<>();
 
                 StringBuilder sb = new StringBuilder();
                 mgtList.stream().forEach((p) -> {
@@ -46,18 +56,36 @@ public class CheckMaterialService extends ServiceImpl<CheckMaterialMapper, Check
                         }
                         p.setUpdTime(UserHelper.getDateTime());
                         sb.append(p.getMaterialName()+",");
+
+                        //记录盘点流水
+                        MaterialCheckLog mcl = new MaterialCheckLog();
+                        mcl.setQuantity(p.getActQuantity().intValue() - p.getQuantity().intValue());
+                        mcl.setForeignCode(billCode);
+                        mcl.setMaterialCode(p.getMaterialCode());
+                        mcl.setMaterialName(p.getMaterialName());
+                        materialCheckLogList.add(mcl);
+
                 });
                 cm.setMaterialName(sb.toString());
-                cm.setBillCode(GeneratorKeyUtil.getBillNextCode());
+                cm.setBillCode(billCode);
                 cm.setOptTime(UserHelper.getDateTime());
                 cm.setCheckMaterial(JSONArray.toJSONString(mgtList));
                 checkMaterialMapper.insert(cm);
 
-                mgtList.stream().forEach(p->p.setQuantity(p.getActQuantity()));
+
+
+
+                mgtList.stream().forEach((p)-> {
+                        p.setQuantity(p.getActQuantity());//修改库存值
+                });
                 materialStockService.updateBatchById(mgtList);
 
+
+                //插入盘点流水
+                materialCheckLogService.updateOrInsertOrDelete(billCode,materialCheckLogList);
                 return cm;
         }
+
 
         public IPage<CheckMaterialVo> pageList (CheckMaterialDto checkMaterialDto) {
                 IPage<CheckMaterialVo> pageList = checkMaterialMapper.pageList(checkMaterialDto.getPage()==null ? new Page<>():checkMaterialDto.getPage(),checkMaterialDto);

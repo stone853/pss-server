@@ -32,9 +32,9 @@
     t2.material_name materialName,
     t2.material_model materialModel,
     t2.measure_unit measureUnit,
-    t1.brand
+    t.brand
     from t_pss_material_detail_send t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code and t.material_code = t1.material_code
+    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code and t.material_code = t1.material_code and t.brand = t1.brand
     left join t_pss_material_mgt t2 on t.material_code = t2.material_code
     where 1=1
     <if test="foreignCode != null and foreignCode != ''">

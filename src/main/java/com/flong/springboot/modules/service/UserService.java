@@ -2,6 +2,7 @@ package com.flong.springboot.modules.service;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -55,25 +56,35 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (loginDto.getMobile() !=null && !"".equals(loginDto.getMobile())) {
             build.eq("mobile",loginDto.getMobile());
         }
+
+        if (loginDto.getUserType() !=null && !"".equals(loginDto.getUserType())) {
+            build.eq("user_type",loginDto.getUserType());
+        }
+
+        build.last("limit 1");
         return userMapper.selectOne(build);
     }
 
     public User insert (User u) {
-        QueryWrapper<User> q = new QueryWrapper<User>();
-        q.eq("mobile",u.getMobile());
-        User temp = userMapper.selectOne(q);
-        if (temp !=null) {
-            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
-        }
-
         String userType = u.getUserType();
         if (StringUtils.isEmpty(userType)) {
             u.setUserType("1"); //默认企业内部
         }
 
+        QueryWrapper<User> q = new QueryWrapper<User>();
+        q.eq("mobile",u.getMobile());
+        q.ne("user_type","2");
+        q.last("limit 1");
+        User temp = userMapper.selectOne(q);
+        if (temp !=null && !u.getUserType().equals("2")) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
+        }
+
+
+
         QueryWrapper<User> q1 = new QueryWrapper<User>();
         q1.eq("name",u.getName());
-        List<User> listTemp = userMapper.selectList(q);
+        List<User> listTemp = userMapper.selectList(q1);
         if (listTemp !=null && listTemp.size() > 0) {
             throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"用户名已存在");
         }
@@ -245,8 +256,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (u == null) {
             throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"原密码错误");
         }
-        u.setPassword(newPwd);
-        this.updateById(u);
+        //u.setPassword(newPwd);
+        //this.updateById(u);
+        UpdateWrapper<User> upd = new UpdateWrapper<>();
+        upd.set("password",newPwd);
+        upd.eq("mobile",mobile);
+        this.update(upd);
         return true;
     }
 
@@ -285,8 +300,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             if (u == null) {
                 QueryWrapper<User> q1 = new QueryWrapper<>();
                 q1.eq("mobile",mobile);
+                q1.ne("user_type","2");
+                q1.last("limit 1");
                 User u1 = this.getOne(q1);
-                if (u1 !=null) {
+                if (u1 !=null && !userType.equals("2")) { //客户可以随意增加
                     throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号已存在");
                 }
 

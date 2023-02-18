@@ -219,6 +219,7 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"id获取为空");
                 }
                 //先修改合同
+                c.setSendTime(UserHelper.getDateTime());
                 try {
                         orderSendMapper.updateById(c);
                 } catch (Exception e) {

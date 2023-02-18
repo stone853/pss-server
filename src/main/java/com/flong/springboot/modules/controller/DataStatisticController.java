@@ -52,6 +52,26 @@ public class DataStatisticController {
         List<Map> customerInfo = dsService.customerInfo();
         List<Map> supplierCount = dsService.supplierCount();
         IndexDataVo indexDataVo = userService.findIndexData("1", UserHelper.getUserId(token));
+
+        double amount = 0;
+        double totalSales=0;
+        //发送前五特殊处理
+        for (int i =0; i < materialTop5.size();i ++) {
+            Map<String,Object> top = materialTop5.get(i);
+            if(top !=null && top.get("totalSales") != null) {
+                totalSales = Double.parseDouble(top.get("totalSales").toString());
+            }
+            amount += Double.parseDouble(top.get("amount").toString());
+        }
+        Map<String,Object> other = new HashMap<>();
+        other.put("materialCode","other");
+        other.put("materialName","其他");
+        other.put("amount",totalSales-amount);
+        other.put("totalSales",totalSales);
+        materialTop5.add(other);
+        //特殊处理完毕
+
+
         map.put("salesRanking",salesRanking); //客户销售金额排行
         map.put("materialTop5",materialTop5); //销售材料金额前五占比
         map.put("salesAnalysis",salesAnalysis);//销售合同分析

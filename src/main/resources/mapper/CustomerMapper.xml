@@ -41,4 +41,15 @@
   </select>
 
 
+  <select id="findByMobile" resultType="com.flong.springboot.modules.entity.vo.CustomerVo">
+    select t.*,t1.note as typename,t2.user_id userId,t2.name userName from t_pss_customer t
+    left join t_pss_dict_tree t1 on t.type = t1.`code` and t1.node_type=1
+    left join t_pss_user t2 on t2.dept_code = t.cust_code
+    where 1=1
+    <if test="mobile != null and mobile != ''">
+      and t.contract_tel = #{mobile}
+    </if>
+    order by t.id desc
+  </select>
+
 </mapper>

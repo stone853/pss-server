@@ -8,6 +8,15 @@ public class LoginDto {
 
     private String mobile;
 
+    private String userType;
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
 
     public void setMobile(String mobile) {
         this.mobile = mobile;

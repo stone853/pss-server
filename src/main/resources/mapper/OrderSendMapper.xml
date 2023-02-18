@@ -26,50 +26,63 @@
     A.brand,
     A.orderQuantity,
     (
+    case when (A.orderQuantity - ifnull(B.sendQuantity,0)) &lt; 0
+    then 0
+    else
     A.orderQuantity - ifnull(B.sendQuantity,0)
+    end
     ) AS sendQuantity,
     (
+    case when A.orderQuantity - ifnull(B.sendQuantity,0) &lt; 0
+    then 0
+    else
     A.orderQuantity - ifnull(B.sendQuantity,0)
+    end
     ) AS remainQuantity,
     C.material_name AS materialName,
     C.material_model AS materialModel,
     C.measure_unit AS measureUnit,
-    D.estimated_delivery_time as estimatedDeliveryTime
+    A.estimated_delivery_time as estimatedDeliveryTime
     FROM
     (
     SELECT
     t.foreign_code AS orderCode,
     t.material_code,
     t.brand,
+    t.estimated_delivery_time,
     sum(t.quantity) AS orderQuantity
     FROM
     t_pss_material_detail_log t
     GROUP BY
     t.foreign_code,
     t.material_code,
-    t.brand
+    t.brand,
+    t.estimated_delivery_time
     ) A
     LEFT JOIN (
     SELECT
     t1.order_code AS orderCode,
     t1.material_code,
+    t1.brand,
     ifnull(sum(t1.send_quantity),0) AS sendQuantity
     FROM
     t_pss_material_detail_send t1
     WHERE
     1=1
     and exists (select 1 from t_pss_order_send t where t.order_send_code = t1.foreign_code)
+
     <if test="orderSendMaterialDto.orderSendCode != null and orderSendMaterialDto.orderSendCode != ''">
       and t1.foreign_code != #{orderSendMaterialDto.orderSendCode}
     </if>
 
     GROUP BY
     t1.order_code,
-    t1.material_code
+    t1.material_code,
+    t1.brand
     ) B ON A.orderCode = B.orderCode
     AND A.material_code = B.material_code
+    AND A.brand = B.brand
     LEFT JOIN t_pss_material_mgt C ON A.material_code = C.material_code
-    LEFT JOIN t_pss_material_detail_log D ON A.orderCode = D.foreign_code and A.material_code = D.material_code
     WHERE
     1 = 1
     <if test="orderSendMaterialDto.orderCode != null and orderSendMaterialDto.orderCode != ''">
@@ -107,7 +120,7 @@
     C.material_name AS materialName,
     C.material_model AS materialModel,
     C.measure_unit AS measureUnit,
-    D.estimated_delivery_time AS estimatedDeliveryTime
+    y.estimated_delivery_time AS estimatedDeliveryTime
     FROM
     t_pss_material_detail_send x
     LEFT JOIN (
@@ -115,28 +128,43 @@
     A.orderCode,
     A.material_code AS materialCode,
     A.orderQuantity,
+    A.estimated_delivery_time,
+    A.brand,
     (
-    A.orderQuantity - ifnull(B.sendQuantity, 0)
+    case when (A.orderQuantity - ifnull(B.sendQuantity,0)) &lt; 0
+    then 0
+    else
+    A.orderQuantity - ifnull(B.sendQuantity,0)
+    end
     ) AS sendQuantity,
     (
-    A.orderQuantity - ifnull(B.sendQuantity, 0)
+    case when A.orderQuantity - ifnull(B.sendQuantity,0) &lt; 0
+    then 0
+    else
+    A.orderQuantity - ifnull(B.sendQuantity,0)
+    end
     ) AS remainQuantity
     FROM
     (
     SELECT
     t.foreign_code AS orderCode,
     t.material_code,
+    t.brand,
+    t.estimated_delivery_time,
     sum(t.quantity) AS orderQuantity
     FROM
     t_pss_material_detail_log t
     GROUP BY
     t.foreign_code,
-    t.material_code
+    t.material_code,
+    t.brand,
+    t.estimated_delivery_time
     ) A
     LEFT JOIN (
     SELECT
     t1.order_code AS orderCode,
     t1.material_code,
+    t1.brand,
     ifnull(sum(t1.send_quantity), 0) AS sendQuantity
     FROM
     t_pss_material_detail_send t1
@@ -150,21 +178,21 @@
     WHERE
     t.order_send_code = t1.foreign_code
     )
-
     <if test="orderSendMaterialDto.orderSendCode != null and orderSendMaterialDto.orderSendCode != ''">
       and t1.foreign_code != #{orderSendMaterialDto.orderSendCode}
     </if>
 
-
     GROUP BY
     t1.order_code,
-    t1.material_code
+    t1.material_code,
+    t1.brand
     ) B ON A.orderCode = B.orderCode
     AND A.material_code = B.material_code
+    AND A.brand = B.brand
     ) y ON x.order_code = y.orderCode
     AND x.material_code = y.materialCode
+    AND x.brand = y.brand
     LEFT JOIN t_pss_material_mgt C ON x.material_code = C.material_code
-    LEFT JOIN t_pss_material_detail_log D ON x.order_code = D.foreign_code AND x.material_code = D.material_code
     WHERE
     y.orderCode IS NOT NULL
 

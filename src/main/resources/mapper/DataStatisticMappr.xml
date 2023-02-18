@@ -14,10 +14,7 @@
         SELECT
         t.material_code materialCode,
         t1.material_name materialName,
-        IFNULL(
-        sum(t.quantity * t.price_tax),
-        0
-        ) amount,
+        IFNULL(sum(t.quantity * t.price_tax),0) amount,
         (
         SELECT
         IFNULL(sum(quantity * price_tax), 0)
@@ -34,27 +31,36 @@
         )
         ) totalSales
         FROM
-        t_pss_material_detail t
-        INNER JOIN t_pss_contract_sale t2 ON t.foreign_code = t2.contract_code
+        t_pss_material_detail_log t
+        INNER JOIN t_pss_order t2 ON t.foreign_code = t2.order_code and t2.order_type ='1' and t2.`status` > 2 and t2.`status` != '4'
         LEFT JOIN t_pss_material_mgt t1 ON t.material_code = t1.material_code
         GROUP BY
         t.material_code,
         t1.material_name
-        LIMIT 5
+        order by IFNULL(sum(t.quantity * t.price_tax),0)  desc
+        LIMIT 4
     </select>
 
     <select id="salesAnalysis" resultType="java.util.Map">
-        select left(t.create_time,7) year,sum(contract_amount) amount from t_pss_contract_sale t
+        select A.top6month,IFNULL(B.amount,0) amount from (
+        SELECT date_format(@lastDay := last_day( date_add(@lastDay,interval 1 month ) ) ,'%Y-%m'  ) top6month
+        from
+        (SELECT @lastDay := date_add(curdate(),interval -6 month) from mysql.help_topic limit 6) t
+        ) A
+        left join (select left(t.signing_date,7) months,sum(contract_amount) amount from t_pss_contract_sale t
         where t.contract_status = '4'
-        group by left(t.create_time,7)
-        order by left(t.create_time,7) desc
-        limit 6
+        group by left(t.signing_date,7)) B
+        on A.top6month = B.months
+
+        order by A.top6month asc
     </select>
 
     <select id="sendRecords" resultType="java.util.Map">
-        select t.order_send_code orderSendCode,t.send_time sendTime,t2.supplier_name supplierName from t_pss_order_send t
+        select t.order_send_code orderSendCode,t.send_time sendTime,t2.supplier_name supplierName,t3.note as sendStatusName
+        from t_pss_order_send t
         left join t_pss_order t1 on t.order_code = t1.order_code
         left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        left join t_pss_dict t3 on t.send_status = t3.code and t3.type = 'shzt'
         where t.send_status = '1'
         order by t.id desc
         limit 20
@@ -63,7 +69,9 @@
     <select id="sendMaterialTop5" resultType="java.util.Map">
         select t.material_code materialCode,t2.material_name materialName,sum(t.send_quantity) sendQuantity from t_pss_material_detail_send t
         left join t_pss_material_mgt t2 on t.material_code = t2.material_code
-        where exists (select 1 from t_pss_order_send t1 where t.foreign_code = t1.order_send_code)
+        where exists (select 1 from t_pss_order_send t1 where t.foreign_code = t1.order_send_code
+        and t1.order_code in (select order_code from t_pss_order where order_type ='1' and STATUS= '7')
+        )
         and t2.measure_unit = '吨'
         group by t.material_code,t2.material_name
         order by sum(t.send_quantity) DESC
@@ -74,7 +82,7 @@
         select t.cust_name custName,t.addr,t.type,t1.note typeName,t.contracts,t.contract_tel contractTel,t.latitude,t.longitude,
         IFNULL(t2.amount,0) amount from t_pss_customer t
         left join t_pss_dict_tree t1 on t.type = t1.code and t1.type ='KHLX'
-        left join (select part_a,sum(contract_amount) amount from t_pss_contract_sale  group by part_a) t2 on t.cust_code = t2.part_a
+        left join (select part_a,sum(contract_amount) amount from t_pss_contract_sale where contract_status ='4' group by part_a) t2 on t.cust_code = t2.part_a
         where 1=1
         and t.addr like '%恩施%'
     </select>
