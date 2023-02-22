@@ -143,10 +143,11 @@
   <select id="getOrderCount" resultType="com.flong.springboot.modules.entity.vo.OrderCountVo">
     select t1.code status,t1.note statusName,count(t.order_code) orderCount from t_pss_dict t1
     left join t_pss_order t on t.`status` = t1.code and t.order_type  ='1'
-    where t1.type = 'ddzt'
     <if test="supplierCode != null and supplierCode != ''">
       and t.supplier_code = #{supplierCode}
     </if>
+    where t1.type = 'ddzt'
+
     group by t1.code,t1.note
   </select>
 
@@ -214,8 +215,8 @@
   <select id="pushEvaOrder" resultType="com.flong.springboot.modules.entity.vo.OrderVo">
     SELECT t.*  FROM t_pss_order t
     WHERE
-    left(DATE_FORMAT(NOW(),'%Y-%m-%d'),10) >DATE_SUB(
-    t.finish_time, INTERVAL - (
+    left(DATE_FORMAT(NOW(),'%Y-%m-%d'),10) >= DATE_SUB(
+    left(t.finish_time,10), INTERVAL - (
     SELECT
     after_days
     FROM
@@ -223,5 +224,7 @@
     ) DAY
     )
     AND t.order_type = '1'
+    AND t.`status`='7'
+    and not exists (select 1 from t_pss_eva_order t1 where t.order_code = t1.order_code)
   </select>
 </mapper>

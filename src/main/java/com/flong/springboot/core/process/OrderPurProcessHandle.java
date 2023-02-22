@@ -62,21 +62,24 @@ public class OrderPurProcessHandle extends ProcessHandle {
 
             String orderCode = order.getOrderCode();
             List<MaterialDetailLogVo> list = materialDetailLogService.findRaw(orderCode);
-            if (list !=null || list.size() > 0 ) {
-                for (int i =0; i < list.size(); i++) {
-                    MaterialDetailLogVo m = list.get(i);
-                    if (m.getAcptQuantity() !=null) {
-                        materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getAcptQuantity());
+
+            String sendType = order.getSendType();
+            if (StringUtils.isNotEmpty(sendType) && !sendType.equals("1")){
+                if (list !=null || list.size() > 0 ) {
+                    for (int i =0; i < list.size(); i++) {
+                        MaterialDetailLogVo m = list.get(i);
+                        if (m.getAcptQuantity() !=null) {
+                            materialStockService.subInOrder(m.getMaterialCode(),m.getMaterialName(),m.getRemark(),m.getAcptQuantity());
+                        }
                     }
                 }
+            } else {
+                try {
+                    inertOutOrder(order,list);
+                } catch (ServiceException s) {
+                    throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"自动创建出库单失败");
+                }
             }
-
-            try {
-                inertOutOrder(order,list);
-            } catch (ServiceException s) {
-                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"自动创建出库单失败");
-            }
-
         } catch (ServiceException s) {
             throw s;
         } catch (Exception e) {
@@ -85,7 +88,8 @@ public class OrderPurProcessHandle extends ProcessHandle {
         }
 
 
-
+        //推送订单评价
+        orderService.pushEvaOrder();
     }
 
     @Transactional
@@ -117,7 +121,7 @@ public class OrderPurProcessHandle extends ProcessHandle {
                 outMaterial.setMaterialCode(p.getMaterialCode());
                 outMaterial.setMaterialName(p.getMaterialName());
                 outMaterial.setQuantity(p.getAcptQuantity());
-
+                outMaterial.setRecordTime(UserHelper.getDateTime());
                 outMaterialList.add(outMaterial);
             });
         }

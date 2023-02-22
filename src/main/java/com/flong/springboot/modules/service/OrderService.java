@@ -22,10 +22,7 @@ import com.flong.springboot.modules.entity.dto.ContractPurchaseDto;
 import com.flong.springboot.modules.entity.dto.EvaOrderDto;
 import com.flong.springboot.modules.entity.dto.OrderDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
-import com.flong.springboot.modules.entity.vo.ContractPurchaseVo;
-import com.flong.springboot.modules.entity.vo.OrderCountVo;
-import com.flong.springboot.modules.entity.vo.OrderVo;
-import com.flong.springboot.modules.entity.vo.UserVo;
+import com.flong.springboot.modules.entity.vo.*;
 import com.flong.springboot.modules.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -298,6 +295,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
         public void pushEvaOrder () {
                 try {
                         List<OrderVo> list= orderMapper.pushEvaOrder();
+                        List< EvaOrder> evaOrderList = new ArrayList<>();
                         if (list !=null && list.size() > 0) {
                                 for (int i = 0; i < list.size(); i++) {
                                         OrderVo o = list.get(i);
@@ -305,12 +303,13 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                                         if (o !=null && StringUtils.isNotEmpty(orderCode)) {
                                                 EvaOrder e = new EvaOrder();
                                                 e.setOrderCode(orderCode);
-                                                evaOrderService.insert(e);
+                                                evaOrderList.add(evaOrderService.getEvaOrder(e));
                                         }
 
                                 }
 
                         }
+                        evaOrderService.saveBatch(evaOrderList);
                 } catch (Exception e) {
                         log.error("推送订单评价任务失败");
                         e.printStackTrace();

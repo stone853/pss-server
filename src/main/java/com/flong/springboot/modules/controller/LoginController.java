@@ -12,6 +12,8 @@ import com.flong.springboot.modules.entity.dto.LoginDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.LoginVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
+import com.flong.springboot.modules.service.CustomerService;
+import com.flong.springboot.modules.service.OptLogService;
 import com.flong.springboot.modules.service.UserRoleService;
 import com.flong.springboot.modules.service.UserService;
 import io.swagger.annotations.Api;
@@ -20,9 +22,11 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,14 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    CustomerService customerService;
+
+    @Autowired
+    private OptLogService optLogService;
+
+    @Autowired
+    private HttpServletRequest request;
 
 
     @ApiOperation("登陆")
@@ -77,6 +89,13 @@ public class LoginController {
             log.error("vo:{},code:{},message:{}", vo, CommMsgCode.DAO_ERROR.getCode(), e.getMessage());
         }
 
+        String userType = loginDto.getUserType();
+        if (StringUtils.isNotEmpty(userType) && userType.equals("2")) {
+            lv.setCustomerVoList(customerService.findByMobile(loginDto.getMobile()));
+        }
+
+        optLogService.insertOptLog(u.getUserId(),UserHelper.getRealRequestIp(request),
+                "登录","用户-"+u.getName());
 
         return lv.setToken(UserHelper.getToken(u.getUserId(),u.getPassword()))
                 .setUserName(u.getName()).setUserId(u.getUserId());

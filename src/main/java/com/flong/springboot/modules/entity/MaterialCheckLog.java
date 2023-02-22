@@ -20,7 +20,6 @@ public class MaterialCheckLog {
 
     private String materialName;
 
-    private String checkResult;
 
     private Integer quantity;
 
@@ -56,13 +55,6 @@ public class MaterialCheckLog {
         this.materialName = materialName == null ? null : materialName.trim();
     }
 
-    public String getCheckResult() {
-        return checkResult;
-    }
-
-    public void setCheckResult(String checkResult) {
-        this.checkResult = checkResult == null ? null : checkResult.trim();
-    }
 
     public Integer getQuantity() {
         return quantity;

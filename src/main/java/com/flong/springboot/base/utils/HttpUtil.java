@@ -110,6 +110,7 @@ public class HttpUtil {
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;
+                log.info("短信返回======="+result);
             }
         } catch (Exception e) {
             log.error("发送 POST 请求出现异常！"+e);

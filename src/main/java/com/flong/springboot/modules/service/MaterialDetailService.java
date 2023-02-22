@@ -86,11 +86,11 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         materialDetailMapper.delete(dw);
                         return true;
                 }
-                //判断物料code重复
-                List<String> tempList = list.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
-                if (tempList.size() != list.size()) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
-                }
+//                //判断物料code重复
+//                List<String> tempList = list.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
+//                if (tempList.size() != list.size()) {
+//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+//                }
 
                 //先删除
                 try {

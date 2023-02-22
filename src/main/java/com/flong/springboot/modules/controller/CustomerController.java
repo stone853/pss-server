@@ -60,9 +60,9 @@ public class CustomerController {
     @PostMapping("/v1/add")
     public Customer add(@RequestHeader("token") String token,@Validated @RequestBody Customer t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            t.setFilesC(JSONArray.toJSONString(fileBeanList));
-        }
+
+        t.setFilesC(JSONArray.toJSONString(fileBeanList));
+
         return customerService.insert(t);
     }
 
@@ -73,9 +73,9 @@ public class CustomerController {
     @PutMapping("/updateById")
     public void updateById(@Validated @RequestBody Customer customer) {
         List<FileBean> fileBeanList = customer.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            customer.setFilesC(JSONArray.toJSONString(fileBeanList));
-        }
+
+        customer.setFilesC(JSONArray.toJSONString(fileBeanList));
+
 
 
         customerService.updateCustomer(customer);

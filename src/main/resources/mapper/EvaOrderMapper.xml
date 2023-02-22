@@ -34,7 +34,7 @@
     </if>
     <if test="evaOrder.beginTime != null and evaOrder.beginTime != ''
     and evaOrder.endTime != '' and evaOrder.endTime != ''">
-      and t.eva_time between #{evaOrder.beginTime} and #{evaOrder.endTime}
+      and left(t.eva_time,10) between #{evaOrder.beginTime} and #{evaOrder.endTime}
     </if>
     order by t.id desc
   </select>

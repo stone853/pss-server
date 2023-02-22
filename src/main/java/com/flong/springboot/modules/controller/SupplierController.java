@@ -59,9 +59,8 @@ public class SupplierController {
     @PostMapping("/v1/add")
     public Supplier add(@RequestHeader("token") String token,@Validated  @RequestBody Supplier t) {
         List<FileBean> fileBeanList = t.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            t.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        t.setFileC(JSONArray.toJSONString(fileBeanList));
+
         return supplierService.insert(t);
     }
 
@@ -72,9 +71,8 @@ public class SupplierController {
     @PutMapping("/updateById")
     public void updateById(@Validated @RequestBody Supplier supplier) {
         List<FileBean> fileBeanList = supplier.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            supplier.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        supplier.setFileC(JSONArray.toJSONString(fileBeanList));
+
         supplierService.update(supplier);
     }
     /**

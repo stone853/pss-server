@@ -26,6 +26,10 @@ public class IndexDataVo {
     private int orderPurCountCheck;
     @ApiModelProperty("累计待发货订单数量")
     private int orderPurCountToSend;
+
+    @ApiModelProperty("待验收数量")
+    private int orderPurCountToApt;
+
     @ApiModelProperty("用户数量")
     private int userCount;
     @ApiModelProperty("供应商数量")

@@ -48,6 +48,7 @@ public class EvaOrderController {
     @ApiOperation("修改订单评价")
     @PutMapping("/updateById")
     public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody EvaOrder evaOrder) {
+        evaOrder.setOptUser(UserHelper.getUserId(token));
         evaOrderService.update(evaOrder);
     }
     /**

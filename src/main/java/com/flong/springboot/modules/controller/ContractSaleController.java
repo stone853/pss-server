@@ -58,9 +58,8 @@ public class ContractSaleController {
                 "销售合同","销售合同-首页");
 
         List<FileBean> fileBeanList = t.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            t.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        t.setFileC(JSONArray.toJSONString(fileBeanList));
+
         t.setCreateUser(UserHelper.getUserId(token));
         return contractSaleService.insert(t);
     }
@@ -75,9 +74,8 @@ public class ContractSaleController {
                 "销售合同","销售合同-修改");
 
         List<FileBean> fileBeanList = contractSale.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            contractSale.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        contractSale.setFileC(JSONArray.toJSONString(fileBeanList));
+        
         contractSaleService.insert(contractSale);
     }
     /**

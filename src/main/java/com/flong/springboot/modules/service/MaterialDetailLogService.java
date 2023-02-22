@@ -19,6 +19,7 @@ import com.flong.springboot.modules.mapper.MaterialDetailLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,9 +54,9 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
                                 }
 
                                 List<FileBean> fileBeanList = p.getFileBeanList();
-                                if (fileBeanList !=null && fileBeanList.size() > 0) {
-                                        p.setFileC(JSONArray.toJSONString(fileBeanList));
-                                }
+
+                                p.setFileC(JSONArray.toJSONString(fileBeanList));
+
 
                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode())
                                         .setForeignCode(foreignCode);
@@ -119,6 +120,11 @@ public class MaterialDetailLogService extends ServiceImpl<MaterialDetailLogMappe
 
                                         if ("2".equals(type)) {
                                                 isAbleOut(p.getMaterialCode(),p.getQuantity());
+                                        } else if ("1".equals(type)) {
+                                                if (p.getBrand() ==null || StringUtils.isEmpty(p.getBrand())) {
+                                                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"品牌不能为空");
+                                                }
+                                                p.setAmountPrice( new BigDecimal(p.getPriceTax().intValue() * p.getQuantity().intValue()));
                                         }
 
                                         if (StringUtils.isEmpty(p.getDetailId())) {

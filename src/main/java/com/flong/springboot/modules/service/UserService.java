@@ -59,6 +59,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         if (loginDto.getUserType() !=null && !"".equals(loginDto.getUserType())) {
             build.eq("user_type",loginDto.getUserType());
+        } else {
+            build.ne("user_type","2");
         }
 
         build.last("limit 1");
@@ -82,12 +84,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
 
 
-        QueryWrapper<User> q1 = new QueryWrapper<User>();
-        q1.eq("name",u.getName());
-        List<User> listTemp = userMapper.selectList(q1);
-        if (listTemp !=null && listTemp.size() > 0) {
-            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"用户名已存在");
-        }
+//        QueryWrapper<User> q1 = new QueryWrapper<User>();
+//        q1.eq("name",u.getName());
+//        List<User> listTemp = userMapper.selectList(q1);
+//        if (listTemp !=null && listTemp.size() > 0) {
+//            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"用户名已存在");
+//        }
 
         String userId = GeneratorKeyUtil.getUserNextId();
         u.setUserId(userId);

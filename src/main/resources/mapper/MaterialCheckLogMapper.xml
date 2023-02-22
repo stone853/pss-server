@@ -6,7 +6,6 @@
     <result column="foreign_code" jdbcType="VARCHAR" property="foreignCode" />
     <result column="material_code" jdbcType="VARCHAR" property="materialCode" />
     <result column="material_name" jdbcType="VARCHAR" property="materialName" />
-    <result column="check_result" jdbcType="VARCHAR" property="checkResult" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
   </resultMap>
 

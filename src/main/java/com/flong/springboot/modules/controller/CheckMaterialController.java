@@ -69,6 +69,18 @@ public class CheckMaterialController {
         checkMaterialService.removeByIds(ids);
     }
 
+    /**
+     * 作废
+     * @param checkMaterial
+     */
+    @ApiOperation("作废")
+    @PostMapping("/cancel")
+    public void cancel(@RequestHeader("token") String token,@RequestBody CheckMaterial checkMaterial) {
+        optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
+                "盘点单","盘点单-作废");
+        checkMaterialService.cancel(checkMaterial);
+    }
+
     @ApiOperation("根据ID查询详情")
     @GetMapping("/getOne")
     public CheckMaterialVo getOne(@RequestHeader("token") String token, @RequestParam("id") int id) {

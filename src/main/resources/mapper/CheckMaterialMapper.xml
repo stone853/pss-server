@@ -16,7 +16,7 @@
 
   <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo"
           parameterType="com.flong.springboot.modules.entity.dto.CheckMaterialDto">
-    select t.*,t1.note checkResultName,t3.name userName
+    select t.*,t1.note checkResultName,t3.name userName,t2.note billStatusName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'
@@ -34,7 +34,7 @@
 
 
   <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo">
-    select t.*,t1.note checkResultName,t3.name userName
+    select t.*,t1.note checkResultName,t3.name userName,t2.note billStatusName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'
@@ -46,7 +46,7 @@
   </select>
 
   <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.CheckMaterialVo">
-    select t.*,t1.note checkResultName,t3.name userName
+    select t.*,t1.note checkResultName,t3.name userName,t2.note billStatusName
     from t_pss_check_material t
     left join t_pss_dict t1 on t.check_result = t1.code and t1.type = 'ykzt'
     left join t_pss_dict t2 on t.bill_status = t2.code and t2.type = 'djzt'

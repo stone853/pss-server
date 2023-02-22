@@ -107,12 +107,15 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                                 orderSendMapper.insert(c);;
                         }
 
-                        //处理发货流程 begin
-//                        String sendStatus = c.getSendStatus();
-//                        if (StringUtils.isNotEmpty(sendStatus) && sendStatus.equals(CommonConstant.ORDER_SEND_STATUS)) {
-//                                handleProcess(c);
-//                        }
-                        //处理发货流程 end
+                        if (StringUtils.isNotEmpty(c.getSendStatus()) && c.getSendStatus().equals("1")) {
+                                //记录日志
+                                OrderSendLog orderSendLog = new OrderSendLog();
+                                orderSendLog.setSendStatus(c.getSendStatus());
+                                orderSendLog.setOrderSendCode(orderSendCode);
+                                orderSendLog.setOptUser(c.getUserId());
+                                orderSendLog.setOptTime(UserHelper.getDateTime());
+                                orderSendLogService.save(orderSendLog);
+                        }
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加发货单失败");

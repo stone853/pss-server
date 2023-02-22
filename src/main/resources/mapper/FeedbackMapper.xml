@@ -30,6 +30,12 @@
     supplier_name companyName
     FROM
     t_pss_supplier
+    UNION ALL
+    SELECT
+    dept_code companyCode,
+    name companyName
+    FROM
+    t_pss_dept
     ) t2 ON t.company = t2.companyCode
     WHERE
     1 = 1
@@ -57,6 +63,12 @@
     supplier_name companyName
     FROM
     t_pss_supplier
+    UNION ALL
+    SELECT
+    dept_code companyCode,
+    name companyName
+    FROM
+    t_pss_dept
     ) t2 ON t.company = t2.companyCode
     WHERE
     1 = 1

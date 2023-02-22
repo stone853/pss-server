@@ -36,9 +36,9 @@ public class FeedbackService extends ServiceImpl<FeedbackMapper, Feedback> {
 
         public Feedback insert (String userId,Feedback feedback) {
                 List<FileBean> fileBeanList = feedback.getFileBeanList();
-                if (fileBeanList !=null && fileBeanList.size() > 0) {
-                        feedback.setFileC(JSONArray.toJSONString(fileBeanList));
-                }
+
+                feedback.setFileC(JSONArray.toJSONString(fileBeanList));
+
                 feedback.setOptTime(UserHelper.getDateTime());
                 feedback.setCompany(userService.getUserDeptCode(new UserDto().setUserId(userId)));
                 this.save(feedback);

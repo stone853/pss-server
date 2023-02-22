@@ -1,5 +1,7 @@
 package com.flong.springboot.modules.entity.vo;
 
+import java.util.List;
+
 public class LoginVo {
     private String token;
 
@@ -16,6 +18,17 @@ public class LoginVo {
     private String userType;
 
     private String deptCode;
+
+    private List<CustomerVo> customerVoList;
+
+
+    public void setCustomerVoList(List<CustomerVo> customerVoList) {
+        this.customerVoList = customerVoList;
+    }
+
+    public List<CustomerVo> getCustomerVoList() {
+        return customerVoList;
+    }
 
     public void setDeptCode(String deptCode) {
         this.deptCode = deptCode;

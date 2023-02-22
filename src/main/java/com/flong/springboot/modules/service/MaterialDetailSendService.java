@@ -126,7 +126,8 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                                         }
                                         String acptRemark = p.getAcptRemark();
                                         int acptQuantity = p.getAcptQuantity();
-                                        updAcptQuantity(foreignCode,materialCode,acptQuantity,acptRemark);
+                                        String brand = p.getBrand();
+                                        updAcptQuantity(foreignCode,materialCode,acptQuantity,brand,acptRemark);
                                 }
 
                         );
@@ -140,16 +141,25 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                 return true;
         }
 
-        public void updAcptQuantity (String foreignCode,String materialCode,int acptQuantity,String acptRemark) {
+        public void updAcptQuantity (String foreignCode,String materialCode,int acptQuantity,String brand,String acptRemark) {
                 if (StringUtils.isEmpty(materialCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"修改物料code为空");
                 }
+                if (acptQuantity == 0 ) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请填写验收数量");
+                }
 
-                QueryWrapper<MaterialDetailSend> q = new QueryWrapper<>();
-                q.eq("material_code",materialCode);
-                q.eq("foreign_code",foreignCode);
-                q.last("limit 1");
-                MaterialDetailSend m = this.getOne(q);
+                if (StringUtils.isEmpty(brand)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"品牌不能为空");
+                }
+
+
+//                QueryWrapper<MaterialDetailSend> q = new QueryWrapper<>();
+//                q.eq("material_code",materialCode);
+//                q.eq("foreign_code",foreignCode);
+//                q.eq("brand",brand);
+//                q.last("limit 1");
+//                MaterialDetailSend m = this.getOne(q);
 
                 if (acptQuantity !=0) {
                         UpdateWrapper<MaterialDetailSend> uSql = new UpdateWrapper<>();
@@ -157,6 +167,7 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                         uSql.set("acpt_remark",acptRemark);
                         uSql.eq("material_code", materialCode);
                         uSql.eq("foreign_code", foreignCode);
+                        uSql.eq("brand", brand);
                         materialDetailSendMapper.update(null,uSql);
                 }
 

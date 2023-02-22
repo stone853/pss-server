@@ -4,6 +4,8 @@ package com.flong.springboot.modules.entity.dto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MaterialMgtDto {
     private String materialCode;
@@ -17,6 +19,17 @@ public class MaterialMgtDto {
     private String materialModel;
 
     private String supplierCode;
+
+    private List<String> codes;
+
+
+    public void setCodes(List<String> codes) {
+        this.codes = codes;
+    }
+
+    public List<String> getCodes() {
+        return codes;
+    }
 
     public void setSupplierCode(String supplierCode) {
         this.supplierCode = supplierCode;

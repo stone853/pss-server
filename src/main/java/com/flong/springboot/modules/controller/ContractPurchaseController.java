@@ -55,9 +55,8 @@ public class ContractPurchaseController {
                 "采购合同","采购合同-新增");
 
         List<FileBean> fileBeanList = t.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            t.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        t.setFileC(JSONArray.toJSONString(fileBeanList));
+
         t.setCreateUser(UserHelper.getUserId(token));
         return contractPurchaseService.insert(t);
     }
@@ -72,9 +71,8 @@ public class ContractPurchaseController {
                 "采购合同","采购合同-修改");
 
         List<FileBean> fileBeanList = contractPurchase.getFileBeanList();
-        if (fileBeanList !=null && fileBeanList.size() > 0) {
-            contractPurchase.setFileC(JSONArray.toJSONString(fileBeanList));
-        }
+        contractPurchase.setFileC(JSONArray.toJSONString(fileBeanList));
+
         contractPurchaseService.insert(contractPurchase);
     }
     /**

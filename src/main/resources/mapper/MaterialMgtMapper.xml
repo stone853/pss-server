@@ -13,7 +13,7 @@
     <result column="is_delete" jdbcType="CHAR" property="isDelete" />
   </resultMap>
 
-  <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.MaterialMgt">
+  <select id="pageList" resultType="java.util.Map" parameterType="com.flong.springboot.modules.entity.dto.MaterialMgtDto">
     select t.id,t.material_code,t.material_name,t.type,t1.note as typename,t.material_model,t.measure_unit,t.create_user,t.create_time,t.is_delete from t_pss_material_mgt t
     left join t_pss_dict_tree t1 on t.type = t1.code and t1.type = 'WLLX'
      where 1=1
@@ -23,11 +23,14 @@
     <if test="materialMgt.materialName != null and materialMgt.materialName != ''">
       and t.material_name like "%"#{materialMgt.materialName}"%"
     </if>
-    <if test="materialMgt.type != null and materialMgt.type != ''">
-      and t.type = #{materialMgt.type}
-    </if>
     <if test="materialMgt.materialModel != null and materialMgt.materialModel != ''">
       and t.material_model = #{materialMgt.materialModel}
+    </if>
+    <if test="materialMgt.codes != null and materialMgt.codes.size() > 0">
+      and t.type in
+      <foreach collection="materialMgt.codes" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
     </if>
     order by t.id desc
   </select>

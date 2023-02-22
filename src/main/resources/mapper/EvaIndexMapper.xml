@@ -12,11 +12,11 @@
 
   <select id="findIndexList" resultMap="BaseResultMap">
     SELECT * FROM
-      t_pss_eva_index
-    WHERE
-      scheme_code IN (
-      SELECT scheme_code FROM t_pss_eva_scheme
-        WHERE
+      t_pss_eva_index t
+      WHERE
+        t.scheme_code IN (
+          SELECT code FROM t_pss_eva_scheme
+          WHERE
           enable_flag = '1'
     )
   </select>

@@ -74,6 +74,9 @@ public class MaterialMgtService extends ServiceImpl<MaterialMgtMapper, MaterialM
                 if (materialMgtDto.getType() !=null && !"".equals(materialMgtDto.getType())) {
                         build.eq("type",materialMgtDto.getType());
                 }
+                if (materialMgtDto.getCodes() !=null && materialMgtDto.getCodes().size() >0) {
+                        build.in("type",materialMgtDto.getCodes());
+                }
                 return build;
         }
 

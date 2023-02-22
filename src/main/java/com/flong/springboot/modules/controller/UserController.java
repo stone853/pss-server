@@ -1,21 +1,29 @@
 package com.flong.springboot.modules.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.base.utils.UserHelper;
 import com.flong.springboot.core.constant.RequestCommonPathConstant;
+import com.flong.springboot.core.exception.BaseException;
+import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.modules.entity.User;
+import com.flong.springboot.modules.entity.dto.ExchangeUserDto;
 import com.flong.springboot.modules.entity.dto.UpdUserPwdDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
+import com.flong.springboot.modules.entity.vo.LoginVo;
 import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
+import com.flong.springboot.modules.service.CustomerService;
 import com.flong.springboot.modules.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +35,7 @@ import java.util.List;
  * @Description:用户控制层
  */
 @Api(tags = "用户")
+@Slf4j
 @RestController
 @RequestMapping(RequestCommonPathConstant.REQUEST_PROJECT_PATH+"/user")
 public class UserController {
@@ -34,6 +43,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    CustomerService customerService;
     /**
      * 添加
      */
@@ -126,6 +137,71 @@ public class UserController {
     @GetMapping("/v1/todoTask")
     public List<TodoTaskVo> todoTask(@RequestHeader("token") String token) {
         return userService.todoTask(UserHelper.getUserId(token));
+    }
+
+    /**
+     * 切换用户
+     *
+     */
+    @ApiOperation("切换用户")
+    @PostMapping("/v1/exchangeUser")
+    public LoginVo exchangeUser(@RequestHeader("token") String token, @RequestBody ExchangeUserDto exchangeUserDto) {
+        String mobile = exchangeUserDto.getMobile();
+        String deptCode = exchangeUserDto.getDeptCode();
+
+        if (StringUtils.isEmpty(mobile)) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "切换用户-手机号不能为空");
+        }
+
+        if (StringUtils.isEmpty(deptCode)) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "切换用户-部门不能为空");
+        }
+
+        QueryWrapper<User> q =new QueryWrapper<>();
+        q.eq("mobile",mobile);
+        q.eq("dept_code",deptCode);
+        q.last("limit 1");
+        User u = userService.getOne(q);
+
+        if (u ==null) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "用户名或密码错误");
+        }
+
+        if (u.getIsDelete() !=null && String.valueOf(u.getIsDelete()).equals("1")) {
+            throw new BaseException(CommMsgCode.BIZ_INTERRUPT, "该用户被禁用");
+        }
+
+
+        LoginVo lv = new LoginVo();
+        return getUserInfo(lv,u);
+    }
+
+
+    public LoginVo getUserInfo (LoginVo lv,User u) {
+        UserVo vo = new UserVo();
+        try {
+            vo = userService.findOneUserRoles(new UserDto().setUserId(u.getUserId()));
+
+            if (vo !=null) {
+                lv.setRoleCode(vo.getRoleCodes());
+                lv.setDeptName(vo.getDeptName());
+                lv.setRoleName(vo.getRoleNames());
+                lv.setUserType(vo.getUserType());
+                lv.setDeptCode(vo.getDeptCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("vo:{},code:{},message:{}", vo, CommMsgCode.DAO_ERROR.getCode(), e.getMessage());
+        }
+
+
+        if (StringUtils.isNotEmpty(u.getUserType()) && u.getUserType().equals("2")) {
+            lv.setCustomerVoList(customerService.findByMobile(u.getMobile()));
+        }
+
+
+        return lv.setToken(UserHelper.getToken(u.getUserId(),u.getPassword()))
+                .setUserName(u.getName()).setUserId(u.getUserId());
     }
 
 }

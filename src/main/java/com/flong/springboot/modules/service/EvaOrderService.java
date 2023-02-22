@@ -58,6 +58,31 @@ public class EvaOrderService extends ServiceImpl<EvaOrderMapper, EvaOrder> {
                 return evaOrder;
         }
 
+        public EvaOrder getEvaOrder (EvaOrder evaOrder) {
+                String orderCode = evaOrder.getOrderCode();
+                if (StringUtils.isEmpty(orderCode)) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"orderCode编码不能为空");
+                }
+
+                List<FileBean> fileBeanList = evaOrder.getFileBeanList();
+                if (fileBeanList !=null && fileBeanList.size() > 0) {
+                        FileBean f = new FileBean();
+                        evaOrder.setFileC(f.fileBeanListToString(evaOrder.getFileBeanList()));
+                }
+
+                List<EvaIndex> evaIndexList = evaOrder.getEvaIndexList();
+                if (evaIndexList ==null || evaIndexList.size() == 0) {
+                        List<EvaIndex> el = evaIndexMapper.findIndexList();
+                        evaOrder.setEvaIndexList(el);
+
+                }
+                evaOrder.setIndexString(JSONArray.toJSONString(evaOrder.getEvaIndexList()));
+                evaOrder.setEvaTime(UserHelper.getDateTime());
+                evaOrder.setEvaStatus("0");
+
+                return evaOrder;
+        }
+
 
         public EvaOrder update (EvaOrder evaOrder) {
                 Integer keyId = evaOrder.getId();

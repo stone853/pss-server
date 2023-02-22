@@ -13,17 +13,23 @@
   <sql id="selectQuantityToIn">
     select t1.material_code,t1.quantity from t_pss_order t
     left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
-    where t.`status` > '1' and t.`status` not in ( '4','7')
-    and t.order_type = '1'
+    where t.`status` > '1' and t.`status` NOT IN ('4', '6','7')
+    and t.order_type = '1' and t.send_type ='2'
     and t1.material_code is not null
   </sql>
 
   <sql id="selectQuantityIn">
     select t1.material_code,t1.acpt_quantity quantity from t_pss_order t
-    left join t_pss_material_detail_send t1 on t.order_code = t1.order_code
+    inner join t_pss_material_detail_send t1 on t.order_code = t1.order_code
     where t.`status` = '7'
     and t.order_type = '1'
     and t1.material_code is not null
+
+    union all
+
+    select t.material_code,t.quantity from t_pss_material_check_log t
+    where exists (select 1 from t_pss_check_material t1 where t.foreign_code = t1.bill_code and t1.bill_status = '1')
+    and t.quantity > 0
   </sql>
 
   <sql id="selectQuantityToOut">
@@ -36,10 +42,16 @@
 
   <sql id="selectQuantityOut">
     select t1.material_code,t1.quantity from t_pss_order t
-    left join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
+    inner join t_pss_material_detail_log t1 on t.order_code = t1.foreign_code
     where t.`status` = '7'
     and t.order_type = '2'
     and t1.material_code is not null
+
+    union all
+
+    select t.material_code,-t.quantity quantity from t_pss_material_check_log t
+    where exists (select 1 from t_pss_check_material t1 where t.foreign_code = t1.bill_code and t1.bill_status = '1')
+    and t.quantity &lt; 0
   </sql>
 
   <select id="findAll" resultType="com.flong.springboot.modules.entity.vo.MaterialStockVo"
@@ -229,7 +241,7 @@
       t.material_name materialName,0 quantityToIn, case when t.quantity &gt; 0 then t.quantity else 0 end quantityIn,
       0 quantityToOut,case when t.quantity &lt; 0 then -t.quantity else 0 end quantityOut
       from t_pss_material_check_log t
-      inner join t_pss_check_material t1 on t.foreign_code = t1.bill_code
+      inner join t_pss_check_material t1 on t.foreign_code = t1.bill_code and t1.bill_status = '1'
       left join t_pss_user t2 on t1.opt_user = t2.user_id
     )  A
     where 1=1

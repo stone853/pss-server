@@ -84,9 +84,12 @@ logging:
         mybatisplus: debug
       flong:
         springboot: debug
+  file:
+    path: /logs
 
 pss:
   upload:
     customer:
       url: /opt/files/
+
 

@@ -49,7 +49,7 @@ public class EvaSettingController {
         }
 
         //推送
-        //orderService.pushEvaOrder();
+        orderService.pushEvaOrder();
     }
 
 

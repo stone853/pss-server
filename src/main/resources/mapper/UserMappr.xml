@@ -87,7 +87,7 @@
         ) contractSaleAmount,
         (
         select sum(contract_amount)  from t_pss_contract_sale where contract_status = '4'
-        and left(create_time,4) = DATE_FORMAT(NOW(),'%Y')
+        and left(signing_date,4) = DATE_FORMAT(NOW(),'%Y')
         <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
             and part_a = #{indexDataDto.custCode}
         </if>
@@ -106,7 +106,7 @@
         ) contractPurAmount,
         (
         select sum(contract_amount) from t_pss_contract_purchase where contract_status = '4'
-        and left(create_time,4) = DATE_FORMAT(NOW(),'%Y')
+        and left(signing_date,4) = DATE_FORMAT(NOW(),'%Y')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
             and part_b = #{indexDataDto.supplierCode}
         </if>
@@ -126,7 +126,7 @@
         (
         select IFNULL(sum(t.quantity * t.price_tax),0) from t_pss_material_detail_log t where
         (
-        select 1 from t_pss_order t1 where t.foreign_code = t1.order_code and t1.order_type = '1' and  t1.status ='7'
+        select 1 from t_pss_order t1 where t.foreign_code = t1.order_code and t1.order_type = '1' and  t1.status > '2' and t1.status != '4'
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
             and t1.supplier_code = #{indexDataDto.supplierCode}
         </if>
@@ -210,6 +210,17 @@
         </if>
         ) orderPurCountToSend,
         (
+        select count(*) from t_pss_order t
+        left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+        where order_type = '1' and  status = '5'
+        <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
+            and t.supplier_code = #{indexDataDto.supplierCode}
+        </if>
+        <if test="indexDataDto.custCode != null and indexDataDto.custCode != ''">
+            and t2.cust_code = #{indexDataDto.custCode}
+        </if>
+        ) orderPurCountToApt,
+        (
         select count(*) from t_pss_user t where t.user_type = '1'
         and exists (select 1 from t_pss_dept t1 where t.dept_code = t1.dept_code)
         ) userCount,
@@ -226,8 +237,20 @@
 
     <select id="todoTask" resultType="com.flong.springboot.modules.entity.vo.TodoTaskVo">
         select A.*,B.name userName from (
-        select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,CONCAT_WS('-',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
-        case when t.check_role =null then t1.create_user else (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
+        select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,
+        CONCAT_WS('-','【采购合同】',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
+        case when t.check_role is null or t.check_role =''
+        then t1.create_user
+        else
+        (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userId,
+        case when t.check_role is null or t.check_role =''
+        then t1.create_user
+        else
+        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userIds,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_purchase t1 on t.process_id = t1.process_id
         where t.step != '-1'
@@ -235,8 +258,19 @@
 
         union all
 
-        select '待处理' taskStatus,t1.contract_code taskCode,'xsht' taskType,CONCAT_WS('-',t1.contract_name,step_name)  taskTitle,t.step,t.step_name stepName,
-        case when t.check_role =null then t1.create_user else  (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
+        select '待处理' taskStatus,t1.contract_code taskCode,'xsht' taskType,
+        CONCAT_WS('-','【销售合同】',t1.contract_name,step_name)  taskTitle,t.step,t.step_name stepName,
+        case when t.check_role is null or t.check_role ='' then t1.create_user
+        else
+        (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userId,
+        case when t.check_role is null or t.check_role =''
+        then t1.create_user
+        else
+        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userIds,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_sale t1 on t.process_id = t1.process_id
         where t.step != '-1'
@@ -244,8 +278,19 @@
 
         union all
 
-        select '待处理' taskStatus,t1.order_code taskCode,case t1.order_type when '1' then 'cgdd' when '2' then 'ckd' end  taskType,CONCAT_WS('-','采购订单',t2.supplier_name,t.step_name) taskTitle,t.step,t.step_name,
-        case when t.check_role is null or t.check_role ='' then t1.applicant else  (select user_id from t_pss_user_role tt where tt.role_code = t.check_role limit 1) end userId,
+        select '待处理' taskStatus,t1.order_code taskCode,case t1.order_type when '1' then 'cgdd' when '2' then 'ckd' end  taskType,
+        CONCAT_WS('-',case t1.order_type when '1' then '【采购订单】' when '2' then '【出库单】' end,t2.supplier_name,t.step_name) taskTitle,t.step,t.step_name,
+        case when t.check_role is null or t.check_role ='' then t1.applicant
+        else
+        (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userId,
+        case when t.check_role is null or t.check_role =''
+        then t1.applicant
+        else
+        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
+        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
+        limit 1) end userIds,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_order t1 on t.process_id = t1.process_id
         left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
@@ -254,7 +299,8 @@
         left join t_pss_user B on A.userId = B.user_id
         where 1=1
         <if test="userId != null and userId != ''">
-            and A.userId like "%"#{userId}"%"
+            and A.userIds like "%"#{userId}"%"
         </if>
+        order by A.optTime desc
     </select>
 </mapper>
