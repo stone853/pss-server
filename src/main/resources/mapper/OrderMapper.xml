@@ -146,6 +146,10 @@
     <if test="supplierCode != null and supplierCode != ''">
       and t.supplier_code = #{supplierCode}
     </if>
+    inner join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
+    <if test="custCode != null and custCode != ''">
+      and t2.cust_code = #{custCode}
+    </if>
     where t1.type = 'ddzt'
 
     group by t1.code,t1.note

@@ -46,7 +46,7 @@ public class OrderSendController {
     public OrderSend add(@RequestHeader("token") String token,@Validated @RequestBody OrderSend t) {
         FileBean f = new FileBean();
         t.setFileC(f.fileBeanListToString(t.getFileBeanList()));
-
+        t.setUserId(UserHelper.getUserId(token));
         return orderSendService.insert(t);
     }
 
@@ -57,7 +57,7 @@ public class OrderSendController {
     @ApiOperation("只修改发货单，不修改明细")
     @PutMapping("/updateById")
     public void updateOrInsert(@RequestHeader("token") String token,@Validated @RequestBody OrderSend orderSend) {
-        orderSendService.updateById(orderSend);
+        orderSendService.updateOrderSend(UserHelper.getUserId(token),orderSend);
     }
 
 

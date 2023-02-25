@@ -149,9 +149,9 @@ public class MaterialDetailSendService extends ServiceImpl<MaterialDetailSendMap
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请填写验收数量");
                 }
 
-                if (StringUtils.isEmpty(brand)) {
-                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"品牌不能为空");
-                }
+//                if (StringUtils.isEmpty(brand)) {
+//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"品牌不能为空");
+//                }
 
 
 //                QueryWrapper<MaterialDetailSend> q = new QueryWrapper<>();

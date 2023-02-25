@@ -20,7 +20,7 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     OrderVo getOneByOrderCode(@Param("orderCode") String orderCode);
 
-    List<OrderCountVo> getOrderCount(@Param("supplierCode") String supplierCode);
+    List<OrderCountVo> getOrderCount(@Param("supplierCode") String supplierCode,@Param("custCode") String custCode);
 
     List<OrderVo> pushEvaOrder();
 

@@ -10,7 +10,7 @@
   </resultMap>
 
   <select id="getByOrderSendCode" resultType="com.flong.springboot.modules.entity.vo.OrderSendLogVo">
-    select A.*,CASE A.optName when '1' then CONCAT(A.supplierName,' ','(完成发货)') else CONCAT(A.contracts,' ','(',A.sendStatusName,')') end logTitle from (
+    select A.*,CASE A.send_status when '1' then CONCAT(A.supplierName,'(完成发货)') else CONCAT(A.optName,' ','(',A.sendStatusName,')') end logTitle from (
 
     select t.*,t1.name optName,t2.note sendStatusName,t4.supplier_name supplierName,t7.contracts from t_pss_order_send_log t
     left join t_pss_user t1 on t.opt_user = t1.user_id
@@ -21,7 +21,9 @@
     left join t_pss_contract_purchase t6 on t3.contract_code_p = t6.contract_code
     left join t_pss_customer t7 on t6.cust_code = t7.cust_code
     ) A
+
     where 1=1
+    and A.send_status > '0'
     <if test="orderSendCode != null and orderSendCode != ''">
       and A.order_send_code = #{orderSendCode}
     </if>

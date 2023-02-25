@@ -179,7 +179,7 @@
         (
         select count(*) from t_pss_order t
         left join t_pss_contract_purchase t2 on t.contract_code_p = t2.contract_code
-        where t.order_type = '1' and  t.status = '7' and t.finish_time = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        where t.order_type = '1' and  t.status = '7' and left(t.finish_time,10) = DATE_FORMAT(NOW(),'%Y-%m-%d')
         <if test="indexDataDto.supplierCode != null and indexDataDto.supplierCode != ''">
             and t.supplier_code = #{indexDataDto.supplierCode}
         </if>
@@ -237,6 +237,7 @@
 
     <select id="todoTask" resultType="com.flong.springboot.modules.entity.vo.TodoTaskVo">
         select A.*,B.name userName from (
+
         select '待处理' taskStatus,t1.contract_code taskCode,'cght' taskType,
         CONCAT_WS('-','【采购合同】',t1.contract_name,step_name) taskTitle,t.step,t.step_name stepName,
         case when t.check_role is null or t.check_role =''
@@ -245,12 +246,6 @@
         (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
         and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
         limit 1) end userId,
-        case when t.check_role is null or t.check_role =''
-        then t1.create_user
-        else
-        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
-        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
-        limit 1) end userIds,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_purchase t1 on t.process_id = t1.process_id
         where t.step != '-1'
@@ -265,37 +260,86 @@
         (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
         and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
         limit 1) end userId,
-        case when t.check_role is null or t.check_role =''
-        then t1.create_user
-        else
-        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
-        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
-        limit 1) end userIds,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_contract_sale t1 on t.process_id = t1.process_id
         where t.step != '-1'
         and t.process_type = 'xsht'
-
         union all
 
-        select '待处理' taskStatus,t1.order_code taskCode,case t1.order_type when '1' then 'cgdd' when '2' then 'ckd' end  taskType,
-        CONCAT_WS('-',case t1.order_type when '1' then '【采购订单】' when '2' then '【出库单】' end,t2.supplier_name,t.step_name) taskTitle,t.step,t.step_name,
-        case when t.check_role is null or t.check_role ='' then t1.applicant
-        else
+        select '待处理' taskStatus,t1.order_code taskCode,t.process_type taskType,
+        CONCAT('【采购订单】','订单编号：',t1.order_code,'，供应商：',t2.supplier_name,'，请及时审批！') taskTitle,
+        t.step,t.step_name,
         (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
-        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
-        limit 1) end userId,
-        case when t.check_role is null or t.check_role =''
-        then t1.applicant
-        else
-        (select GROUP_CONCAT(user_id) from t_pss_user_role tt where tt.role_code = t.check_role
-        and exists (select 1 from t_pss_user ttt where tt.user_id = ttt.user_id and ttt.is_delete != '1')
-        limit 1) end userIds,
+        limit 1) userId,
         t.process_id processId,t.opt_time optTime from t_pss_process_task t
         inner join t_pss_order t1 on t.process_id = t1.process_id
         left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
-        where t.step != '-1'
-        and t.process_type = 'cgdd' ) A
+        inner join t_pss_contract_purchase t3 on t1.contract_code_p = t3.contract_code
+        where t.process_type = 'cgdd'
+        and t.step in( '2','3')
+
+        union all
+
+        select '待处理' taskStatus,t1.order_code taskCode,t.process_type taskType,
+        CONCAT('【采购订单】','订单编号：',t1.order_code,'，已被编辑驳回，请编辑修改后重新提交！') taskTitle,
+        t.step,t.step_name,
+        t1.applicant userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_order t1 on t.process_id = t1.process_id
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        inner join t_pss_contract_purchase t3 on t1.contract_code_p = t3.contract_code
+        where t.process_type = 'cgdd'
+        and t.step in( '1')
+
+        union all
+
+        select '待处理' taskStatus,t1.order_code taskCode,t.process_type taskType,
+        CONCAT('【采购订单】','订单编号：',t1.order_code,'，已被审批通过，请及时发货！') taskTitle,
+        t.step,t.step_name,
+        t1.applicant userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_order t1 on t.process_id = t1.process_id
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        inner join t_pss_contract_purchase t3 on t1.contract_code_p = t3.contract_code
+        where t.process_type = 'cgdd'
+        and t.step in( '4')
+
+        union all
+
+        select '待处理' taskStatus,t1.order_code taskCode,t.process_type taskType,
+        CONCAT('【采购订单】','订单编号：',t1.order_code,'，供应商：',t2.supplier_name,'，送货人：',t5.driver_name,'/',t5.tel_no,'/',t5.car_no,
+        '，送货时间：',t4.send_time,'，请及时验收！') taskTitle,
+        t.step,t.step_name,
+        (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
+        and exists (select 1 from t_pss_user ttt where ttt.user_id = tt.user_id and ttt.dept_code = t3.cust_code)
+        limit 1) userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_order t1 on t.process_id = t1.process_id
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        inner join t_pss_contract_purchase t3 on t1.contract_code_p = t3.contract_code
+        inner join t_pss_order_send t4 on t1.order_code = t4.order_code
+        left join t_pss_driver t5 on t4.driver_code = t5.driver_code
+        where t.process_type = 'cgdd'
+        and t.step in( '6')
+
+        union all
+
+        select '待处理' taskStatus,t1.order_code taskCode,t.process_type taskType,
+        CONCAT('【采购订单】','订单编号：',t1.order_code,'，供应商：',t2.supplier_name,'，送货人：',t5.driver_name,'/',t5.tel_no,'/',t5.car_no,
+        '，送货时间：',t4.send_time,'，请及时验收！') taskTitle,
+        t.step,t.step_name,
+        (select user_id from t_pss_user_role tt where tt.role_code = t.check_role and tt.user_id !='jinshi'
+        limit 1) userId,
+        t.process_id processId,t.opt_time optTime from t_pss_process_task t
+        inner join t_pss_order t1 on t.process_id = t1.process_id
+        left join t_pss_supplier t2 on t1.supplier_code = t2.supplier_code
+        inner join t_pss_contract_purchase t3 on t1.contract_code_p = t3.contract_code
+        inner join t_pss_order_send t4 on t1.order_code = t4.order_code
+        left join t_pss_driver t5 on t4.driver_code = t5.driver_code
+        where t.process_type = 'cgdd'
+        and t.step in( '5')
+
+        ) A
         left join t_pss_user B on A.userId = B.user_id
         where 1=1
         <if test="userId != null and userId != ''">

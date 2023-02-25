@@ -282,14 +282,20 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 User user = userService.getUserByUserId(userId);
                 String userType = "";
                 String supplierCode = "";
+                String custCode = "";
                 if (user !=null) {
                         userType = user.getUserType();
                 }
                 if (!StringUtils.isEmpty(userType) && "3".equals(userType)) {//供应商
                         supplierCode = user.getDeptCode();
                 }
+                if (!StringUtils.isEmpty(userType) && "2".equals(userType)) {//供应商
+                        custCode = user.getDeptCode();
+                }
 
-                return orderMapper.getOrderCount(supplierCode);
+
+
+                return orderMapper.getOrderCount(supplierCode,custCode);
         }
 
         public void pushEvaOrder () {

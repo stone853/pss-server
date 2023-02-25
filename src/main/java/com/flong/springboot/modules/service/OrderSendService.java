@@ -106,22 +106,15 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                                 c.setOrderSendCode(orderSendCode);
                                 orderSendMapper.insert(c);;
                         }
-
-                        if (StringUtils.isNotEmpty(c.getSendStatus()) && c.getSendStatus().equals("1")) {
-                                //记录日志
-                                OrderSendLog orderSendLog = new OrderSendLog();
-                                orderSendLog.setSendStatus(c.getSendStatus());
-                                orderSendLog.setOrderSendCode(orderSendCode);
-                                orderSendLog.setOptUser(c.getUserId());
-                                orderSendLog.setOptTime(UserHelper.getDateTime());
-                                orderSendLogService.save(orderSendLog);
-                        }
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"添加发货单失败");
                 }
 
                 materialDetailSendService.updateOrInsertOrDelete(orderCode,orderSendCode,c.getMaterialDetailSendList(), "");
+
+                //记录日志
+                insertOrderSendLog(c,orderSendCode);
                 return c;
         }
 
@@ -193,14 +186,9 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
 
                         materialDetailSendService.acptQuantity(orderSendCode, c.getMaterialDetailSendList(), "");
 
-                        String sendStatus = c.getSendStatus();
+
                         //记录日志
-                        OrderSendLog orderSendLog = new OrderSendLog();
-                        orderSendLog.setSendStatus(sendStatus);
-                        orderSendLog.setOrderSendCode(orderSendCode);
-                        orderSendLog.setOptUser(c.getUserId());
-                        orderSendLog.setOptTime(UserHelper.getDateTime());
-                        orderSendLogService.save(orderSendLog);
+                        insertOrderSendLog(c,orderSendCode);
                 } catch (ServiceException e) {
                         throw e;
                 } catch (Exception e) {
@@ -235,7 +223,34 @@ public class OrderSendService extends ServiceImpl<OrderSendMapper, OrderSend> {
                         orderSendCode = o.getOrderSendCode();
                         orderCode = o.getOrderCode();
                 }
+
                 materialDetailSendService.updateOrInsertOrDelete(orderCode,orderSendCode,c.getMaterialDetailSendList(),"");
+
+                //记录日志
+                insertOrderSendLog(c,orderSendCode);
+        }
+
+        public void updateOrderSend (String userId,OrderSend orderSend) {
+
+                this.updateById(orderSend);
+                //记录日志
+                OrderSend o = this.getOneById(orderSend.getId());
+                String orderSendCode = o.getOrderSendCode();
+                o.setUserId(userId);
+                insertOrderSendLog(o,orderSendCode);
+        }
+
+
+        private void insertOrderSendLog (OrderSend c,String orderSendCode) {
+                if (StringUtils.isNotEmpty(c.getSendStatus())) {
+                        //记录日志
+                        OrderSendLog orderSendLog = new OrderSendLog();
+                        orderSendLog.setSendStatus(c.getSendStatus());
+                        orderSendLog.setOrderSendCode(orderSendCode);
+                        orderSendLog.setOptUser(c.getUserId());
+                        orderSendLog.setOptTime(UserHelper.getDateTime());
+                        orderSendLogService.save(orderSendLog);
+                }
         }
 
         public IPage<OrderSendVo> pageList (OrderSendDto orderSendDto) {
