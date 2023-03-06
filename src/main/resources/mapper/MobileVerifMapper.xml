@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.MobileVerifMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.MobileVerif">
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="verif_code" jdbcType="VARCHAR" property="verifCode" />
+    <result column="opt_time" jdbcType="VARCHAR" property="optTime" />
+  </resultMap>
+
+
+  <select id="isValidate" resultType="com.flong.springboot.modules.entity.MobileVerif">
+    select t.* from t_pss_mobile_verif t where
+    now() &lt; date_add(t.opt_time, interval 60 second)
+    <if test="mobile != null and mobile != ''">
+      and t.mobile = #{mobile}
+    </if>
+    <if test="verifCode != null and verifCode != ''">
+      and t.verif_code = #{verifCode}
+    </if>
+  </select>
+</mapper>

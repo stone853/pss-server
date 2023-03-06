@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
-import com.flong.springboot.core.process.ContractPurProcessHandle;
-import com.flong.springboot.core.process.ContractSaleProcessHandle;
-import com.flong.springboot.core.process.OrderOutProcessHandle;
-import com.flong.springboot.core.process.OrderPurProcessHandle;
+import com.flong.springboot.core.process.*;
 import com.flong.springboot.modules.entity.*;
 import com.flong.springboot.modules.entity.dto.PssProcessDto;
 import com.flong.springboot.modules.entity.vo.ProcessInfo;
@@ -31,6 +28,9 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
         ContractPurProcessHandle contractPurProcessHandle;
 
         @Autowired
+        ReqProcessHandle reqProcessHandle;
+
+        @Autowired
         OrderPurProcessHandle orderPurProcessHandle;
 
         @Autowired
@@ -46,6 +46,8 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
         ContractPurchaseService contractPurService;
 
 
+        @Autowired
+        ReqService reqService;
 
         @Autowired
         PssProcessTaskService pssProcessTaskService;
@@ -85,6 +87,23 @@ public class PssProcessService extends ServiceImpl<PssProcessMapper, PssProcess>
                 }
                 c.setContractStatus(returnStatus);
                 contractPurService.updateById(c);
+        }
+
+        @Transactional
+        public void reqProcess (String processType,PssProcessDto pssProcessDto) {
+                //处理流程任务，并返回流程任务对应的需求单状态
+                String returnStatus = reqProcessHandle.executeProcess(processType,pssProcessDto);
+
+                //修改销售合同对应状态
+                String processId = pssProcessDto.getProcessId();
+                QueryWrapper<Req> qc = new QueryWrapper();
+                qc.eq("process_id",processId);
+                Req c = reqService.getOne(qc);
+                if (c == null) {
+                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"未找到流程:"+processId+"对应的需求单");
+                }
+                c.setReqStatus(returnStatus);
+                reqService.updateById(c);
         }
 
 

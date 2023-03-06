@@ -12,6 +12,8 @@ public class CommonConstant {
 
     public static final String CONTRACT_PUR_PROCESS_TYPE  = "cght";
 
+    public static final String REQ_PROCESS_TYPE  = "xqd";
+
     public static final String ORDER_PUR_TYPE  = "cgdd";
 
     public static final String ORDER_OUT_TYPE  = "ckd";
@@ -21,6 +23,9 @@ public class CommonConstant {
 
     //采购合同提交状态
     public static final String CONTRACT_PUR_SUB_STATUS  = "2";
+
+    //需求单提交状态
+    public static final String REQ_SUB_STATUS  = "2";
 
     //合同提交状态
     public static final String ORDER_SUB_STATUS  = "2";

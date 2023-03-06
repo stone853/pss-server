@@ -10,6 +10,8 @@ import com.flong.springboot.base.utils.GeneratorKeyUtil;
 import com.flong.springboot.base.utils.MD5Utils;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.core.exception.ServiceException;
+import com.flong.springboot.core.mas.SendMas;
+import com.flong.springboot.modules.entity.MobileVerif;
 import com.flong.springboot.modules.entity.Role;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.UserRole;
@@ -17,6 +19,7 @@ import com.flong.springboot.modules.entity.dto.*;
 import com.flong.springboot.modules.entity.vo.IndexDataVo;
 import com.flong.springboot.modules.entity.vo.TodoTaskVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
+import com.flong.springboot.modules.mapper.MobileVerifMapper;
 import com.flong.springboot.modules.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     @Autowired
     UserRoleService userRoleService;
+
+    @Autowired
+    SendMas sendMas;
+
+    @Autowired
+    MobileVerifMapper mobileVerifMapper;
 
     public List<User> find_AS_R() {
         return userMapper.find_AS_R();
@@ -334,4 +343,47 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     }
 
+    public String getVerifCode(String mobile) {
+        QueryWrapper<User> q = new QueryWrapper<>();
+        q.eq("mobile",mobile);
+        q.last("limit 1");
+        User u = this.getOne(q);
+        if (u == null) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号用户不存在");
+        }
+        return sendMas.sendVerifCode(mobile);
+    }
+
+    public void updPwdByVerifCode (ResetPwdDto rpd ) {
+        String verifCode = rpd.getVerifCode();
+        String mobile = rpd.getMobile();
+        String pwd = rpd.getNewPwd();
+        if (StringUtils.isEmpty(verifCode)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"验证码不能为空");
+        }
+        if (StringUtils.isEmpty(pwd)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"密码不能为空");
+        }
+        if (StringUtils.isEmpty(mobile)) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号不能为空");
+        }
+
+        QueryWrapper<User> qu = new QueryWrapper<>();
+        qu.eq("mobile",mobile);
+        qu.last("limit 1");
+        User u = this.getOne(qu);
+        if (u == null) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"手机号用户不存在");
+        }
+
+        MobileVerif m = mobileVerifMapper.isValidate(mobile,verifCode);
+        if (m == null) {
+            throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"验证码无效");
+        }
+
+        UpdateWrapper<User> upd = new UpdateWrapper<>();
+        upd.set("password",pwd);
+        upd.eq("mobile",mobile);
+        this.update(upd);
+    }
 }

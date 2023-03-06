@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flong.springboot.modules.mapper.ReqMapper">
+  <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.Req">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="req_code" jdbcType="VARCHAR" property="reqCode" />
+    <result column="pro_name" jdbcType="VARCHAR" property="proName" />
+    <result column="pro_addr" jdbcType="VARCHAR" property="proAddr" />
+    <result column="opt_user" jdbcType="VARCHAR" property="optUser" />
+    <result column="opt_time" jdbcType="CHAR" property="optTime" />
+    <result column="deliver_date" jdbcType="CHAR" property="deliverDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="req_status" jdbcType="VARCHAR" property="reqStatus" />
+    <result column="file_c" jdbcType="VARCHAR" property="fileC" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
+  </resultMap>
+
+  <select id="pageList" resultType="com.flong.springboot.modules.entity.vo.ReqVo" parameterType="com.flong.springboot.modules.entity.dto.ReqDto">
+    select t.*,t2.note as reqStatusNote,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
+    from t_pss_req t
+    left join t_pss_dict t2 on t.req_status = t2.code and t2.type = 'xqdzt'
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'xqd'
+    left join t_pss_status_button t93 on t93.`status` = t.req_status and t93.type ='xqdzt'
+    where 1=1
+
+    order by t.id desc
+  </select>
+
+  <select id="getOneById" resultType="com.flong.springboot.modules.entity.vo.ReqVo">
+    select t.*,t2.note as reqStatusNote,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
+    from t_pss_req t
+    left join t_pss_dict t2 on t.req_status = t2.code and t2.type = 'xqdzt'
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'xqd'
+    left join t_pss_status_button t93 on t93.`status` = t.req_status and t93.type ='xqdzt'
+    where 1=1
+    <if test="id != null and id != ''">
+      and t.id = #{id}
+    </if>
+  </select>
+
+  <select id="getOneByCode" resultType="com.flong.springboot.modules.entity.vo.ReqVo">
+    select t.*,t2.note as reqStatusNote,
+    t92.opt_button as checkUserButton,t93.create_user_button as createUserButton,
+    t92.role_code as checkRoleCode
+    from t_pss_req t
+    left join t_pss_dict t2 on t.req_status = t2.code and t2.type = 'xqdzt'
+    left join t_pss_process_task t91 on t.process_id = t91.process_id
+    left join t_pss_process t92 on t91.step = t92.step and t92.type = 'xqd'
+    left join t_pss_status_button t93 on t93.`status` = t.req_status and t93.type ='xqdzt'
+    where 1=1
+    <if test="reqCode != null and reqCode != ''">
+      and t.req_code = #{reqCode}
+    </if>
+  </select>
+</mapper>

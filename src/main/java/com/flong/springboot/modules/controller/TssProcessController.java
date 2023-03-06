@@ -54,6 +54,18 @@ public class TssProcessController {
         pssProcessService.contractPurProcess(CommonConstant.CONTRACT_PUR_PROCESS_TYPE,pssProcessDto);
     }
 
+
+    /**
+     * 审批需求单流程
+     * @param pssProcessDto
+     */
+    @ApiOperation("需求单审批")
+    @PutMapping("/subProcessReq")
+    public void subProcessReq(@RequestHeader("token") String token, @Validated @RequestBody PssProcessDto pssProcessDto) {
+        pssProcessDto.setUserId(UserHelper.getUserId(token));
+        pssProcessService.reqProcess(CommonConstant.REQ_PROCESS_TYPE,pssProcessDto);
+    }
+
     /**
      * 审批采购订单流程
      * @param pssProcessDto

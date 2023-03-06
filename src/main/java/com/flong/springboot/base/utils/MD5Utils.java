@@ -1,44 +1,77 @@
 package com.flong.springboot.base.utils;
 
+import com.flong.springboot.modules.task.MD5;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MD5Utils {
-    public static String encrypt( String strs ){
-        /*
-         * 加密需要使用JDK中提供的类
-         */
-        StringBuffer sb = new StringBuffer();
-        try{
-            MessageDigest digest = MessageDigest.getInstance("MD5");
+    private static MD5Utils md5 = null;
+    private static final String ENCODING = "UTF-8";
 
-            byte[] bs = digest.digest(strs.getBytes());
+    private MD5Utils(){};
 
-            /*
-             *  加密后的数据是-128 到 127 之间的数字，这个数字也不安全。
-             *   取出每个数组的某些二进制位进行某些运算，得到一个具体的加密结果
-             *
-             *   0000 0011 0000 0100 0010 0000 0110 0001
-             *  &0000 0000 0000 0000 0000 0000 1111 1111
-             *  ---------------------------------------------
-             *   0000 0000 0000 0000 0000 0000 0110 0001
-             *   把取出的数据转成十六进制数
-             */
+    public static MD5Utils getInstance(){
+        if(md5 == null)
+            md5 = new MD5Utils();
+        return md5;
+    }
 
-            for (byte b : bs) {
-                int x = b & 255;
-                String s = Integer.toHexString(x);
-                if( x > 0 && x < 16 ){
-                    sb.append("0");
-                    sb.append(s);
-                }else{
-                    sb.append(s);
-                }
-            }
-
-        }catch( Exception e){
-            System.out.println("加密失败");
+    /**
+     * MD5进行数据加密
+     */
+    public static String  encrypt(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = md.digest(password.getBytes(ENCODING));
+            BigInteger bint = new BigInteger(1, bytes);
+            return bint.toString(16);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return sb.toString();
+        return null;
+
+    }
+    /**
+     * MD5加密，前面encrypt方法可能会出现加密缺少前置0的情况
+     */
+    public String getMd5(String plainText) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(plainText.getBytes());
+            byte b[] = md.digest();
+
+            int i;
+
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            //32位加密
+            return buf.toString();
+            // 16位的加密
+            //return buf.toString().substring(8, 24);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * 密码校验
+     * inPassword：用户请求密码
+     * dbPassword：数据库存储密码
+     */
+    public boolean compare(String inPassword,String dbPassword) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+        if(encrypt(inPassword).equals(dbPassword))
+            return true;
+        return false;
     }
 
     public static void main (String args[]){

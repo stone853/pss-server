@@ -9,6 +9,7 @@ import com.flong.springboot.core.exception.BaseException;
 import com.flong.springboot.core.exception.CommMsgCode;
 import com.flong.springboot.modules.entity.User;
 import com.flong.springboot.modules.entity.dto.LoginDto;
+import com.flong.springboot.modules.entity.dto.ResetPwdDto;
 import com.flong.springboot.modules.entity.dto.UserDto;
 import com.flong.springboot.modules.entity.vo.LoginVo;
 import com.flong.springboot.modules.entity.vo.UserVo;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -99,6 +101,22 @@ public class LoginController {
 
         return lv.setToken(UserHelper.getToken(u.getUserId(),u.getPassword()))
                 .setUserName(u.getName()).setUserId(u.getUserId());
+    }
+
+    @ApiOperation("获取验证码")
+    @GetMapping("/v1/getVerifCode")
+    public Map getVerifCode(@RequestParam String mobile){
+        String verifCode = userService.getVerifCode(mobile);
+        Map map = new HashMap();
+        map.put("verifCode",verifCode);
+        return map;
+    }
+
+    @ApiOperation("重置密码")
+    @ApiImplicitParams(value = {@ApiImplicitParam(name = "ResetPwdDto",dataTypeClass = ResetPwdDto.class , value ="")})
+    @PostMapping("/v1/updPwdByVerifCode")
+    public void updPwdByVerifCode(@RequestBody ResetPwdDto rpd){
+        userService.updPwdByVerifCode(rpd);
     }
 
 }

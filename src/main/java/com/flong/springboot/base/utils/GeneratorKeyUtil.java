@@ -148,6 +148,10 @@ public class GeneratorKeyUtil {
         return "CGHT" + nextId();
     }
 
+    public static String getReqNextCode () {
+        return "XQD" + nextId();
+    }
+
     public static String getInOrderNextCode () {
         return "CGDD" + nextId();
     }
