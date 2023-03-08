@@ -4,8 +4,8 @@
   <resultMap id="BaseResultMap" type="com.flong.springboot.modules.entity.Req">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="req_code" jdbcType="VARCHAR" property="reqCode" />
-    <result column="pro_name" jdbcType="VARCHAR" property="proName" />
-    <result column="pro_addr" jdbcType="VARCHAR" property="proAddr" />
+    <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
+    <result column="cust_addr" jdbcType="VARCHAR" property="custAddr" />
     <result column="opt_user" jdbcType="VARCHAR" property="optUser" />
     <result column="opt_time" jdbcType="CHAR" property="optTime" />
     <result column="deliver_date" jdbcType="CHAR" property="deliverDate" />
@@ -25,7 +25,21 @@
     left join t_pss_process t92 on t91.step = t92.step and t92.type = 'xqd'
     left join t_pss_status_button t93 on t93.`status` = t.req_status and t93.type ='xqdzt'
     where 1=1
-
+    <if test="req.reqCode != null and req.reqCode != ''">
+      and t.req_code like "%"#{req.reqCode}"%"
+    </if>
+    <if test="req.custCode != null and req.custCode != ''">
+      and t.cust_code = #{req.custCode}
+    </if>
+    <if test="req.reqStatus != null and req.reqStatus != ''">
+      and t.req_status = #{req.reqStatus}
+    </if>
+    <if test="req.appBeginDate != null and req.appBeginDate != '' and req.appEndDate != null and req.appEndDate != ''">
+      and left(t.opt_time,10) between #{req.appBeginDate} and #{req.appEndDate}
+    </if>
+    <if test="req.deliverBeginDate != null and req.deliverBeginDate != '' and req.deliverEndDate != null and req.deliverEndDate != ''">
+      and t.deliver_date between #{req.deliverBeginDate} and #{req.deliverEndDate}
+    </if>
     order by t.id desc
   </select>
 
@@ -58,4 +72,5 @@
       and t.req_code = #{reqCode}
     </if>
   </select>
+
 </mapper>

@@ -117,8 +117,8 @@ public class ReqController {
     public IPage<ReqVo> page(@RequestHeader("token") String token, @RequestBody ReqDto reqDto) {
         optLogService.insertOptLog(UserHelper.getUserId(token),UserHelper.getRealRequestIp(request),
                 "需求单","需求单-首页");
-        reqDto.setUserId(UserHelper.getUserId(token));
-        return reqService.pageList(reqDto);
+
+        return reqService.pageList(UserHelper.getUserId(token),reqDto);
     }
 
 

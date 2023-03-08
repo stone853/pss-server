@@ -20,9 +20,9 @@ public class Req {
 
     private String reqCode;
 
-    private String proName;
+    private String custCode;
 
-    private String proAddr;
+    private String custAddr;
 
     private String optUser;
 

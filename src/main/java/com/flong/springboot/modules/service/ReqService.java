@@ -98,12 +98,12 @@ public class ReqService extends ServiceImpl<ReqMapper, Req> {
         }
 
 
-        public IPage<ReqVo> pageList (ReqDto reqDto) {
+        public IPage<ReqVo> pageList (String userId,ReqDto reqDto) {
                 IPage<ReqVo> pageList = reqMapper.pageList(reqDto.getPage()==null ? new Page<>():reqDto.getPage(),reqDto);
                 List<ReqVo> customerList = pageList.getRecords();
                 customerList.stream().forEach((p) -> {
                         convertJsonArray(p);
-                        setOptButton(reqDto.getUserId(),p);
+                        setOptButton(userId,p);
                         }
                 );
                 return  pageList;

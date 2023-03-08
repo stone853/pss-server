@@ -34,7 +34,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * 根据foreignCode 批量新增
          * @param list
          * @param foreignCode
-         * @param type 1 销售合同  2 采购合同 3 供应商
+         * @param type 1 销售合同  2 采购合同 3 供应商  4 采购需求单
          * @return
          */
         public boolean batchInsert (String foreignCode,List<MaterialDetail> list,String type) {
@@ -72,6 +72,7 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
          * insert or update ,没有则delete
          * @param foreignCode
          * @param list
+         * type 1 销售合同  2 采购合同 3 供应商  4 采购需求单
          * @return
          */
         public boolean updateOrInsertOrDelete (String foreignCode,List<MaterialDetail> list,String type) {
@@ -79,18 +80,6 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                 if (StringUtils.isEmpty(foreignCode)) {
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"请输入foreignCode编码");
                 }
-
-                if (list == null || list.size() == 0) {
-                        QueryWrapper<MaterialDetail> dw = new QueryWrapper<MaterialDetail>();
-                        dw.eq("foreign_code",foreignCode);
-                        materialDetailMapper.delete(dw);
-                        return true;
-                }
-//                //判断物料code重复
-//                List<String> tempList = list.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
-//                if (tempList.size() != list.size()) {
-//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
-//                }
 
                 //先删除
                 try {
@@ -101,6 +90,16 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                         e.printStackTrace();
                         throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"删除物料明细失败");
                 }
+
+                if (list == null || list.size() == 0) {
+                        return true;
+                }
+//                //判断物料code重复
+//                List<String> tempList = list.stream().map(MaterialDetail::getMaterialCode).distinct().collect(Collectors.toList());
+//                if (tempList.size() != list.size()) {
+//                        throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码重复");
+//                }
+
                 //修改物料明细，insert or update
                 try {
                         list.stream().forEach((p) ->{
@@ -110,6 +109,9 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                                         //全部新增，ID设置为空
                                         p.setId(null);
 
+                                        if ("3".equals(type) && hasExistsInSupplier(p.getMaterialCode())) {
+                                                throw new ServiceException(CommMsgCode.BIZ_INTERRUPT,"物料编码"+p.getMaterialCode()+"已绑定供应商");
+                                        }
 
                                         if (StringUtils.isEmpty(p.getDetailId())) {
                                                 p.setDetailId(GeneratorKeyUtil.getMaterialDetailNextCode());
@@ -136,6 +138,28 @@ public class MaterialDetailService extends ServiceImpl<MaterialDetailMapper, Mat
                 return materialDetailMapper.findAll(foreignCode);
         }
 
+
+        public boolean hasExistsInSupplier (String materialCode) {
+                QueryWrapper<MaterialDetail> q = new QueryWrapper<>();
+                q.eq("material_code",materialCode);
+                q.eq("type","3");
+                q.last("limit 1");
+                MaterialDetail m = this.getOne(q);
+                if (m == null) {
+                        return false;
+                }
+                return true;
+        }
+
+        /**
+         * @param foreignCode  需求单编号
+         * @param supplierCode 供应商编号
+         * @return
+         */
+        public List<MaterialDetailVo> findBySupplierCode (String foreignCode,String supplierCode) {
+
+                return materialDetailMapper.findBySupplierCode(foreignCode,supplierCode);
+        }
 
 
 
